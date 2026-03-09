@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20.x
+          node-version: 20
 
       - name: Install Dependencies
         run: npm install
@@ -32,4 +32,3 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: dist/
           server-dir: ./store
-          dangerous-clean-slate: false
