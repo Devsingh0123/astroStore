@@ -27,8 +27,10 @@ jobs:
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: ftp.astrotring.com
+          server: srv1117-files.hstgr.io
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
           local-dir: dist/
-          server-dir: ./store/
+          server-dir: public_html/store/
