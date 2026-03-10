@@ -78,7 +78,7 @@ const Footer = () => {
                   <Link to="">Astromall</Link>
                 </li>
                 <li className="text-sm text-black transition-all duration-300 hover:translate-x-2">
-                  <Link to="">Astrotalk Store</Link>
+                  <Link to="">Astrotring Store</Link>
                 </li>
                 <li className="text-sm text-black transition-all duration-300 hover:translate-x-2">
                   <Link to="">Today Panchang</Link>
@@ -102,7 +102,7 @@ const Footer = () => {
                   <Link to="">Talk to Astrologer</Link>
                 </li>
                 <li className="text-sm text-black transition-all duration-300 hover:translate-x-2">
-                  <Link to="">Astrotalk Reviews</Link>
+                  <Link to="">Astrotring Reviews</Link>
                 </li>
                 <li className="text-sm text-black transition-all duration-300 hover:translate-x-2">
                   <Link to="">Astrology Yoga</Link>
@@ -158,7 +158,7 @@ const Footer = () => {
                   <Link to="">Guru Purnima 2025</Link>
                 </li>
                 <li className="text-sm text-black transition-all duration-300 hover:translate-x-2">
-                  <Link to="">Astrotalk Sitemap</Link>
+                  <Link to="">Astrotring Sitemap</Link>
                 </li>
               </ul>
             </div>
