@@ -25,14 +25,9 @@ const Footer = () => {
             </Link>
 
             <p className="text-sm text-gray-900 leading-relaxed">
-              AstroTring Store offers a curated collection of authentic
-              astrology and spiritual products designed to enhance positivity
-              and balance in life. Explore a wide range of gemstones, rudraksha,
-              healing bracelets, and vastu items carefully selected by experts.
-              Each product is believed to support prosperity, protection, and
-              spiritual growth. Our goal is to bring the power of ancient Vedic
-              traditions into your modern lifestyle. Discover meaningful
-              products that help attract success and positive energy every day.
+              AstroTring Store offers authentic astrology and spiritual products including
+              gemstones, rudraksha, healing bracelets and vastu items designed to enhance
+              positivity, prosperity and balance in everyday life.
             </p>
           </div>
 
