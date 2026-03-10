@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FaUser, FaShoppingCart, FaSignOutAlt } from "react-icons/fa";
@@ -9,6 +9,8 @@ import UserLogin from "../auth/UserLogin";
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isNavHidden, setIsNavHidden] = useState(false); // 👈 Naya state
+  const lastScrollY = useRef(0); // 👈 Ref for last scroll position
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -17,7 +19,25 @@ const Navbar = () => {
   const cartCount = cartItems.reduce((sum, item) => sum + item.qty, 0);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const threshold = 10; // थ्रेशोल्ड ताकि बार-बार टॉगल न हो
+
+      // Scroll direction detection
+      if (currentScrollY > lastScrollY.current + threshold) {
+        // Scrolling down → navbar hide
+        setIsNavHidden(true);
+      } else if (currentScrollY < lastScrollY.current - threshold) {
+        // Scrolling up → navbar show
+        setIsNavHidden(false);
+      }
+
+      // Shadow on scroll (original functionality)
+      setScrolled(currentScrollY > 20);
+
+      lastScrollY.current = currentScrollY;
+    };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -39,9 +59,9 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`w-full sticky top-0 z-[100] bg-white transition-all ${
+      className={`w-full sticky top-0 z-[100] bg-white transition-all duration-500 ${
         scrolled ? "shadow-md" : ""
-      }`}
+      } ${isNavHidden ? '-translate-y-full' : 'translate-y-0'}`} // 👈 Animation classes
     >
       <div className="w-full px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-6">
         {/* Logo - smaller on mobile */}
@@ -69,7 +89,7 @@ const Navbar = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 to-amber-500/30 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <FaShoppingCart className="text-amber-600 relative z-10" size={16} />
             <span
-              className="font-medium text-stone-700 relative z-10 hidden xs:inline text-sm sm:text-base"
+              className="font-medium text-stone-700 relative z-10 xs:inline hidden sm:block text-sm sm:text-base"
               style={{ fontFamily: 'Montserrat, sans-serif' }}
             >
               Cart
@@ -126,7 +146,7 @@ const Navbar = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 to-amber-500/30 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <FaUser className="text-amber-600 relative z-10" size={16} />
                   <span
-                    className="font-medium text-stone-700 relative z-10 hidden xs:inline text-sm sm:text-base"
+                    className="font-medium text-stone-700 relative z-10 hidden sm:block xs:inline text-sm sm:text-base"
                     style={{ fontFamily: 'Montserrat, sans-serif' }}
                   >
                     Login
