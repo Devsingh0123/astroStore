@@ -1,3 +1,4 @@
+// components/features/FilterSidebar.jsx
 import { useState } from "react";
 import { CATEGORIES } from "../../constants/categories";
 import StarRating from "../common/StarRating";
@@ -25,23 +26,25 @@ const FilterSidebar = ({
   const SectionHeader = ({ title, section }) => (
     <div
       onClick={() => toggleSection(section)}
-      className={`flex items-center justify-between py-2.5 cursor-pointer select-none border-b border-gray-100 ${
-        expandedSections[section] ? "mb-3" : "mb-0"
+      className={`flex items-center justify-between py-2 sm:py-2.5 cursor-pointer select-none border-b border-gray-100 ${
+        expandedSections[section] ? 'mb-2 sm:mb-3' : 'mb-0'
       }`}
     >
-      <span className="text-[13px] font-bold text-stone-800 tracking-wide uppercase">
+      <span className="text-xs sm:text-sm font-bold text-stone-800 tracking-wide uppercase">
         {title}
       </span>
       <svg
-        width={16}
-        height={16}
+        width={14}
+        height={14}
         viewBox="0 0 24 24"
         fill="none"
         stroke="#78716c"
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className={`transition-transform duration-200 ${expandedSections[section] ? "rotate-180" : "rotate-0"}`}
+        className={`transition-transform duration-200 w-3 h-3 sm:w-4 sm:h-4 ${
+          expandedSections[section] ? 'rotate-180' : 'rotate-0'
+        }`}
       >
         <polyline points="6 9 12 15 18 9" />
       </svg>
@@ -49,26 +52,25 @@ const FilterSidebar = ({
   );
 
   return (
-    <div
-      className={`bg-white rounded-2xl border border-gray-100 shadow-md p-5 px-4.5 overflow-y-auto ${className}`}
-    >
-      <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-gray-100">
-        <div className="text-[15px] font-extrabold text-stone-900 tracking-tight">
+    <div className={`bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-md p-3 sm:p-4 md:p-5 overflow-y-auto ${className}`}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3 sm:mb-4 pb-2 sm:pb-3 border-b-2 border-gray-100">
+        <div className="text-sm sm:text-base font-extrabold text-stone-900 tracking-tight">
           Filters
         </div>
-        <button
-          onClick={onClearFilters}
+        <button 
+          onClick={onClearFilters} 
           className="bg-transparent border-none text-amber-600 text-xs font-bold cursor-pointer underline hover:text-amber-700"
         >
           Clear All
         </button>
       </div>
 
-      {/* Categories */}
-      <div className="mb-5">
+      {/* Categories Section */}
+      <div className="mb-4 sm:mb-5">
         <SectionHeader title="Categories" section="categories" />
         {expandedSections.categories && (
-          <div>
+          <div className="space-y-1">
             {CATEGORIES.map((cat) => {
               const active = selected === cat.id;
               const count =
@@ -79,17 +81,15 @@ const FilterSidebar = ({
                 <button
                   key={cat.id}
                   onClick={() => onSelect(cat.id)}
-                  className={`w-full flex items-center gap-2.5 text-left px-3 py-2 rounded-[9px] border-none cursor-pointer mb-1 text-[13px] transition-all ${
+                  className={`w-full flex items-center gap-2 sm:gap-2.5 text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-[9px] border-none cursor-pointer text-xs sm:text-sm transition-all ${
                     active
                       ? "bg-gradient-to-br from-amber-100 to-amber-200 text-amber-900 font-bold shadow-[inset_0_0_0_1.5px_#fcd34d]"
                       : "bg-transparent text-stone-600 font-medium hover:bg-stone-50"
                   }`}
                 >
-                  <span className="text-[15px]">{cat.icon}</span>
-                  <span className="flex-1">{cat.label}</span>
-                  <span className="text-[11px] text-stone-400 font-semibold">
-                    {count}
-                  </span>
+                  <span className="text-base sm:text-lg">{cat.icon}</span>
+                  <span className="flex-1 truncate">{cat.label}</span>
+                  <span className="text-[10px] sm:text-xs text-stone-400 font-semibold">{count}</span>
                 </button>
               );
             })}
@@ -97,35 +97,33 @@ const FilterSidebar = ({
         )}
       </div>
 
-      {/* Price Range – Stacked Vertically with "to" label */}
-      <div className="mb-5">
+      {/* Price Range Section */}
+      <div className="mb-4 sm:mb-5">
         <SectionHeader title="Price Range" section="price" />
         {expandedSections.price && (
-          <div className="flex flex-col gap-1">
-            {/* Min Input */}
-            <input
-              type="number"
-              value={filters.minPrice}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, minPrice: e.target.value }))
-              }
-              placeholder="Min price"
-              className="w-full px-2.5 py-2 rounded-lg border border-gray-200 text-[13px] outline-none focus:border-amber-600"
-            />
-            {/* "to" label */}
-            <span className="text-center text-stone-400 text-sm font-mono">
-              to
-            </span>
-            {/* Max Input */}
-            <input
-              type="number"
-              value={filters.maxPrice}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, maxPrice: e.target.value }))
-              }
-              placeholder="Max price"
-              className="w-full px-2.5 py-2 rounded-lg border border-gray-200 text-[13px] outline-none focus:border-amber-600"
-            />
+          <div className="space-y-2 sm:space-y-3">
+            {/* Min/Max Inputs */}
+            <div className="flex flex-col sm:flex-row items-center gap-2">
+              <div className="w-full sm:flex-1">
+                <input
+                  type="number"
+                  value={filters.minPrice}
+                  onChange={e => setFilters(f => ({ ...f, minPrice: e.target.value }))}
+                  placeholder="Min"
+                  className="w-full px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-lg border border-gray-200 text-xs sm:text-sm outline-none focus:border-amber-600"
+                />
+              </div>
+              <span className="text-stone-400 text-xs sm:text-sm font-mono">to</span>
+              <div className="w-full sm:flex-1">
+                <input
+                  type="number"
+                  value={filters.maxPrice}
+                  onChange={e => setFilters(f => ({ ...f, maxPrice: e.target.value }))}
+                  placeholder="Max"
+                  className="w-full px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-lg border border-gray-200 text-xs sm:text-sm outline-none focus:border-amber-600"
+                />
+              </div>
+            </div>
 
             {/* Quick price filters */}
             <div className="flex flex-wrap gap-1.5 mt-1">
@@ -159,59 +157,56 @@ const FilterSidebar = ({
         )}
       </div>
 
-      {/* Rating */}
-      <div className="mb-5">
+      {/* Rating Section */}
+      <div className="mb-4 sm:mb-5">
         <SectionHeader title="Customer Rating" section="rating" />
         {expandedSections.rating && (
-          <div className="flex flex-col gap-2">
-            {[4, 3, 2, 1].map((rating) => (
-              <label
-                key={rating}
-                className="flex items-center gap-2.5 cursor-pointer px-2 py-1.5 rounded-lg transition-colors hover:bg-stone-50"
+          <div className="space-y-1.5 sm:space-y-2">
+            {[4, 3, 2, 1].map(rating => (
+              <label 
+                key={rating} 
+                className="flex items-center gap-2 sm:gap-2.5 cursor-pointer px-1.5 sm:px-2 py-1 sm:py-1.5 rounded-lg transition-colors hover:bg-stone-50"
               >
                 <input
                   type="radio"
                   name="rating"
                   checked={filters.minRating === String(rating)}
-                  onChange={() =>
-                    setFilters((f) => ({ ...f, minRating: String(rating) }))
-                  }
-                  className="cursor-pointer"
+                  onChange={() => setFilters(f => ({ ...f, minRating: String(rating) }))}
+                  className="cursor-pointer w-3 h-3 sm:w-4 sm:h-4"
                 />
-                <StarRating value={rating} size={13} />
-                <span className="text-xs text-stone-500 font-semibold">
-                  & Up
-                </span>
+                <StarRating value={rating} size={12} />
+                <span className="text-[10px] sm:text-xs text-stone-500 font-semibold">& Up</span>
               </label>
             ))}
-            <label className="flex items-center gap-2.5 cursor-pointer px-2 py-1.5 rounded-lg transition-colors hover:bg-stone-50">
+            <label className="flex items-center gap-2 sm:gap-2.5 cursor-pointer px-1.5 sm:px-2 py-1 sm:py-1.5 rounded-lg transition-colors hover:bg-stone-50">
               <input
                 type="radio"
                 name="rating"
                 checked={filters.minRating === ""}
-                onChange={() => setFilters((f) => ({ ...f, minRating: "" }))}
-                className="cursor-pointer"
+                onChange={() => setFilters(f => ({ ...f, minRating: "" }))}
+                className="cursor-pointer w-3 h-3 sm:w-4 sm:h-4"
               />
-              <span className="text-xs text-stone-500 font-semibold">
-                All Ratings
-              </span>
+              <span className="text-[10px] sm:text-xs text-stone-500 font-semibold">All Ratings</span>
             </label>
           </div>
         )}
       </div>
 
-      {/* Discount */}
-      <div className="mb-5">
+      {/* Discount Section */}
+      <div className="mb-2 sm:mb-5">
         <SectionHeader title="Discount" section="discount" />
         {expandedSections.discount && (
-          <div className="flex flex-col gap-2">
-            {["50", "40", "30", "20", "10"].map((discount) => (
-              <label
-                key={discount}
-                className="flex items-center gap-2.5 cursor-pointer px-2 py-1.5 rounded-lg transition-colors hover:bg-stone-50"
+          <div className="space-y-1.5 sm:space-y-2">
+            {["50", "40", "30", "20", "10"].map(discount => (
+              <label 
+                key={discount} 
+                className="flex items-center gap-2 sm:gap-2.5 cursor-pointer px-1.5 sm:px-2 py-1 sm:py-1.5 rounded-lg transition-colors hover:bg-stone-50"
               >
-                <input type="checkbox" className="cursor-pointer" />
-                <span className="text-xs text-stone-500 font-semibold">
+                <input 
+                  type="checkbox" 
+                  className="cursor-pointer w-3 h-3 sm:w-4 sm:h-4" 
+                />
+                <span className="text-[10px] sm:text-xs text-stone-500 font-semibold">
                   {discount}% or more
                 </span>
               </label>
