@@ -1,8 +1,9 @@
 // components/features/FilterSidebar.jsx
 import { useState } from "react";
+import { useSelector } from "react-redux"; // 👈 import useSelector
 import { CATEGORIES } from "../../constants/categories";
 import StarRating from "../common/StarRating";
-import { products } from "../../data/Data";
+// Remove static import: import { products } from "../../data/Data";
 
 const FilterSidebar = ({
   selected,
@@ -12,6 +13,9 @@ const FilterSidebar = ({
   onClearFilters,
   className = "",
 }) => {
+  // 👇 Get real products from Redux store
+  const { items: products } = useSelector((state) => state.product);
+
   const [expandedSections, setExpandedSections] = useState({
     categories: true,
     price: true,
@@ -73,10 +77,11 @@ const FilterSidebar = ({
           <div className="space-y-1">
             {CATEGORIES.map((cat) => {
               const active = selected === cat.id;
-              const count =
-                cat.id === "all"
-                  ? products.length
-                  : products.filter((p) => p.category === cat.id).length;
+              // 👇 Calculate real product count for this category
+              const count = cat.id === "all"
+                ? products.length
+                : products.filter((p) => p.category?.slug === cat.id).length;
+
               return (
                 <button
                   key={cat.id}

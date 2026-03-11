@@ -66,13 +66,13 @@ const Navbar = () => {
         </Link>
 
         {/* Search - hidden on mobile */}
-        <div className="hidden md:block flex-1 max-w-[500px]">
+        {/* <div className="hidden md:block flex-1 max-w-[500px]">
           <input
             type="text"
             placeholder="Search products..."
             className="w-full py-2 px-4 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-amber-600 outline-none text-sm"
           />
-        </div>
+        </div> */}
 
         {/* Right side */}
         <div className="flex items-center gap-2 sm:gap-4">
