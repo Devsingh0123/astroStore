@@ -231,6 +231,8 @@ const Footer = () => {
       <div className="bg-black text-white text-center py-5">
         © {new Date().getFullYear()} Astrotring. All Rights Reserved.
       </div>
+      </div>
+
     </footer>
   );
 };
