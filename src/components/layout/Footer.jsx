@@ -42,15 +42,15 @@ const Footer = () => {
             </h2>
             <ul className="mt-4 space-y-2">
               {collectionCategories.map((cat) => (
-                <li key={cat.id}>
-                  {/* <Link to={`/collections/${cat.id}`} className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">
-                    {cat.label}
-                  </Link> */}
-                  <Link to={""} className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">
-                    {cat.label}
-                  </Link>
-                </li>
-              ))}
+  <li key={cat.id}>
+    <Link
+      to={`/#category-${cat.id}`} // 👈 hash link
+      className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+    >
+      {cat.label}
+    </Link>
+  </li>
+))}
             </ul>
           </div>
 
