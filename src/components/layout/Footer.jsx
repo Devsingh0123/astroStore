@@ -8,8 +8,10 @@ import logo from "../../assets/logo.png";
 import { CATEGORIES } from "../../constants/categories";
 
 const Footer = () => {
+  
+
   // Filter out "all" from categories for collections
-  const collectionCategories = CATEGORIES.filter((cat) => cat.id !== "all");
+  const collectionCategories = CATEGORIES.filter(cat => cat.id !== "all");
 
   return (
     <footer className="bg-[#f7f5f2] border-t border-gray-300 mt-8 pt-8">
@@ -51,6 +53,31 @@ const Footer = () => {
               ))}
             </ul>
           </div>
+          <hr className="text-gray-300 mt-4"/>
+          <br />
+        {/* Main Footer Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 pb-8">
+          
+          
+
+          {/* COLLECTIONS - Dynamic from CATEGORIES */}
+          <div>
+            <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
+              Collections
+            </h2>
+            <ul className="mt-4 space-y-2">
+              {collectionCategories.map((cat) => (
+                <li key={cat.id}>
+                  {/* <Link to={`/collections/${cat.id}`} className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">
+                    {cat.label}
+                  </Link> */}
+                  <Link to={""} className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">
+                    {cat.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* RESOURCES */}
           <div>
@@ -58,54 +85,12 @@ const Footer = () => {
               Resources
             </h2>
             <ul className="mt-4 space-y-2">
-              <li>
-                <Link
-                  to="/blogs"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Astrology Blogs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/zodiac-signs"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Zodiac Signs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/numerology"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Numerology
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/vastu-shastra"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Vastu Shastra
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/tarot"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Tarot
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/love-calculator"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Love Calculator
-                </Link>
-              </li>
+              <li><Link to="/blogs" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Astrology Blogs</Link></li>
+              <li><Link to="/zodiac-signs" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Zodiac Signs</Link></li>
+              <li><Link to="/numerology" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Numerology</Link></li>
+              <li><Link to="/vastu-shastra" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Vastu Shastra</Link></li>
+              <li><Link to="/tarot" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Tarot</Link></li>
+              <li><Link to="/love-calculator" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Love Calculator</Link></li>
             </ul>
           </div>
 
@@ -115,54 +100,12 @@ const Footer = () => {
               Corporate Info
             </h2>
             <ul className="mt-4 space-y-2">
-              <li>
-                <Link
-                  to="/about-us"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/privacy-policy"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/terms-conditions"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/refund-policy"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Refund & Cancellation
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/pricing-policy"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Pricing Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/disclaimer"
-                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
-                >
-                  Disclaimer
-                </Link>
-              </li>
+              <li><Link to="/about-us" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">About Us</Link></li>
+              <li><Link to="/privacy-policy" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Privacy Policy</Link></li>
+              <li><Link to="/terms-conditions" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Terms & Conditions</Link></li>
+              <li><Link to="/refund-policy" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Refund & Cancellation</Link></li>
+              <li><Link to="/pricing-policy" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Pricing Policy</Link></li>
+              <li><Link to="/disclaimer" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Disclaimer</Link></li>
             </ul>
           </div>
 
@@ -181,9 +124,7 @@ const Footer = () => {
                 className="flex items-center gap-3 text-sm text-gray-700 hover:text-amber-600 transition group flex-wrap"
               >
                 <Mail className="size-8 text-[#EA4335] border border-gray-600 p-1.5 rounded-full group-hover:bg-amber-600 group-hover:border-amber-600 group-hover:text-white transition" />
-                <span className="underline-offset-2 hover:underline">
-                  mail@astrotring.com
-                </span>
+                <span className="underline-offset-2 hover:underline">mail@astrotring.com</span>
               </a>
             </div>
 
