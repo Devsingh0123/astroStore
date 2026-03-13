@@ -58,54 +58,12 @@ const Footer = () => {
             </h2>
 
             <ul className="mt-4 space-y-2">
-              <li>
-                <Link
-                  to="/blogs"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Astrology Blogs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/zodiac-signs"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Zodiac Signs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/numerology"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Numerology
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/vastu-shastra"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Vastu Shastra
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/tarot"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Tarot
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/love-calculator"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Love Calculator
-                </Link>
-              </li>
+              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Astrology Blogs</Link></li>
+              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Zodiac Signs</Link></li>
+              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Numerology</Link></li>
+              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Vastu Shastra</Link></li>
+              <li><Link to="/t" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Tarot</Link></li>
+              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Love Calculator</Link></li>
             </ul>
           </div>
 
@@ -116,46 +74,13 @@ const Footer = () => {
             </h2>
 
             <ul className="mt-4 space-y-2">
-              <li>
-                <Link
-                  to="/privacy-policy"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/terms-conditions"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/refund-policy"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Refund & Cancellation
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/shipping-policy"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Shipping Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/disclaimer"
-                  className="text-sm text-gray-700 hover:text-amber-600"
-                >
-                  Disclaimer
-                </Link>
-              </li>
+              {/* <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">About Us</Link></li> */}
+              <li><Link to="/privacy-policy" target="_blank" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Privacy Policy</Link></li>
+              <li><Link to="/terms-conditions" target="_blank" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Terms & Conditions</Link></li>
+              <li><Link to="/refund-policy" target="_blank" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Refund & Cancellation</Link></li>
+              <li><Link to="/shipping-policy" target="_blank" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">
+              Shipping Policy</Link></li>
+              <li><Link to="/disclaimer" target="_blank" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Disclaimer</Link></li>
             </ul>
           </div>
 
@@ -171,11 +96,11 @@ const Footer = () => {
 
             <div className="mt-4">
               <a
-                href="mailto:mail@astrotring.com"
-                className="flex items-center gap-3 text-sm text-gray-700 hover:text-amber-600"
+                href="mailto:store@astrotring.com"
+                className="flex items-center gap-3 text-sm text-gray-700 hover:text-amber-600 transition group flex-wrap"
               >
-                <Mail className="size-8 text-[#EA4335]" />
-                mail@astrotring.com
+                <Mail className="size-8 text-[#EA4335] border border-gray-600 p-1.5 rounded-full group-hover:bg-amber-600 group-hover:border-amber-600 group-hover:text-white transition" />
+                <span className="underline-offset-2 hover:underline">store@astrotring.com</span>
               </a>
             </div>
 
@@ -234,21 +159,11 @@ const Footer = () => {
 
         {/* DISCLAIMER */}
         <div className="border-t border-gray-300 py-4">
-          <p className="text-xs text-gray-500 text-center md:text-left">
-            <span className="font-semibold">Disclaimer:</span>
-            Astrology services on{" "}
-            <a
-              href="https://astrotring.com"
-              target="_blank"
-              className="text-amber-600 hover:underline"
-            >
-              www.astrotring.com
-            </a>{" "}
-            are provided for guidance and knowledge purposes only. Results may
-            vary. Please read our full{" "}
-            <Link to="/disclaimer" className="text-amber-600 hover:underline">
-              Disclaimer
-            </Link>{" "}
+          <p className="text-xs text-gray-500 leading-relaxed text-center md:text-left">
+            <span className="font-semibold">Disclaimer:</span> Astrology services on{" "}
+            <a href="https://astrotring.com" target="_blank" className="text-amber-600 hover:underline">www.astrotring.com</a>{" "}
+            are provided for guidance and knowledge purposes only. Results may vary. Please read our full{" "}
+            <Link to="/disclaimer" target="_blank" className="text-amber-600 hover:underline"> Disclaimer</Link>{" "}
             before using the website.
           </p>
         </div>
