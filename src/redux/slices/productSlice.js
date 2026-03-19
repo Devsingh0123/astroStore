@@ -7,7 +7,9 @@ export const fetchAllProducts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get('/products');
+      console.log("all products",res.data.data)
       return res.data.data; // array of products
+
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch products');
     }
@@ -21,6 +23,7 @@ export const fetchProductById = createAsyncThunk(
       const res = await api.get(`/products?product_id=${id}`);
       // API ka structure check karo – agar data array mein aa raha hai to pehla element lo
       const product = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
+      console.log("object",product)
       return product;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch product');

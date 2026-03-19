@@ -281,7 +281,7 @@ const Footer = () => {
         </div>
 
         {/* DISCLAIMER */}
-        <div className="border-t border-gray-300 py-4">
+        {/* <div className="border-t border-gray-300 py-4">
           <p className="text-xs text-gray-500 leading-relaxed text-center md:text-left">
             <span className="font-semibold">Disclaimer:</span> Astrology
             services on{" "}
@@ -304,7 +304,7 @@ const Footer = () => {
             </Link>{" "}
             before using the website.
           </p>
-        </div>
+        </div> */}
       </div>
 
       {/* COPYRIGHT */}
