@@ -32,6 +32,7 @@ import ProductYouMayAlsoLike from "@/components/product/ProductYouMayAlsoLike";
 import ProductOffers from "@/components/product/ProductOffers";
 import AccordionSection from "@/components/common/AccordionSection";
 import ProductAccordionSections from "@/components/product/ProductAccordionSections";
+import { fallbackOffers } from "../constants/productStaticData";
 
 // ---------- Helper Functions ----------
 const getStockStatus = (status, qty) => {
@@ -169,7 +170,9 @@ const ProductDetailsPage = () => {
       : [];
 
   // --- Offers – only if provided (assuming product.offers is an array) ---
-  const offers = product?.offers && Array.isArray(product.offers) ? product.offers : [];
+  // const offers = product?.offers && Array.isArray(product.offers) ? product.offers : [];
+
+  const offers = product?.offers && Array.isArray(product.offers) ? product.offers : fallbackOffers;
 
   // Payment methods (static, can stay)
   const paymentMethods = [

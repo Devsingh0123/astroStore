@@ -24,12 +24,12 @@ const ProductOffers = ({ offers }) => {
                   </h4>
                   <p className="text-xs text-stone-500">{offer.description}</p>
                 </div>
-                <div className="border-t border-dashed bg-rose-50 px-5 py-3 flex justify-between items-center">
+                <div className="border-t border-dashed bg-amber-50 px-5 py-3 flex justify-between items-center">
                   <span className="font-semibold text-stone-800 text-sm">
                     Get it for{" "}
-                    <span className="text-rose-600 font-bold text-base">{offer.price}</span>
+                    <span className="text-amber-600 font-bold text-base">{offer.price}</span>
                   </span>
-                  <button className="text-rose-600 font-semibold text-sm flex items-center gap-1 hover:underline cursor-pointer">
+                  <button className="text-amber-600 font-semibold text-sm flex items-center gap-1 hover:underline cursor-pointer">
                     {offer.code} ⧉
                   </button>
                 </div>
@@ -47,8 +47,8 @@ const ProductOffers = ({ offers }) => {
                   </h4>
                   <p className="text-xs text-stone-500">{offer.description}</p>
                 </div>
-                <div className="border-t border-dashed bg-rose-50 px-5 py-3 flex items-center justify-between">
-                  <span className="text-rose-600 font-semibold text-sm flex items-center gap-1">
+                <div className="border-t border-dashed bg-amber-50 px-5 py-3 flex items-center justify-between">
+                  <span className="text-amber-600 font-semibold text-sm flex items-center gap-1">
                     AUTO-APPLIED ✔
                   </span>
                 </div>
