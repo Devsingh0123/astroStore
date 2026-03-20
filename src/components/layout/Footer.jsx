@@ -119,7 +119,6 @@ const Footer = () => {
               <li>
                 <Link
                   to="/privacy-policy"
-                  target="_blank"
                   className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
                 >
                   Privacy Policy
@@ -128,7 +127,6 @@ const Footer = () => {
               <li>
                 <Link
                   to="/terms-conditions"
-                  target="_blank"
                   className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
                 >
                   Terms & Conditions
@@ -137,7 +135,6 @@ const Footer = () => {
               <li>
                 <Link
                   to="/refund-policy"
-                  target="_blank"
                   className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
                 >
                   Refund & Cancellation
@@ -146,7 +143,6 @@ const Footer = () => {
               <li>
                 <Link
                   to="/shipping-policy"
-                  target="_blank"
                   className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
                 >
                   Shipping Policy
@@ -155,7 +151,6 @@ const Footer = () => {
               <li>
                 <Link
                   to="/disclaimer"
-                  target="_blank"
                   className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
                 >
                   Disclaimer
