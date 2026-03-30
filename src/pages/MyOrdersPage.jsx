@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchMyOrders, clearOrderError } from "../redux/slices/orderSlice";
 import Loader from "@/components/common/Loader";
 import { toast } from "react-toastify";
-import { Package, ArrowRight } from "lucide-react";
+import { Package, ArrowRight, ArrowLeft } from "lucide-react";
 
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -69,6 +69,12 @@ const MyOrdersPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      <button
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 text-amber-600 hover:underline mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back to Home
+        </button>
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">My Orders</h1>
 
@@ -88,7 +94,9 @@ const MyOrdersPage = () => {
                 {/* Order Header */}
                 <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex flex-wrap justify-between items-center">
                   <div>
-                    <p className="text-sm text-gray-500">Order #{order.id}</p>
+                    <p className="text-sm text-gray-500">Order #{order.
+                      order_number
+                    }</p>
                     <p className="text-sm text-gray-500">
                       {new Date(order.created_at).toLocaleDateString()}
                     </p>

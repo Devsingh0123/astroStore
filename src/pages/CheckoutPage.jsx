@@ -287,20 +287,27 @@ const CheckoutPage = () => {
     setLoading(true);
     try {
       // 1. Place real order using Redux thunk
-      const order = await dispatch(placeOrder({
-        items: cartItems.map(item => ({
-          product_id: item.product_id,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-        total: grandTotal,
-        payment_method: 'online', // still needed for order record
-        address_id: selectedAddressId,
-      })).unwrap();
+      // const order = await dispatch(placeOrder({
+      //   items: cartItems.map(item => ({
+      //     product_id: item.product_id,
+      //     quantity: item.quantity,
+      //     price: item.price,
+      //   })),
+      //   total: grandTotal,
+      //   payment_method: 'online', // still needed for order record
+      //   address_id: selectedAddressId,
+      // })).unwrap();
 
       // 2. Create Razorpay order using the working endpoint
-      const paymentResponse = await api.post('/razorpay/create-order', { amount: grandTotal });
+      const paymentResponse = await api.post('/store/create-order', {
+        amount: grandTotal,                       // original total
+        coupon_code: appliedCoupon?.code || null,
+        delivery_charge: shipping,
+        wallet_amount: 100,
+      });
       const paymentData = paymentResponse.data;
+
+      console.log("pYMENT", paymentData)
 
       if (!paymentData.status) {
         throw new Error(paymentData.message || 'Failed to create Razorpay order');
@@ -315,20 +322,24 @@ const CheckoutPage = () => {
         amount: amountInPaise,
         currency: 'INR',
         name: 'AstroTring',
-        description: `Order #${order.id}`,
+        description: `Order #${razorpayOrderId}`,
         order_id: razorpayOrderId,
         handler: async (response) => {
           // 4. Verify payment using the working endpoint
-          const verifyResponse = await api.post('/razorpay/verify', {
+          const verifyResponse = await api.post('/store/verify-payment', {
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
+            coupon_code: appliedCoupon?.code || null,
+            delivery_charge: shipping,
+            wallet_amount: 100,
+
             amount: grandTotal, // the backend may need the amount for verification
           });
           if (verifyResponse.data.status) {
             toast.success('Payment successful! Order placed.');
+            navigate('/order-success', { state: { orderId: razorpayOrderId } });
             dispatch(clearCart());
-            navigate('/order-success', { state: { orderId: order.id } });
           } else {
             toast.error('Payment verification failed. Please contact support.');
           }
