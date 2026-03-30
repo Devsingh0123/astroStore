@@ -4,19 +4,31 @@ import { fetchWallet, addMoneyToWallet, clearWalletError } from '../redux/slices
 import Loader from '@/components/common/Loader';
 import { toast } from 'react-toastify';
 import { Wallet, PlusCircle } from 'lucide-react';
+import { userProfile } from '@/redux/slices/userAuthSlice';
 
 const WalletPage = () => {
   const dispatch = useDispatch();
   const { balance, loading, error } = useSelector((state) => state.wallet);
+  const { userWallet,user } = useSelector((state) => state.userAuth);
   const { isLoggedIn } = useSelector((state) => state.userAuth);
   const [amount, setAmount] = useState('');
   const [adding, setAdding] = useState(false);
+
+  
 
   useEffect(() => {
     if (isLoggedIn) {
       dispatch(fetchWallet());
     }
   }, [dispatch, isLoggedIn]);
+
+   // Fetch user profile if not already available
+    useEffect(() => {
+      if (!user) {
+        dispatch(userProfile());
+      }
+      console.log(user)
+    }, [dispatch, user]);
 
   useEffect(() => {
     if (error) {
@@ -52,7 +64,7 @@ const WalletPage = () => {
     );
   }
 
-  if (loading && balance === 0) return <Loader data="Loading wallet..." />;
+  if (loading ) return <Loader data="Loading wallet..." />;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -67,7 +79,7 @@ const WalletPage = () => {
           <div className="p-6">
             <div className="text-center mb-8">
               <p className="text-sm text-gray-500">Available Balance</p>
-              <p className="text-4xl font-bold text-amber-600">₹{balance.toLocaleString()}</p>
+              <p className="text-4xl font-bold text-amber-600">₹{userWallet?.balance}</p>
             </div>
 
             <div className="border-t pt-6">

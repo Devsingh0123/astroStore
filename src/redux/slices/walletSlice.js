@@ -7,12 +7,16 @@ export const fetchWallet = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     const { userAuth } = getState();
     if (!userAuth.isLoggedIn) {
+       console.log('Wallet fetch rejected: not logged in');
       return rejectWithValue('Please login to view wallet');
     }
     try {
+       console.log('Fetching wallet...');
       const response = await api.get('/store-wallet');
+        console.log('Wallet API response:', response.data);
       return response.data.data; // { balance: number }
     } catch (error) {
+      console.error('Wallet fetch error:', error);
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch wallet');
     }
   }
@@ -69,14 +73,17 @@ const walletSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchWallet.pending, (state) => {
+         console.log('Wallet pending:', action.payload);
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchWallet.fulfilled, (state, action) => {
+        console.log('Wallet fulfilled:', action.payload);
         state.loading = false;
         state.balance = action.payload.balance || 0;
       })
       .addCase(fetchWallet.rejected, (state, action) => {
+         console.log('Wallet rejected:', action.payload);
         state.loading = false;
         state.error = action.payload;
       })

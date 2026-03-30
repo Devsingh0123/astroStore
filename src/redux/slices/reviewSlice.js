@@ -7,6 +7,7 @@ export const fetchProductReviews = createAsyncThunk(
   async (productId, { rejectWithValue }) => {
     try {
       const response = await api.get(`/products/${productId}/reviews`);
+      console.log("all reviews",response.data.data)
       return response.data.data; // array of reviews
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch reviews');
@@ -17,7 +18,7 @@ export const fetchProductReviews = createAsyncThunk(
 // Submit a new review
 export const submitReview = createAsyncThunk(
   'review/submitReview',
-  async ({ product_id, rating, comment }, { rejectWithValue, getState }) => {
+  async ({ product_id, rating, review }, { rejectWithValue, getState }) => {
     const { userAuth } = getState();
     if (!userAuth.isLoggedIn) {
       return rejectWithValue('Please login to submit a review');
@@ -26,7 +27,7 @@ export const submitReview = createAsyncThunk(
       const response = await api.post('/user/review', {
         product_id,
         rating,
-        comment,
+        review,   // this matches the API field name
       });
       return response.data.data; // the new review
     } catch (error) {

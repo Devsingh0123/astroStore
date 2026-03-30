@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAddresses, addAddress, updateAddress, deleteAddress, clearAddressError } from '../../redux/slices/addressSlice';
+import {
+  fetchAddresses,
+  addAddress,
+  updateAddress,
+  deleteAddress,
+  clearAddressError,
+} from '../../redux/slices/addressSlice';
 import { toast } from 'react-toastify';
+import { MapPin, Home, Phone, Mail, Plus, Edit, Trash2, Star, X } from 'lucide-react';
 
 const AddressManager = () => {
   const dispatch = useDispatch();
@@ -16,7 +23,6 @@ const AddressManager = () => {
     pincode: '',
     is_default: false,
   });
-  console.log("formdata",formData)
 
   useEffect(() => {
     dispatch(fetchAddresses());
@@ -31,7 +37,7 @@ const AddressManager = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
@@ -53,13 +59,11 @@ const AddressManager = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate required fields
     if (!formData.name || !formData.mobile || !formData.address || !formData.pincode) {
       toast.error('Please fill all required fields');
       return;
     }
 
-    // Prepare payload with correct types
     const payload = {
       name: formData.name,
       country_code: formData.country_code,
@@ -67,25 +71,25 @@ const AddressManager = () => {
       address: formData.address,
       pincode: formData.pincode,
       alternative_mobile: formData.alternative_mobile || null,
-      is_default: formData.is_default ? 1 : 0, // convert boolean to integer (1/0)
+      is_default: formData.is_default ? 1 : 0,
     };
 
-    console.log('Submitting address:', payload);
-
-    if (editingId) {
-      await dispatch(updateAddress({ id: editingId, addressData: payload })).unwrap();
-      toast.success('Address updated');
-    } else {
-      await dispatch(addAddress(payload)).unwrap();
-      toast.success('Address added');
+    try {
+      if (editingId) {
+        await dispatch(updateAddress({ id: editingId, addressData: payload })).unwrap();
+        toast.success('Address updated');
+      } else {
+        await dispatch(addAddress(payload)).unwrap();
+        toast.success('Address added');
+      }
+      resetForm();
+    } catch (err) {
+      toast.error(err || 'Failed to save address');
     }
-    resetForm();
   };
 
   const handleEdit = (address) => {
-    console.log('Editing address:', address);
     setEditingId(address.id);
-
     setFormData({
       name: address.name || '',
       country_code: address.country_code || '+91',
@@ -93,129 +97,223 @@ const AddressManager = () => {
       alternative_mobile: address.alternative_mobile || '',
       address: address.address || '',
       pincode: address.pincode || '',
-      is_default: address.is_default === 1 || address.is_default === true, // normalize
+      is_default: address.is_default === 1 || address.is_default === true,
     });
   };
 
-const handleDelete = async (id) => {
-  if (window.confirm('Are you sure you want to delete this address?')) {
-    try {
-      await dispatch(deleteAddress(id)).unwrap();
-      toast.success('Address deleted');
-    } catch (err) {
-      toast.error(err || 'Failed to delete address');
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this address?')) {
+      try {
+        await dispatch(deleteAddress(id)).unwrap();
+        toast.success('Address deleted');
+      } catch (err) {
+        toast.error(err || 'Failed to delete address');
+      }
     }
-  }
-};
+  };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Manage Addresses</h2>
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
+      <div className="flex items-center gap-2 mb-6">
+        <MapPin className="w-6 h-6 text-amber-600" />
+        <h2 className="text-2xl font-bold text-gray-800">Manage Addresses</h2>
+      </div>
 
       {/* Address Form */}
-      <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow mb-6">
-        <h3 className="text-lg font-semibold mb-3">{editingId ? 'Edit Address' : 'Add New Address'}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Address label (e.g., Home, Office)"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="border p-2 rounded"
-          />
-          <input
-            type="text"
-            name="country_code"
-            placeholder="Country Code (e.g., +91)"
-            value={formData.country_code}
-            onChange={handleChange}
-            required
-            className="border p-2 rounded"
-          />
-          <input
-            type="tel"
-            name="mobile"
-            placeholder="Mobile Number"
-            value={formData.mobile}
-            onChange={handleChange}
-            required
-            className="border p-2 rounded"
-          />
-          <input
-            type="tel"
-            name="alternative_mobile"
-            placeholder="Alternate Mobile (optional)"
-            value={formData.alternative_mobile}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
-          <input
-            type="text"
-            name="address"
-            placeholder="Full Address"
-            value={formData.address}
-            onChange={handleChange}
-            required
-            className="border p-2 rounded"
-          />
-          <input
-            type="text"
-            name="pincode"
-            placeholder="Pincode"
-            value={formData.pincode}
-            onChange={handleChange}
-            required
-            className="border p-2 rounded"
-          />
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="is_default"
-              checked={formData.is_default}
-              onChange={handleChange}
-            />
-            <span>Set as default</span>
-          </label>
+      <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
+          <h3 className="text-md font-semibold text-gray-700 flex items-center gap-2">
+            {editingId ? <Edit className="w-4 h-4 text-amber-600" /> : <Plus className="w-4 h-4 text-amber-600" />}
+            {editingId ? 'Edit Address' : 'Add New Address'}
+          </h3>
         </div>
-        <div className="mt-4 flex gap-2">
-          <button type="submit" className="bg-amber-600 text-white px-4 py-2 rounded hover:bg-amber-700">
-            {editingId ? 'Update' : 'Add'} Address
-          </button>
-          {editingId && (
-            <button type="button" onClick={resetForm} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
-              Cancel
-            </button>
-          )}
-        </div>
-      </form>
-
-      {/* Address List */}
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="space-y-4">
-          {addresses.map(addr => (
-            <div key={addr.id} className="border p-4 rounded shadow-sm">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="font-semibold">{addr.name}</p>
-                  <p>Mobile: {addr.mobile}</p>
-                  {addr.alternative_mobile && <p>Alt: {addr.alternative_mobile}</p>}
-                  <p>{addr.address}</p>
-                  <p>Pincode: {addr.pincode}</p>
-                  <p>Country: {addr.country_code}</p>
-                  {addr.is_default && <span className="text-green-600 text-sm font-semibold">Default</span>}
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => handleEdit(addr)} className="text-blue-600 hover:underline">Edit</button>
-                  <button onClick={() => handleDelete(addr.id)} className="text-red-600 hover:underline">Delete</button>
-                </div>
-              </div>
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Address Label */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Address Label *</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Home / Office / etc."
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-amber-500 focus:border-amber-500"
+              />
             </div>
-          ))}
-          {addresses.length === 0 && !loading && <p>No addresses saved. Add one above.</p>}
+            {/* Country Code - made smaller with fixed width */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Country Code *</label>
+              <input
+                type="text"
+                name="country_code"
+                value={formData.country_code}
+                onChange={handleChange}
+                placeholder="+91"
+                className="w-24 border border-gray-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-amber-500 focus:border-amber-500"
+              />
+            </div>
+
+            {/* Mobile */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Mobile *</label>
+              <input
+                type="tel"
+                name="mobile"
+                value={formData.mobile}
+                onChange={handleChange}
+                placeholder="9876543210"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-amber-500 focus:border-amber-500"
+              />
+            </div>
+            {/* Alternative Mobile */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Alternative Mobile (optional)</label>
+              <input
+                type="tel"
+                name="alternative_mobile"
+                value={formData.alternative_mobile}
+                onChange={handleChange}
+                placeholder="Optional"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-amber-500 focus:border-amber-500"
+              />
+            </div>
+
+            {/* Full Address (span full width) */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="House No., Street, Area"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-amber-500 focus:border-amber-500"
+              />
+            </div>
+
+            {/* Pincode */}
+            <div className="sm:col-span-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Pincode *</label>
+              <input
+                type="text"
+                name="pincode"
+                value={formData.pincode}
+                onChange={handleChange}
+                placeholder="6-digit pincode"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-amber-500 focus:border-amber-500"
+              />
+            </div>
+
+            {/* Default checkbox */}
+            <div className="sm:col-span-2 flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="is_default"
+                checked={formData.is_default}
+                onChange={handleChange}
+                id="default"
+                className="rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+              />
+              <label htmlFor="default" className="text-sm text-gray-700">Set as default address</label>
+            </div>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              className="bg-amber-600 hover:bg-amber-700 text-white font-medium px-4 py-2 rounded-md transition flex items-center gap-2"
+            >
+              {editingId ? <Edit className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+              {editingId ? 'Update Address' : 'Add Address'}
+            </button>
+            {editingId && (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-4 py-2 rounded-md transition flex items-center gap-2"
+              >
+                <X className="w-4 h-4" /> Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+
+      {/* Address List (unchanged) */}
+      {loading ? (
+        <div className="text-center py-10">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-600 border-t-transparent"></div>
+          <p className="mt-2 text-gray-500">Loading addresses...</p>
+        </div>
+      ) : (
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <MapPin className="w-5 h-5 text-amber-600" />
+            <h3 className="text-xl font-semibold text-gray-800">Saved Addresses</h3>
+          </div>
+          {addresses.length === 0 ? (
+            <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500">
+              <MapPin className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+              <p>No addresses saved yet. Add one above.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {addresses.map((addr) => (
+                <div
+                  key={addr.id}
+                  className={`border rounded-lg p-4 transition-all hover:shadow-md ${
+                    addr.is_default ? 'border-amber-200 bg-amber-50' : 'border-gray-200 bg-white'
+                  }`}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-center gap-2">
+                      <Home className="w-4 h-4 text-amber-600" />
+                      <span className="font-medium text-gray-800">{addr.name}</span>
+                      {addr.is_default && (
+                        <span className="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                          <Star className="w-3 h-3 fill-amber-500" /> Default
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleEdit(addr)}
+                        className="text-blue-600 hover:text-blue-800 p-1"
+                        title="Edit"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(addr.id)}
+                        className="text-red-600 hover:text-red-800 p-1"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-sm text-gray-600">
+                    <p className="flex items-center gap-2">
+                      <Phone className="w-4 h-4" /> {addr.mobile}
+                    </p>
+                    {addr.alternative_mobile && (
+                      <p className="flex items-center gap-2">
+                        <Phone className="w-4 h-4" /> {addr.alternative_mobile}
+                      </p>
+                    )}
+                    <p className="flex items-start gap-2">
+                      <MapPin className="w-4 h-4 mt-0.5" />
+                      <span>{addr.address}</span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <Mail className="w-4 h-4" /> {addr.pincode}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
