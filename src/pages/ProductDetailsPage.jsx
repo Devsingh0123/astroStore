@@ -33,7 +33,7 @@ import ProductYouMayAlsoLike from "@/components/product/ProductYouMayAlsoLike";
 import ProductOffers from "@/components/product/ProductOffers";
 import AccordionSection from "@/components/common/AccordionSection";
 import ProductAccordionSections from "@/components/product/ProductAccordionSections";
-import { fallbackOffers } from "../constants/productStaticData";
+// import { fallbackOffers } from "../constants/productStaticData";
 import { fetchCoupons } from "@/redux/slices/couponSlice";
 import ProductReviews from "@/components/product/ProductReviews";
 // wishlists
@@ -88,7 +88,7 @@ const ProductDetailsPage = () => {
         type: 'discount',
       }));
     }
-    return fallbackOffers;
+    return [];
   }, [coupons]);
 
   // --- Fetch all products (for "You May Also Like") ---
@@ -556,7 +556,7 @@ const handleWishlistToggle = async () => {
                 <Truck className="w-5 h-5 text-gray-500" />
                 <div className="text-xs">
                   <p className="font-semibold">Free Shipping</p>
-                  <p className="text-gray-500">on ₹999+</p>
+                  <p className="text-gray-500">on ₹599+</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">

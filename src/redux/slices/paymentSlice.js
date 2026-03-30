@@ -28,6 +28,8 @@ export const verifyPayment = createAsyncThunk(
         razorpay_payment_id,
         razorpay_signature,
       });
+
+      console.log("razopar-pay verification",response.data)
       return response.data; // expects { success: true, ... }
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Payment verification failed');

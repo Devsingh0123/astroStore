@@ -18,6 +18,8 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
   const { user, loading, error } = useSelector((state) => state.userAuth);
 
+  console.log(user)
+
   // UI state
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
