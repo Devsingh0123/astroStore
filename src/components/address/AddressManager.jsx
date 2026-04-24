@@ -83,14 +83,14 @@ const AddressManager = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.mobile || !formData.address || !formData.pincode || !formData.city || !formData.state || !formData.country) {
+    if (!formData.name || !formData.mobile || !formData.address || !formData.pincode || !formData.city || !formData.state || !formData.country) {
       toast.error('Please fill all required fields');
       return;
     }
 
     const payload = {
       name: formData.name,
-      email: formData.email,
+      email: formData.email || null,
       country_code: formData.country_code,
       mobile: formData.mobile,
       alternative_mobile: formData.alternative_mobile || null,
