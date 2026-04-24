@@ -2,5 +2,12 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/astrotri/astrotring.shop
+
+    # old files delete (important)
+    - /bin/rm -rf $DEPLOYPATH/*
+
+    # create folder
     - /bin/mkdir -p $DEPLOYPATH
+
+    # copy fresh build
     - /bin/cp -R dist/* $DEPLOYPATH/
