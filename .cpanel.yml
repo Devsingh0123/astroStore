@@ -2,9 +2,5 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/astrotri/astrotring.shop
-
-    # Step 1: sirf relevant files clean kare (blind delete nahi)
-    - /bin/find $DEPLOYPATH -mindepth 1 -maxdepth 1 ! -name '.htaccess' -exec rm -rf {} +
-
-    # Step 2: fresh build copy kare
-    - /bin/cp -R dist/* $DEPLOYPATH
+    - /bin/rm -rf $DEPLOYPATH/*
+    - /bin/cp -R dist/. $DEPLOYPATH/
