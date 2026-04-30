@@ -12,6 +12,7 @@ import {
 import { toast } from 'react-toastify';
 import { MapPin, Home, Phone, Mail, Plus, Edit, Trash2, Star, X, Building, Globe, ArrowLeft } from 'lucide-react';
 import { useCountryCodes } from '../../hooks/useCountryCodes';
+import { useNavigate } from 'react-router-dom';
 
 const AddressManager = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const AddressManager = () => {
     pincode: '',
     is_default: false,
   });
+  const navigate = useNavigate()
 
   const { countryCodes, loading: loadingCodes, error: codesError } = useCountryCodes();
 
@@ -147,11 +149,11 @@ const AddressManager = () => {
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6">
       <button
-                onClick={() => navigate('/')}
-                className="flex items-center gap-2 text-amber-600 hover:underline mb-6 cursor-pointer"
-              >
-                <ArrowLeft className="w-4 h-4" /> Back to Home
-              </button>
+        onClick={() => navigate('/')}
+        className="flex items-center gap-2 text-amber-600 hover:underline mb-6 cursor-pointer"
+      >
+        <ArrowLeft className="w-4 h-4" /> Back to Home
+      </button>
       <div className="flex items-center gap-2 mb-6">
         <MapPin className="w-5 h-5 text-amber-600" />
         <h2 className="text-2xl font-semibold text-gray-800">Manage Addresses</h2>
@@ -193,7 +195,7 @@ const AddressManager = () => {
               />
             </div> */}
 
-           
+
 
             {/* Mobile */}
             <div>
@@ -204,7 +206,7 @@ const AddressManager = () => {
                 value={formData.mobile}
                 onChange={handleChange}
                 placeholder="9876543210"
-               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
               />
             </div>
 
@@ -217,10 +219,10 @@ const AddressManager = () => {
                 value={formData.alternative_mobile}
                 onChange={handleChange}
                 placeholder="Optional"
-               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
               />
             </div>
-              {/* Country Code */}
+            {/* Country Code */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Country Code <span className='text-amber-600'>*</span></label>
               {loadingCodes ? (
@@ -275,7 +277,7 @@ const AddressManager = () => {
               />
             </div>
 
-            
+
 
             {/* City */}
             <div>
@@ -286,7 +288,7 @@ const AddressManager = () => {
                 value={formData.city}
                 onChange={handleChange}
                 placeholder="Mumbai"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
               />
             </div>
 
@@ -299,10 +301,10 @@ const AddressManager = () => {
                 value={formData.state}
                 onChange={handleChange}
                 placeholder="Maharashtra"
-               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
               />
             </div>
-            
+
             {/* Pincode */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Pincode <span className='text-amber-600'>*</span></label>
@@ -312,10 +314,10 @@ const AddressManager = () => {
                 value={formData.pincode}
                 onChange={handleChange}
                 placeholder="6-digit pincode"
-               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
               />
             </div>
-           {/* Full Address */}
+            {/* Full Address */}
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Address <span className='text-amber-600'>*</span></label>
               <input
@@ -324,25 +326,25 @@ const AddressManager = () => {
                 value={formData.address}
                 onChange={handleChange}
                 placeholder="House No., Street, Area"
-               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
               />
             </div>
 
 
-            
+
           </div>
           {/* Default checkbox */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="is_default"
-                checked={formData.is_default}
-                onChange={handleChange}
-                id="default"
-                className=" border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
-              />
-              <label htmlFor="default" className="text-sm text-gray-700">Set as default address</label>
-            </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="is_default"
+              checked={formData.is_default}
+              onChange={handleChange}
+              id="default"
+              className=" border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+            />
+            <label htmlFor="default" className="text-sm text-gray-700">Set as default address</label>
+          </div>
 
           <div className="flex gap-3 pt-2">
             <button
