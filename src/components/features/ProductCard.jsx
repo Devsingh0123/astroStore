@@ -41,8 +41,8 @@ if (product?.ratti_options && product.ratti_options.length > 0) {
 
   // Conditional classes (unchanged)
   const cardClass = compact
-    ? "bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-250 flex flex-col  w-full"
-    : "bg-white rounded-xl overflow-hidden border border-gray-100 transition-all duration-250 flex flex-col  hover:shadow-xl hover:-translate-y-0.5 shadow-md w-full cursor-pointer";
+    ? "bg-white rounded-sm overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-250 flex flex-col  w-full"
+    : "bg-white rounded-sm md:rounded-xl overflow-hidden border border-gray-100 transition-all duration-250 flex flex-col  hover:shadow-xl hover:-translate-y-0.5 shadow-md w-full cursor-pointer";
 
   const badgeSize = compact ? "text-[8px] px-1.5 py-0.5" : "text-[10px] px-2 py-0.5";
   const overlayButtonClass = compact

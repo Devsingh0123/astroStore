@@ -63,7 +63,16 @@ const CategoryPage = () => {
 
   const handleAddToCart = async ({ product_id, quantity, name, ratti }) => {
   if (!isLoggedIn) {
-    toast.warning("Login required");
+//  Product saved in local storage first
+    const pendingProduct = {
+      product_id,
+      quantity,
+      name,
+      ratti,
+      timestamp: Date.now()
+    };
+    localStorage.setItem('pendingAddToCart', JSON.stringify(pendingProduct));
+    toast.warning("Please login to add items to cart");
     dispatch(openLoginModal());
     return;
   }

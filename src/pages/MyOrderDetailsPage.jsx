@@ -83,8 +83,9 @@ const MyOrderDetailsPage = () => {
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex flex-wrap justify-between items-center gap-3">
             <div>
               <p className="text-sm text-gray-500">Order Number : #{order.order_number}</p>
+              <p className="text-sm text-gray-500">Transaction ID : #{order?.payment?.transaction_id}</p>
               <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
-                <Calendar className="w-3 h-3" />Order On : {order?.timestamps?.created_at ? new Date(order.timestamps.created_at).toLocaleString() : 'N/A'}
+                <Calendar className="w-3 h-3" />Order On : {order?.timestamps?.created_at ? new Date(order.timestamps.created_at).toLocaleString('en-IN') : 'N/A'}
               </p>
               
               {order.timestamps?.delivered_at && (
@@ -118,7 +119,7 @@ const MyOrderDetailsPage = () => {
                 order.items.map((item, idx) => (
                   <div key={idx} className="flex gap-4 border-b border-gray-100 pb-4 last:border-0 last:pb-0">
                     {item.image && (
-                      <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg" />
+                      <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-sm md:rounded-lg" />
                     )}
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-800">{item.name}</h3>
@@ -201,9 +202,9 @@ const MyOrderDetailsPage = () => {
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <CreditCard className="w-5 h-5" /> Payment
             </h2>
-            <p className="text-gray-600">Method: {order?.payment?.method || 'Online'}</p>
+            <p className="text-gray-600">Mode: {order?.payment?.mode || 'Online'}</p>
             <p className="text-gray-600">
-              Date : {order?.payment?.paid_at ? new Date(order.payment.paid_at).toLocaleString() : 'N/A'}
+              Date : {order?.payment?.paid_at ? new Date(order.payment.paid_at).toLocaleString('en-IN') : 'N/A'}
             </p>
           </div>
         </div>

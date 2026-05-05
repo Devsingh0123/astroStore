@@ -22,6 +22,7 @@ import Gemstonesinfo from "./pages/product info/GemstonesInfo";
 import GemstoneDetails from "./pages/product info/GemstoneDetails";
 import TrackMyOrderPage from "./pages/TrackMyOrderPage";
 import ComingSoon from "./components/common/ComingSoon";
+import GoogleTagManager from "./components/common/GoogleTagManager";
 
 // Lazy load all pages
 
@@ -51,6 +52,8 @@ function App() {
   }, [path]);
   return (
     <Suspense fallback={<Loader data="Loading..." />}>
+
+      <GoogleTagManager />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />

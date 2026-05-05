@@ -268,6 +268,15 @@ const ProductDetailsPage = () => {
 
   const handleAddToCart = async () => {
     if (!isLoggedIn) {
+//  Product saved in local storage first
+      const pendingProduct = {
+      product_id: product.id,
+        quantity,
+        name:product.name,
+        ratti: selectedRatti,
+      timestamp: Date.now()
+    };
+    localStorage.setItem('pendingAddToCart', JSON.stringify(pendingProduct));
       toast.warning("Please login to add items to cart");
       dispatch(openLoginModal());
       return;
@@ -345,7 +354,7 @@ const ProductDetailsPage = () => {
           {/* LEFT COLUMN: MEDIA GALLERY */}
           <div className="space-y-4 lg:sticky lg:top-8 lg:self-start">
             {/* Main Media */}
-            <div className="relative aspect-square bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-lg group">
+            <div className="relative aspect-square bg-white rounded-sm md:rounded-2xl overflow-hidden border border-gray-200 shadow-lg group">
               {mediaItems[selectedMediaIndex]?.type === 'video' ? (
                 <video
                   src={mediaItems[selectedMediaIndex].url}
@@ -401,7 +410,7 @@ const ProductDetailsPage = () => {
                     <button
                       key={idx}
                       onClick={() => setSelectedMediaIndex(idx)}
-                      className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 overflow-hidden transition-all cursor-pointer ${selectedMediaIndex === idx
+                      className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-sm md:rounded-lg border-2 overflow-hidden transition-all cursor-pointer ${selectedMediaIndex === idx
                           ? "border-amber-600 shadow-md"
                           : "border-gray-200 hover:border-gray-300"
                         }`}
