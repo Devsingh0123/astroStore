@@ -10,12 +10,12 @@ const ComingSoon = () => {
         <div className="w-full ">
             {/* Back Button */}
 
-            <button
+            {/* <button
                 onClick={() => navigate(-1)}
                 className="flex items-center gap-2 text-amber-600 hover:underline  cursor-pointer"
             >
                 <ArrowLeft className="w-4 h-4" /> Back
-            </button>
+            </button> */}
 
             {/* Main Content */}
             <div className="w-full py-16 flex flex-col justify-center items-center">
