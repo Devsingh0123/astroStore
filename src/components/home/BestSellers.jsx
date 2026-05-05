@@ -56,12 +56,12 @@ const BestSellers = () => {
             <div
               key={product.id}
               onClick={handleClick}
-              className="bg-white rounded-xl border border-gray-100 shadow-md p-2 cursor-pointer hover:shadow-lg transition-shadow"
+              className="bg-white md:rounded-lg border border-gray-100 shadow-md cursor-pointer hover:shadow-lg transition-shadow"
             >
               <img
                 src={imageUrl}
                 alt={product.name}
-                className="w-full h-[120px] object-cover rounded-lg mb-2"
+                className="w-full h-[150px] object-cover rounded-sm md:rounded-lg mb-2"
               />
               <div className="text-xs font-bold truncate">{product.name}</div>
 

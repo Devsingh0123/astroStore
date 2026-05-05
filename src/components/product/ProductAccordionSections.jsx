@@ -23,24 +23,14 @@ const ProductAccordionSections = ({
       )}
 
       {/* Benefits – only if there are benefits paragraphs */}
-      {/* {benefitsParagraphs.length > 0 && (
+      {benefitsParagraphs.length > 0 && (
         <AccordionSection title="Benefits" icon={Sparkles}>
           {benefitsParagraphs.map((para, idx) => (
             para.includes(":") ?
             <p key={idx} className="text-gray-700 leading-relaxed mb-2 flex">
               <span className="text-amber-500">{para.split(":")[0]} : <span className="text-gray-700">{para.split(":")[1]}</span></span>
             </p> :
-            <p key={idx} className="text-gray-700 leading-relaxed mb-2">
-              {para}
-            </p>
-          ))}
-        </AccordionSection>
-      )} */}
-      {benefitsParagraphs.length > 0 && (
-        <AccordionSection title="Benefits" icon={Sparkles}>
-          {benefitsParagraphs.map((para, idx) => (
-            
-            <p key={idx} className="text-gray-700 leading-relaxed mb-2">
+            <p key={idx} className="text-gray-700 leading-relaxed mb-2 flex">
               {para}
             </p>
           ))}

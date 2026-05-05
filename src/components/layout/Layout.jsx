@@ -11,7 +11,7 @@ const Layout = () => {
     <div className="min-h-screen bg-stone-50">
       <TopPromoSlider /> 
       <Navbar />
-      <main className="container mx-auto px-4">
+      <main className="container mx-auto">
         <Outlet />
       </main>
       <Footer />

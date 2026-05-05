@@ -19,13 +19,13 @@ const WishlistCard = ({ product, onRemove }) => {
     : 0;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 transition-all duration-250 flex flex-col hover:shadow-xl hover:-translate-y-0.5 shadow-md w-full" title={product.name}>
+    <div className="bg-white rounded-sm md:rounded-xl border border-gray-100 transition-all duration-250 flex flex-col hover:shadow-xl hover:-translate-y-0.5 shadow-md w-full" title={product.name}>
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative bg-stone-50 overflow-hidden aspect-square">
           <img
             src={imageUrl}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-350 hover:scale-105"
+            className="w-full h-full rounded-t-sm md:rounded-t-xl object-cover transition-transform duration-350 hover:scale-105"
             loading="lazy"
             onError={(e) => {
               e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23f0f0f0'/%3E%3Ctext x='50' y='115' font-family='Arial' font-size='16' fill='%23999'%3ENo image%3C/text%3E%3C/svg%3E";

@@ -13,11 +13,12 @@ import ForgotPassword from "./ForgotPassword";
 import { fileToBase64 } from "../../hooks/fileToBase64";
 import { Camera, Upload, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { addToCart, fetchCart } from "@/redux/slices/cartSlice";
 
 const UserLogin = () => {   // 👈 trigger prop hata diya
   const dispatch = useDispatch();
   const { user, error, loading } = useSelector((state) => state.userAuth);
-  const { isLoginModalOpen } = useSelector((state) => state.ui); // 👈 state from Redux
+  const { isLoginModalOpen } = useSelector((state) => state.ui); //  state from Redux
   const [mode, setMode] = useState("login");
   const [userType, setUserType] = useState("user");
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -39,7 +40,27 @@ const UserLogin = () => {   // 👈 trigger prop hata diya
   // Reset form when user logs in and close modal
   useEffect(() => {
     if (user) {
-      dispatch(closeLoginModal());   // 👈 close modal
+
+      //  Check for pending product AFTER successful login
+    const pendingProduct = localStorage.getItem('pendingAddToCart');
+    
+    if (pendingProduct) {
+      const { product_id, quantity,name, ratti } = JSON.parse(pendingProduct);
+      
+      // Add to cart automatically
+      dispatch(addToCart({ product_id, quantity, ratti }))
+        .unwrap()
+        .then(() => {
+          toast.success(`${name}  added to cart!`);
+          dispatch(fetchCart());
+        })
+        .catch(() => {
+          toast.error(`Failed to add ${name} to cart`);
+        });
+  // Clear pending product
+      localStorage.removeItem('pendingAddToCart');
+      }
+      dispatch(closeLoginModal());   //  close modal
       setForm({
         name: "",
         email: "",
