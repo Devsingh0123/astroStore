@@ -15,6 +15,7 @@ import Loader from "@/components/common/Loader";
 import { CATEGORIES } from "../constants/categories";
 import { addToCart, fetchCart } from "../redux/slices/cartSlice";
 import { fetchAllProducts } from '../redux/slices/productSlice';
+import { openLoginModal } from "@/redux/slices/uiSlice";
 
 // ----- Helper Functions (for new API structure) -----
 const getProductPrice = (product) => Number(product?.after_price) || 0;
@@ -78,6 +79,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { items: products, loading, error } = useSelector((state) => state.product);
+   const { isLoggedIn } = useSelector((state) => state.userAuth);
 
   // Filtering & UI state
   const [filterCategory, setFilterCategory] = useState("all");          // selected in sidebar
@@ -188,6 +190,21 @@ const HomePage = () => {
   // };
 
   const handleAddToCart = async ({ product_id, quantity, name, ratti }) => {
+
+     if (!isLoggedIn) {
+      //  Product saved in local storage first
+    const pendingProduct = {
+      product_id,
+      quantity,
+      name,
+      ratti,
+      timestamp: Date.now()
+    };
+    localStorage.setItem('pendingAddToCart', JSON.stringify(pendingProduct));
+    toast.warning("Please login to add items to cart");
+    dispatch(openLoginModal());
+    return;
+  }
   try {
     await dispatch(addToCart({ product_id, quantity, ratti })).unwrap();
     toast.success(`${name} added to cart!`);
@@ -230,7 +247,7 @@ const HomePage = () => {
   const sidebarTop = homeNavTop + 60 + 8 + 10; // approx HomeNav height
 
   return (
-    <div className="px-2 sm:px-4">
+    <div className=" md:px-2">
       <HeroBanner />
 
       <div className="flex gap-3 sm:gap-4 md:gap-6 mt-4">
@@ -249,7 +266,7 @@ const HomePage = () => {
             />
           </div>
 
-          <div className="flex gap-3 sm:gap-4 md:gap-6 mt-4">
+          <div className="flex gap-2 sm:gap-4 md:gap-6 mt-4">
             {/* Sidebar */}
             <aside
               className={`

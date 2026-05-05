@@ -41,6 +41,7 @@ export const fetchOrderDetails = createAsyncThunk(
       const { userAuth } = getState();
       if (!userAuth.isLoggedIn) return rejectWithValue('Please login to view order details');
       const response = await api.get(`/user/orders/${orderId}`);
+      console.log("fetchOrderDetails",response.data.data)
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch order details');

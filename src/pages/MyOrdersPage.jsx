@@ -103,7 +103,7 @@ const MyOrdersPage = () => {
         <h1 className="text-2xl font-bold text-gray-900 mb-6">My Orders</h1>
 
         <div className="space-y-4">
-          {orders.map((order) => {
+          {orders.map((order,idx) => {
             const subtotal = getSubtotal(order);
             const shipping = getShipping(order);
             const discount = getDiscount(order);
@@ -111,7 +111,7 @@ const MyOrdersPage = () => {
 
             return (
               <div
-                key={order.id}
+                key={idx}
                 className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
                 onClick={() => navigate(`/orders/${order.order_id}`)}
               >
@@ -130,7 +130,7 @@ const MyOrdersPage = () => {
                       {order.status?.toUpperCase() || "PENDING"}
                     </span>
                     <span className="font-base text-xs text-gray-900">
-                      {order.payment?.method || order.payment_method}
+                      {order.payment?.mode || order.payment_method}
                     </span>
                   </div>
                 </div>
@@ -141,7 +141,7 @@ const MyOrdersPage = () => {
                     order.items.map((item, idx) => (
                       <div key={idx} className="flex gap-4 border-b border-gray-100 pb-4 last:border-0 last:pb-0">
                         {item.image && (
-                          <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg" />
+                          <img src={item.image} alt={item.name} className="w-16 h-16 object-coverrounded-sm md:rounded-lg" />
                         )}
                         <div className="flex-1">
                           <h3 className="font-medium text-gray-800">{item.name}</h3>

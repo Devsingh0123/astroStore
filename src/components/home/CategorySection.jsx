@@ -29,6 +29,7 @@ const CategorySection = forwardRef(({ category, products, onAddToCart }, ref) =>
           </h3>
           <span className="text-xs text-stone-400 font-semibold">({products.length})</span>
         </div>
+        <hr className='w-full  text-gray-200 ml-2 mr-2' />
         <div className="flex gap-2">
           <button
             onClick={() => scroll('left')}
@@ -50,10 +51,10 @@ const CategorySection = forwardRef(({ category, products, onAddToCart }, ref) =>
       {/* Horizontal scrollable product row */}
       <div
         ref={scrollContainerRef}
-        className="overflow-x-auto scrollbar-hide pb-4 -mx-1 px-1"
+        className="overflow-x-auto scrollbar-hide"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           {products.map(product => (
             <div key={product.id} className="w-[160px] sm:w-[180px] md:w-[200px] flex-shrink-0">
               <ProductCard product={product} addToCart={onAddToCart} compact />

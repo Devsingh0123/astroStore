@@ -23,9 +23,9 @@ const YouMayAlsoLikeCard = ({ product }) => {
   return (
     <div
       onClick={handleClick}
-      className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition cursor-pointer group w-full"
+      className="bg-white rounded-sm md:rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition cursor-pointer group w-full"
     >
-      <div className="relative aspect-square bg-gray-100 flex items-center justify-center p-4">
+      <div className="relative aspect-square bg-gray-100 flex items-center justify-center md:p-2">
         {imageUrl ? (
           <img
             src={imageUrl}
