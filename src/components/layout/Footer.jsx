@@ -139,35 +139,20 @@ const Footer = () => {
 
             <div className="flex gap-2 mt-5">
               {[
-                {
-                  Icon: FaFacebook,
-                  href: "https://facebook.com",
-                  textColor: "text-[#1877F2]",
-                },
-                {
-                  Icon: FaInstagram,
-                  href: "https://instagram.com",
-                  textColor: "text-[#E4405F]",
-                },
-                {
-                  Icon: FaTwitter,
-                  href: "https://twitter.com",
-                  textColor: "text-[#1DA1F2]",
-                },
-                {
-                  Icon: FaYoutube,
-                  href: "https://youtube.com",
-                  textColor: "text-[#FF0000]",
-                },
+                { Icon: FaFacebook, href: "https://www.facebook.com/profile.php?id=61589487082042", textColor: "text-[#1877F2]" },
+                { Icon: FaInstagram, href: "https://www.instagram.com/astrotring/", textColor: "text-[#E4405F]" },
+                { Icon: FaTwitter, href: "coming-soon", textColor: "text-[#1DA1F2]" },
+                { Icon: FaYoutube, href: "coming-soon", textColor: "text-[#FF0000]" },
               ].map(({ Icon, href, textColor }, i) => (
-                <Link
+                <a
                   key={i}
-                  to="coming-soon"
+                  href={href}
+                  target="_blank"
 
                   className="border border-gray-600 rounded-full h-8 w-8 grid place-items-center text-gray-700 hover:bg-amber-600 hover:border-amber-600 hover:text-white transition"
                 >
                   <Icon className={`size-5 ${textColor}`} />
-                </Link>
+                </a>
               ))}
             </div>
           </div>
