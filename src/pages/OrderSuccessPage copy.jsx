@@ -17,23 +17,20 @@ const OrderSuccessPage = () => {
 
   useEffect(() => {
     if (orderId) {
-
-      // GTM Event Fire
-      window.dataLayer = window.dataLayer || [];
-
-      window.dataLayer.push({
-        event: "purchase_success",
-        transaction_id: orderId,
-      });
-
-      // Fetch Order Details
+      // Redux thunk se order details fetch karo
       dispatch(fetchOrderDetails(orderId));
     }
-
+    
+    // Cleanup: page leave karte time current order clear karo
     return () => {
       dispatch(clearCurrentOrder());
     };
   }, [dispatch, orderId]);
+
+  const handlePrint = () => {
+    window.print();
+  };
+
   
 
   // Loading state

@@ -8,10 +8,8 @@ import logo from "../../assets/logo.png";
 import { CATEGORIES } from "../../constants/categories";
 
 const Footer = () => {
-
-
   // Filter out "all" from categories for collections
-  const collectionCategories = CATEGORIES.filter(cat => cat.id !== "all");
+  const collectionCategories = CATEGORIES.filter((cat) => cat.id !== "all");
 
   return (
     <footer className="bg-[#f7f5f2] border-t border-gray-300 mt-8 pt-8">
@@ -32,14 +30,12 @@ const Footer = () => {
         <br />
         {/* Main Footer Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 pb-8">
-
-
-
           {/* COLLECTIONS - Dynamic from CATEGORIES */}
           <div>
             <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
               Collections
             </h2>
+
             <ul className="mt-4 space-y-2">
               {collectionCategories.map((cat) => (
                 <li key={cat.id}>
@@ -59,6 +55,7 @@ const Footer = () => {
             <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
               More Info
             </h2>
+
             <ul className="mt-4 space-y-2">
               <li><Link to="/gemstones" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">About Gemstones</Link></li>
               <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Zodiac Signs</Link></li>
@@ -74,6 +71,7 @@ const Footer = () => {
             <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
               Corporate Info
             </h2>
+
             <ul className="mt-4 space-y-2">
               {/* <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">About Us</Link></li> */}
               <li><Link to="/privacy-policy" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Privacy Policy</Link></li>
@@ -85,7 +83,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* CONTACT  */}
+          {/* CONTACT */}
           <div>
             <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
               Contact us
@@ -120,6 +118,24 @@ const Footer = () => {
 
             {/* social icons */}
 
+            {/* <div className="flex gap-2 mt-5">
+              {[
+                { Icon: FaFacebook, href: "https://facebook.com", textColor:"text-[#1877F2]" },
+                { Icon: FaInstagram, href: "https://instagram.com",textColor:"text-[#E4405F]" },
+                { Icon: FaTwitter, href: "https://twitter.com",textColor:"text-[#1DA1F2]" },
+                { Icon: FaYoutube , href: "https://youtube.com",textColor:"text-[#FF0000]" },
+              ].map(({ Icon, href,textColor }, i) => (
+                <a
+                  key={i}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border border-gray-600 rounded-full h-8 w-8 grid place-items-center text-gray-700 hover:bg-amber-600 hover:border-amber-600 hover:text-white transition"
+                >
+                  <Icon className={`size-5 ${textColor}`} />
+                </a>
+              ))}
+            </div> */}
 
             <div className="flex gap-2 mt-5">
               {[
@@ -139,7 +155,6 @@ const Footer = () => {
                 </a>
               ))}
             </div>
-
           </div>
 
           {/* APP */}
@@ -180,10 +195,25 @@ const Footer = () => {
         {/* DISCLAIMER */}
         {/* <div className="border-t border-gray-300 py-4">
           <p className="text-xs text-gray-500 leading-relaxed text-center md:text-left">
-            <span className="font-semibold">Disclaimer:</span> Astrology services on{" "}
-            <a href="https://astrotring.com" target="_blank" className="text-amber-600 hover:underline">www.astrotring.com</a>{" "}
-            are provided for guidance and knowledge purposes only. Results may vary. Please read our full{" "}
-            <Link to="/disclaimer" target="_blank" className="text-amber-600 hover:underline"> Disclaimer</Link>{" "}
+            <span className="font-semibold">Disclaimer:</span> Astrology
+            services on{" "}
+            <a
+              href="https://astrotring.com"
+              target="_blank"
+              className="text-amber-600 hover:underline"
+            >
+              www.astrotring.com
+            </a>{" "}
+            are provided for guidance and knowledge purposes only. Results may
+            vary. Please read our full{" "}
+            <Link
+              to="/disclaimer"
+              target="_blank"
+              className="text-amber-600 hover:underline"
+            >
+              {" "}
+              Disclaimer
+            </Link>{" "}
             before using the website.
           </p>
         </div> */}
@@ -193,8 +223,6 @@ const Footer = () => {
       <div className="bg-black text-white text-center py-5">
         © {new Date().getFullYear()} Astrotring. All Rights Reserved.
       </div>
-
-
     </footer>
   );
 };
