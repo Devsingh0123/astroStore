@@ -266,33 +266,22 @@ const ProductDetailsPage = () => {
     setQuantity((prev) => Math.max(1, prev + delta));
   };
 
-  const handleAddToCart = async () => {
-    if (!isLoggedIn) {
-//  Product saved in local storage first
-      const pendingProduct = {
+ const handleAddToCart = async () => {
+  try {
+    await dispatch(addToCart({
       product_id: product.id,
-        quantity,
-        name:product.name,
-        ratti: selectedRatti,
-      timestamp: Date.now()
-    };
-    localStorage.setItem('pendingAddToCart', JSON.stringify(pendingProduct));
-      toast.warning("Please login to add items to cart");
-      dispatch(openLoginModal());
-      return;
-    }
-    try {
-      await dispatch(addToCart({
-        product_id: product.id,
-        quantity,
-        ratti: selectedRatti,
-      })).unwrap();
-      toast.success(`${product?.name} added to cart!`);
-      dispatch(fetchCart());
-    } catch (err) {
-      toast.error(err || "Failed to add to cart");
-    }
-  };
+      quantity,
+      ratti: selectedRatti,
+      name: product.name,
+      price: displayAfterPrice,
+      image: product.image,
+    })).unwrap();
+    toast.success(`${product?.name} added to cart!`);
+    dispatch(fetchCart());
+  } catch (err) {
+    toast.error(err || "Failed to add to cart");
+  }
+};
 
   const handleImageError = (e) => {
     e.target.src = fallbackImage;

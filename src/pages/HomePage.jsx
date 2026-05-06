@@ -15,7 +15,6 @@ import Loader from "@/components/common/Loader";
 import { CATEGORIES } from "../constants/categories";
 import { addToCart, fetchCart } from "../redux/slices/cartSlice";
 import { fetchAllProducts } from '../redux/slices/productSlice';
-import { openLoginModal } from "@/redux/slices/uiSlice";
 
 // ----- Helper Functions (for new API structure) -----
 const getProductPrice = (product) => Number(product?.after_price) || 0;
@@ -79,7 +78,6 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { items: products, loading, error } = useSelector((state) => state.product);
-   const { isLoggedIn } = useSelector((state) => state.userAuth);
 
   // Filtering & UI state
   const [filterCategory, setFilterCategory] = useState("all");          // selected in sidebar
@@ -178,35 +176,10 @@ const HomePage = () => {
     return groupedCategories.reduce((sum, cat) => sum + (categoryFilteredProducts[cat.id]?.length || 0), 0);
   }, [categoryFilteredProducts]);
 
-  // ----- Handlers -----
-  // const handleAddToCart = async ({ product_id, quantity, name }) => {
-  //   try {
-  //     await dispatch(addToCart({ product_id, quantity })).unwrap();
-  //     toast.success(`${name} added to cart!`);
-  //     dispatch(fetchCart());
-  //   } catch (err) {
-  //     toast.error(err || 'Failed to add to cart');
-  //   }
-  // };
 
-  const handleAddToCart = async ({ product_id, quantity, name, ratti }) => {
-
-     if (!isLoggedIn) {
-      //  Product saved in local storage first
-    const pendingProduct = {
-      product_id,
-      quantity,
-      name,
-      ratti,
-      timestamp: Date.now()
-    };
-    localStorage.setItem('pendingAddToCart', JSON.stringify(pendingProduct));
-    toast.warning("Please login to add items to cart");
-    dispatch(openLoginModal());
-    return;
-  }
+const handleAddToCart = async ({ product_id, quantity, name, ratti,price ,image }) => {
   try {
-    await dispatch(addToCart({ product_id, quantity, ratti })).unwrap();
+    await dispatch(addToCart({ product_id, quantity, name, ratti,price ,image })).unwrap();
     toast.success(`${name} added to cart!`);
     dispatch(fetchCart());
   } catch (err) {

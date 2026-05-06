@@ -138,7 +138,9 @@ if (product?.ratti_options && product.ratti_options.length > 0) {
                   product_id: product?.id,
                   quantity: 1,
                   name: product?.name,
-                  ratti: defaultRatti
+                  ratti: defaultRatti,
+                  price:product.after_price || afterPrice,
+                  image:product?.image,
                 });
               }}
               className={overlayCartClass}
@@ -187,10 +189,12 @@ if (product?.ratti_options && product.ratti_options.length > 0) {
             onClick={(e) => {
               e.stopPropagation();
               addToCart({
-                product_id: product?.id,
-                quantity: 1,
-                name: product?.name,
-                ratti: defaultRatti
+                 product_id: product?.id,
+                  quantity: 1,
+                  name: product?.name,
+                  ratti: defaultRatti,
+                  price:product.after_price || afterPrice,
+                  image:product?.image,
               });
             }}
             className={`bg-amber-100 border border-amber-300 text-amber-900 rounded-lg cursor-pointer flex items-center justify-center transition-colors hover:bg-amber-200 ${quickAddSize}`}

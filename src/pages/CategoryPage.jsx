@@ -3,8 +3,6 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts } from "../redux/slices/productSlice";
 import { addToCart, fetchCart } from "../redux/slices/cartSlice";
-import { openLoginModal } from "@/redux/slices/uiSlice";
-
 import Loader from "@/components/common/Loader";
 import ProductCard from "@/components/features/ProductCard";
 import { toast } from "react-toastify";
@@ -17,7 +15,6 @@ const CategoryPage = () => {
   const dispatch = useDispatch();
 
   const { items, loading, error } = useSelector((s) => s.product);
-  const { isLoggedIn } = useSelector((s) => s.userAuth);
 
   useEffect(() => {
     if (!items.length) dispatch(fetchAllProducts());
@@ -61,27 +58,13 @@ const CategoryPage = () => {
   // };
 
 
-  const handleAddToCart = async ({ product_id, quantity, name, ratti }) => {
-  if (!isLoggedIn) {
-//  Product saved in local storage first
-    const pendingProduct = {
-      product_id,
-      quantity,
-      name,
-      ratti,
-      timestamp: Date.now()
-    };
-    localStorage.setItem('pendingAddToCart', JSON.stringify(pendingProduct));
-    toast.warning("Please login to add items to cart");
-    dispatch(openLoginModal());
-    return;
-  }
+const handleAddToCart = async ({ product_id, quantity, name, ratti,price ,image }) => {
   try {
-    await dispatch(addToCart({ product_id, quantity, ratti })).unwrap();
-    toast.success(`${name} added`);
+    await dispatch(addToCart({ product_id, quantity, name, ratti,price ,image })).unwrap();
+    toast.success(`${name} added to cart!`);
     dispatch(fetchCart());
-  } catch {
-    toast.error("Failed to add");
+  } catch (err) {
+    toast.error(err || 'Failed to add to cart');
   }
 };
 

@@ -30,6 +30,25 @@ export const userLogin = createAsyncThunk(
     }
 );
 
+export const userVerifyLoginOtp = createAsyncThunk(
+  "user/verifyLoginOtp",
+  async ({ email, otp }, thunkApi) => {
+    try {
+      const res = await api.post("/user/verify-login-otp", { email, otp });
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role_id", res.data.user?.role_id);
+        return res.data.token;
+      }
+      return thunkApi.rejectWithValue("Invalid OTP");
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message || "OTP verification failed"
+      );
+    }
+  }
+);
+
 export const userRegister = createAsyncThunk(
     "user/register",
     async (data, thunkApi) => {
@@ -174,6 +193,23 @@ const UserAuthSlice = createSlice({
                 state.isLoggedIn = false;
             })
 
+            //  VERIFY OTP LOGIN
+      .addCase(userVerifyLoginOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(userVerifyLoginOtp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload;      // token from thunk
+        state.isLoggedIn = true;
+      })
+      .addCase(userVerifyLoginOtp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.isLoggedIn = false;
+      })
+
+
             // REGISTER
             .addCase(userRegister.pending, (state) => {
                 state.loading = true;
@@ -201,6 +237,7 @@ const UserAuthSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+
             // update user
             .addCase(userLogout.pending, (state) => {
                 state.loading = true;
