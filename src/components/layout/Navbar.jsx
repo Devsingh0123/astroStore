@@ -79,13 +79,7 @@ const Navbar = () => {
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Cart */}
           <div
-            onClick={() => {
-              if (!isLoggedIn) {
-                toast.warning("Please login to view your cart");
-              } else {
-                navigate("/cart");
-              }
-            }}
+            onClick={() => {navigate("/cart")}}
             className="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-2.5 bg-stone-50/90 backdrop-blur-sm border border-stone-200/50 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group"
             style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.05)' }}
           >
