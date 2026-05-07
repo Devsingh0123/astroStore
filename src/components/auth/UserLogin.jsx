@@ -2,21 +2,25 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactDOM from "react-dom";
-import { userProfile } from "../../redux/slices/userAuthSlice";
+import {
+  userProfile,
+  userVerifyLoginOtp,
+  userRegister,
+} from "../../redux/slices/userAuthSlice";
 import { closeLoginModal } from "../../redux/slices/uiSlice";
 import { toast } from "react-toastify";
 import ForgotPassword from "./ForgotPassword";
-import { fileToBase64 } from "../../hooks/fileToBase64";
-import { Camera, Upload, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { api } from "../../redux/baseApi";
+import { api } from "../../redux/baseApi"; // only needed for sending OTP (no thunk for that)
+import { X } from "lucide-react";
+import { fetchCart, mergeGuestCart } from "@/redux/slices/cartSlice";
 
 const UserLogin = () => {
   const dispatch = useDispatch();
   const { user, error, loading } = useSelector((state) => state.userAuth);
   const { isLoginModalOpen } = useSelector((state) => state.ui);
-  const [mode, setMode] = useState("login");     // 'login', 'signup', 'forgot'
-  const [step, setStep] = useState("email");     // 'email' or 'otp' (for login)
+  const [mode, setMode] = useState("login");
+  const [step, setStep] = useState("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [userType, setUserType] = useState("user");
@@ -29,11 +33,9 @@ const UserLogin = () => {
     country_code: "+91",
     mobile: "",
   });
-  const [profileImage, setProfileImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState("");
   const [errors, setErrors] = useState({ fields: {}, form: "" });
 
-  // Reset OTP step when modal closes or mode changes
+  // Reset OTP step when mode changes from login
   useEffect(() => {
     if (mode !== "login") {
       setStep("email");
@@ -41,11 +43,10 @@ const UserLogin = () => {
     }
   }, [mode]);
 
-  // Close modal when user becomes logged in (e.g., after successful OTP)
+  // Close modal and reset fields when user logs in
   useEffect(() => {
     if (user) {
       dispatch(closeLoginModal());
-      // Reset form fields, etc.
       setEmail("");
       setOtp("");
       setStep("email");
@@ -55,8 +56,6 @@ const UserLogin = () => {
         country_code: "+91",
         mobile: "",
       });
-      setProfileImage(null);
-      setImagePreview("");
       setTermsAccepted(false);
     }
   }, [user, dispatch]);
@@ -69,33 +68,6 @@ const UserLogin = () => {
       fields: { ...prev.fields, [name]: undefined },
       form: "",
     }));
-  };
-
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
-        return;
-      }
-      if (file.size > 2 * 1024 * 1024) {
-        toast.error("Image size must be less than 2MB");
-        return;
-      }
-      try {
-        const base64 = await fileToBase64(file);
-        setProfileImage(base64);
-        setImagePreview(URL.createObjectURL(file));
-      } catch (error) {
-        toast.error("Failed to process image");
-      }
-    }
-  };
-
-  const removeImage = () => {
-    setProfileImage(null);
-    setImagePreview("");
-    document.getElementById("user-profile-upload").value = "";
   };
 
   // ========== LOGIN OTP FLOW ==========
@@ -117,64 +89,66 @@ const UserLogin = () => {
     }
   };
 
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    if (!otp) {
-      toast.error("Please enter the OTP");
-      return;
-    }
-    setLoadingBtn(true);
-    try {
-      const verifyRes = await api.post("/user/verify-login-otp", { email, otp });
-      if (verifyRes.data.token) {
-        localStorage.setItem("token", verifyRes.data.token);
-        localStorage.setItem("role_id", verifyRes.data.user?.role_id);
-        await dispatch(userProfile()).unwrap();
-        toast.success("Logged in successfully");
-        // modal will close via useEffect(user)
-      } else {
-        toast.error(verifyRes.data.message || "Invalid OTP");
-      }
-    } catch (err) {
-      toast.error(err.response?.data?.message || "OTP verification failed");
-    } finally {
-      setLoadingBtn(false);
-    }
-  };
+ const handleVerifyOtp = async (e) => {
+  e.preventDefault();
+  if (!otp) {
+    toast.error("Please enter the OTP");
+    return;
+  }
+  setLoadingBtn(true);
+  try {
+    await dispatch(userVerifyLoginOtp({ email, otp })).unwrap();
+    await dispatch(userProfile()).unwrap();
 
-  // ========== SIGNUP ==========
+    // ✅ Merge guest cart after login
+    await dispatch(mergeGuestCart()).unwrap();
+    await dispatch(fetchCart());
+
+    toast.success("Logged in successfully");
+  } catch (err) {
+    toast.error(err || "Invalid OTP or login failed");
+  } finally {
+    setLoadingBtn(false);
+  }
+};
+
+  // ========== SIGNUP (no image) ==========
   const handleSignup = async (e) => {
-    e.preventDefault();
-    if (!termsAccepted) {
-      setErrors({ fields: {}, form: "You must accept the Terms & Conditions to sign up." });
-      return;
-    }
-    const submitData = {
-      name: form.name,
-      email: form.email,
-      country_code: form.country_code,
-      mobile: form.mobile,
-      profile_image: profileImage || null,
-      terms_accepted: termsAccepted ? 1 : 0,
-    };
-    setLoadingBtn(true);
-    try {
-      const res = await api.post("/user/register", submitData);
-      if (res.data.token) {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("role_id", res.data.role_id);
-        await dispatch(userProfile()).unwrap();
-        toast.success("Account created & logged in");
-        // modal will close via useEffect(user)
-      } else {
-        toast.error(res.data.message || "Registration failed");
-      }
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Registration failed");
-    } finally {
-      setLoadingBtn(false);
-    }
+  e.preventDefault();
+  if (!termsAccepted) {
+    setErrors({ fields: {}, form: "You must accept the Terms & Conditions to sign up." });
+    return;
+  }
+  const submitData = {
+    name: form.name,
+    email: form.email,
+    country_code: form.country_code,
+    mobile: form.mobile,
+    terms_accepted: termsAccepted ? 1 : 0,
   };
+  setLoadingBtn(true);
+  try {
+    const res = await dispatch(userRegister(submitData)).unwrap();
+    // Registration successful – but DON'T auto-login
+    toast.success("Registration successful! Please login.");
+    // Switch to login mode
+    setMode("login");
+    setStep("email");
+    setOtp("");
+    setForm({
+      name: "",
+      email: "",
+      country_code: "+91",
+      mobile: "",
+    });
+    setErrors({ fields: {}, form: "" });
+    setTermsAccepted(false);
+  } catch (err) {
+    toast.error(err || "Registration failed");
+  } finally {
+    setLoadingBtn(false);
+  }
+};
 
   if (!isLoginModalOpen) return null;
 
@@ -215,10 +189,9 @@ const UserLogin = () => {
             {mode === "login" && step === "email" && (
               <form onSubmit={handleSendOtp} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                   <input
+                  name="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -255,9 +228,7 @@ const UserLogin = () => {
             {mode === "login" && step === "otp" && (
               <form onSubmit={handleVerifyOtp} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Enter OTP
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Enter OTP</label>
                   <input
                     type="text"
                     value={otp}
@@ -287,7 +258,7 @@ const UserLogin = () => {
               </form>
             )}
 
-            {/* SIGNUP */}
+            {/* SIGNUP – clean, no image fields */}
             {mode === "signup" && (
               <form onSubmit={handleSignup} className="space-y-3 mt-4">
                 <input
@@ -312,7 +283,7 @@ const UserLogin = () => {
                     name="country_code"
                     value={form.country_code}
                     onChange={handleChange}
-                    className="w-1/3 px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                    className="w-1/4 px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                   >
                     <option value="+91">+91</option>
                     <option value="+1">+1</option>
@@ -323,72 +294,9 @@ const UserLogin = () => {
                     placeholder="Mobile *"
                     value={form.mobile}
                     onChange={handleChange}
-                    className="w-2/3 px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                    className="w-3/4 px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                     required
                   />
-                </div>
-
-                {/* Profile photo (optional) – same as before */}
-                <div className="space-y-1.5">
-                  <label className="text-sm flex items-center gap-1.5 text-gray-700">
-                    <Camera className="w-3.5 h-3.5" /> Profile Photo (Optional)
-                  </label>
-                  <div
-                    onClick={() => document.getElementById("user-profile-upload")?.click()}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.add("border-yellow-500", "bg-yellow-50");
-                    }}
-                    onDragLeave={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.remove("border-yellow-500", "bg-yellow-50");
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.remove("border-yellow-500", "bg-yellow-50");
-                      const file = e.dataTransfer.files[0];
-                      if (file) handleImageChange({ target: { files: [file] } });
-                    }}
-                    className={`relative border border-dashed rounded-lg p-3 transition-all duration-200 cursor-pointer ${
-                      imagePreview
-                        ? "border-green-300 bg-green-50/30"
-                        : "border-gray-300 bg-gray-50 hover:border-yellow-400 hover:bg-yellow-50/30"
-                    }`}
-                  >
-                    <input
-                      id="user-profile-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                    />
-                    {imagePreview ? (
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
-                            <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                          </div>
-                          <span className="text-xs text-gray-600 truncate max-w-[100px]">Photo uploaded</span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeImage();
-                          }}
-                          className="text-red-500 hover:text-red-700 p-0.5 cursor-pointer"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2 text-xs">
-                        <Upload className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-600 truncate">Click or drag photo</span>
-                        <span className="text-gray-400 whitespace-nowrap">(2MB)</span>
-                      </div>
-                    )}
-                  </div>
                 </div>
 
                 <div className="flex items-start gap-2">
@@ -436,7 +344,7 @@ const UserLogin = () => {
               </form>
             )}
 
-            {/* Forgot password (unchanged, uses existing OTP flow) */}
+            {/* Forgot password flow (unchanged) */}
             {mode === "forgot" && (
               <ForgotPassword
                 onSuccess={() => setMode("login")}
@@ -453,9 +361,6 @@ const UserLogin = () => {
 };
 
 export default UserLogin;
-
-
-
 
 
 
