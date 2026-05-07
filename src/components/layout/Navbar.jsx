@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { FaUser, FaShoppingCart, FaSignOutAlt, FaUserCircle, FaClipboardList, FaHeart, FaCog, FaHome } from "react-icons/fa";
+import { FaUser, FaShoppingCart, FaSignOutAlt, FaUserCircle, FaClipboardList, FaHeart, FaHome } from "react-icons/fa";
 import logo from "../../assets/logo.png";
 import { logout } from "../../redux/slices/userAuthSlice";
 import { openLoginModal } from "../../redux/slices/uiSlice";
@@ -20,31 +20,23 @@ const Navbar = () => {
   const { user, isLoggedIn } = useSelector((state) => state.userAuth);
   const cartItems = useSelector((state) => state.cart.items);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  // console.log("cart",cartItems)
-
 
   useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(fetchCart());
-    }
+     dispatch(fetchCart());
   }, [dispatch, isLoggedIn]);
-
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const threshold = 10;
-
       if (currentScrollY > lastScrollY.current + threshold) {
         setIsNavHidden(true);
       } else if (currentScrollY < lastScrollY.current - threshold) {
         setIsNavHidden(false);
       }
-
       setScrolled(currentScrollY > 20);
       lastScrollY.current = currentScrollY;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -64,43 +56,55 @@ const Navbar = () => {
     navigate("/");
   };
 
+  // Reusable button component for cart and login
+  const NavButton = ({ onClick, icon: Icon, label, count = 0 }) => (
+    <div className="relative">
+      <button
+        onClick={onClick}
+        className="group relative w-10 sm:w-auto h-10 rounded-full border border-[#cfcfcf] bg-[#f7f7f7] overflow-hidden flex items-center justify-center cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300"
+      >
+        {/* Top cut */}
+        <span className="absolute top-[-1px] left-1/2 -translate-x-1/2 w-[52%] h-[6px] bg-[#f7f7f7] transition-all duration-500 group-hover:w-0" />
+        {/* Bottom cut */}
+        <span className="absolute bottom-[-1px] left-1/2 -translate-x-1/2 w-[52%] h-[6px] bg-[#f7f7f7] transition-all duration-500 group-hover:w-0" />
+        {/* Inner orange capsule */}
+        <div className="relative z-10 w-[84%] h-[84%] rounded-full bg-amber-500 flex items-center justify-center gap-1  sm:px-4 transition-all duration-300 group-hover:bg-amber-600">
+          <Icon className="text-white text-sm sm:text-base" />
+          <span className="hidden sm:inline text-black text-sm font-medium tracking-wide">
+            {label}
+          </span>
+          <span className="hidden sm:inline text-black text-base leading-none">›</span>
+        </div>
+      </button>
+      {count > 0 && (
+        <span className="absolute -top-1 -right-1 bg-gradient-to-br from-amber-500 to-amber-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg animate-pulse">
+          {count}
+        </span>
+      )}
+    </div>
+  );
+
   return (
     <nav
-      className={`w-full  mb-4 sticky top-0 z-[100] bg-white transition-all duration-500 ${scrolled ? "shadow-md" : ""
-        } ${isNavHidden ? '-translate-y-full' : 'translate-y-0'}`}
+      className={`w-full mb-4 sticky top-0 z-[100] bg-white transition-all duration-500 ${
+        scrolled ? "shadow-md" : ""
+      } ${isNavHidden ? "-translate-y-full" : "translate-y-0"}`}
     >
-      <div className="container mx-auto px-4 sm:px-8  py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-6">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex-shrink-0">
-          <img src={logo} alt="Logo" className="h-6 sm:h-10" />
+          <img src={logo} alt="Logo" className="h-6 sm:h-8" />
         </Link>
 
-        {/* Right side */}
-        <div className="flex items-center gap-2 sm:gap-4">
-          {/* Cart */}
-          <div
-            onClick={() => {navigate("/cart")}}
-            className="relative flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-2.5 bg-stone-50/90 backdrop-blur-sm border border-stone-200/50 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group"
-            style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.05)' }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 to-amber-500/30 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <FaShoppingCart className="text-amber-600 relative z-10" size={16} />
-            <span
-              className="font-medium text-stone-700 relative z-10 xs:inline hidden sm:block text-sm sm:text-base"
-              style={{ fontFamily: 'Montserrat, sans-serif' }}
-            >
-              Cart
-            </span>
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-gradient-to-br from-amber-500 to-amber-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg animate-pulse">
-                {cartCount}
-              </span>
-            )}
-          </div>
+        {/* Right side buttons */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Cart button */}
+          <NavButton onClick={() => navigate("/cart")} icon={FaShoppingCart} label="CART" count={cartCount} />
 
-          {/* User section */}
+          {/* User / Login button */}
           {isLoggedIn ? (
-            <div className="relative user-menu">
+            <div className="relative user-menu ">
+              <div className="flex items-center">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="focus:outline-none cursor-pointer"
@@ -109,107 +113,50 @@ const Navbar = () => {
                   <img
                     src={user.profile_image}
                     alt={user?.name?.charAt(0).toUpperCase()}
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-amber-200 object-cover cursor-pointer"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-amber-200 object-cover cursor-pointer"
                   />
                 ) : (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-medium text-sm sm:text-lg cursor-pointer">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-medium text-sm sm:text-lg cursor-pointer">
                     {user?.name?.charAt(0).toUpperCase()}
                   </div>
                 )}
               </button>
-
+              </div>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
-                  {/* User info header */}
                   <div className="px-4 py-3 border-b border-gray-100">
                     <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
                     <p className="text-xs text-gray-500">{user?.email}</p>
                   </div>
-
-                  {/* Dropdown links */}
                   <div className="py-1">
-                    <Link
-                      to="/profile"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                    >
-                      <FaUserCircle size={16} />
-                      My Profile
+                    <Link to="/profile" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600">
+                      <FaUserCircle size={16} /> My Profile
                     </Link>
-                    <Link
-                      to="/orders"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                    >
-                      <FaClipboardList size={16} />
-                      My Orders
+                    <Link to="/orders" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600">
+                      <FaClipboardList size={16} /> My Orders
                     </Link>
-                    <Link
-                      to="/wallet"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                    >
-                      <WalletIcon size={16} />  {/* you can use a suitable icon, e.g., FaWallet from react-icons */}
-                      My Wallet
+                    <Link to="/wallet" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600">
+                      <WalletIcon size={16} /> My Wallet
                     </Link>
-
-                    <Link
-                      to="/wishlist"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                    >
-                      <FaHeart size={16} />
-                      My Wishlist
+                    <Link to="/wishlist" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600">
+                      <FaHeart size={16} /> My Wishlist
                     </Link>
-                    <Link
-                      to="/addresses"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                    >
-                      <MapPin size={16}/>
-                    
-                      My Address
+                    <Link to="/addresses" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600">
+                      <MapPin size={16} /> My Address
                     </Link>
-                    <Link
-                      to="/"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                    >
-                      <FaHome size={16} />
-                      Back to Home
+                    <Link to="/" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600">
+                      <FaHome size={16} /> Back to Home
                     </Link>
-
                   </div>
-
-                  {/* Divider */}
                   <div className="border-t border-gray-100 my-1"></div>
-
-                  {/* Logout button */}
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 cursor-pointer"
-                  >
-                    <FaSignOutAlt size={16} />
-                    Logout
+                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3">
+                    <FaSignOutAlt size={16} /> Logout
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            <button
-              onClick={() => dispatch(openLoginModal())}
-              className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-2.5 bg-stone-50/90 backdrop-blur-sm border border-stone-200/50 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group"
-              style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.05)' }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 to-amber-500/30 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <FaUser className="text-amber-600 relative z-10" size={16} />
-              <span
-                className="font-medium text-stone-700 relative z-10 hidden sm:block xs:inline text-sm sm:text-base"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
-              >
-                Login
-              </span>
-            </button>
+            <NavButton onClick={() => dispatch(openLoginModal())} icon={FaUser} label="LOGIN" />
           )}
         </div>
       </div>

@@ -1,128 +1,103 @@
 // src/components/checkout/MobileLoginStep.jsx
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { userProfile } from '../../redux/slices/userAuthSlice';
+import { userProfile, userVerifyLoginOtp } from '../../redux/slices/userAuthSlice';
 import { toast } from 'react-toastify';
 import { api } from '../../redux/baseApi';
+import { mergeGuestCart, fetchCart } from '../../redux/slices/cartSlice';
 
-const MobileLoginStep = ({ onLoginSuccess ,onSignupClick }) => {
+const MobileLoginStep = ({ onLoginSuccess, onSignupClick }) => {
   const dispatch = useDispatch();
-  const [step, setStep] = useState('email'); // 'email' or 'otp'
+  const [step, setStep] = useState('email');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Step 1: Send OTP using existing /user/login endpoint
   const handleSendOtp = async (e) => {
     e.preventDefault();
-    if (!email) {
-      toast.error('Please enter your email');
-      return;
-    }
+    if (!email) return toast.error('Enter your email');
     setLoading(true);
     try {
-      // Your existing login endpoint sends OTP when only email is provided
       await api.post('/user/login', { email });
       setStep('otp');
-      toast.success('OTP sent to your email');
+      toast.success('OTP sent');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Email not exist');
+      toast.error(err.response?.data?.message || 'Email not registered');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 2: Verify OTP and login
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    if (!otp) {
-      toast.error('Please enter the OTP');
-      return;
-    }
+    if (!otp) return toast.error('Enter OTP');
     setLoading(true);
     try {
-      const verifyRes = await api.post('/user/verify-login-otp', { email, otp });
-      if (verifyRes.data.token) {
-        localStorage.setItem('token', verifyRes.data.token);
-        localStorage.setItem('role_id', verifyRes.data.user?.role_id);
-        await dispatch(userProfile()).unwrap();
-        toast.success('Logged in successfully');
-        onLoginSuccess();
-      } else {
-        toast.error(verifyRes.data.message || 'Invalid OTP');
-      }
+      await dispatch(userVerifyLoginOtp({ email, otp })).unwrap();
+      await dispatch(userProfile()).unwrap();
+      await dispatch(mergeGuestCart()).unwrap();
+      await dispatch(fetchCart());
+      toast.success('Logged in');
+      onLoginSuccess();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'OTP verification failed');
+      toast.error(err || 'Invalid OTP');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Login to Checkout</h2>
-
-      {step === 'email' && (
+    <div className="space-y-5">
+      <h2 className="text-2xl font-bold text-gray-800">Login to Checkout</h2>
+      {step === 'email' ? (
         <form onSubmit={handleSendOtp} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
+          <input
+          name='email'
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email address"
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+            required
+          />
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 disabled:opacity-50"
+            className="w-full py-3 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700 transition disabled:opacity-50"
           >
-            {loading ? 'Sending OTP...' : 'Send OTP'}
+            {loading ? 'Sending...' : 'Send OTP'}
           </button>
         </form>
-      )}
-
-      {step === 'otp' && (
+      ) : (
         <form onSubmit={handleVerifyOtp} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Enter OTP</label>
-            <input
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-              placeholder="6-digit OTP"
-              required
-            />
-          </div>
+          <input
+            type="text"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            placeholder="6-digit OTP"
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+            required
+          />
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 disabled:opacity-50"
+            className="w-full py-3 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700"
           >
             {loading ? 'Verifying...' : 'Login'}
           </button>
           <button
             type="button"
             onClick={() => { setStep('email'); setOtp(''); }}
-            className="text-sm text-amber-600 hover:underline mt-2 block text-center"
+            className="w-full text-amber-600  text-sm hover:underline"
           >
             ← Back to email
           </button>
         </form>
       )}
-
-      <p className="text-center text-sm text-gray-600 mt-4">
-        Don't have an account?{' '}
-        <button
-          type="button"
-          onClick={onSignupClick}
-          className="text-amber-600 hover:underline"
-        >
-          Sign up
+      <p className="text-center text-gray-500">
+        New user?{' '}
+        <button onClick={onSignupClick} className="text-amber-600 font-medium hover:underline">
+          Create account
         </button>
       </p>
     </div>

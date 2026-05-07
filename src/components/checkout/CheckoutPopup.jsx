@@ -1,28 +1,32 @@
-import React, { useState } from 'react';
+// src/components/checkout/CheckoutPopup.jsx
+import React, { useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import CheckoutHeader from './CheckoutHeader';
+import { ArrowLeft, X, ChevronDown, ChevronUp } from 'lucide-react';
+import logo from '@/assets/logo.png';
 import MobileLoginStep from './MobileLoginStep';
+import SignupStep from './SignupStep';
 import AddressStep from './AddressStep';
 import PaymentStep from './PaymentStep';
-import SignupStep from './SignupStep';   // 👈 import
 
 const CheckoutPopup = ({ isOpen, onClose }) => {
   const { isLoggedIn } = useSelector((state) => state.userAuth);
+  const { items: cartItems, appliedCoupon, couponDiscount } = useSelector((state) => state.cart);
   const [step, setStep] = useState(() => (!isLoggedIn ? 'login' : 'address'));
   const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(true);
+  const paymentRef = useRef();
 
   if (!isOpen) return null;
 
+  const subtotal = cartItems.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+  const shipping = subtotal > 599 ? 0 : 199;
+  const grandTotal = subtotal + shipping - couponDiscount;
+
   const handleBack = () => {
-    if (step === 'login') {
-      onClose();
-    } else if (step === 'signup') {
-      setStep('login');
-    } else if (step === 'address') {
-      setStep('login');
-    } else if (step === 'payment') {
-      setStep('address');
-    }
+    if (step === 'login') onClose();
+    else if (step === 'signup') setStep('login');
+    else if (step === 'address') setStep('login');
+    else if (step === 'payment') setStep('address');
   };
 
   const handleLoginSuccess = () => setStep('address');
@@ -33,31 +37,110 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
   };
   const handleOrderComplete = () => onClose();
 
+  let bottomButton = null;
+  if (step === 'address') {
+    bottomButton = {
+      label: 'Continue to Payment',
+      disabled: !selectedAddressId,
+      onClick: () => setStep('payment'),
+    };
+  } else if (step === 'payment') {
+    bottomButton = {
+      label: 'Pay Now',
+      disabled: false,
+      onClick: () => paymentRef.current?.placeOrder(),
+    };
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-[400px] h-[90vh] overflow-y-auto relative">
-        <CheckoutHeader onBack={handleBack} onClose={onClose} />
-        <div className="p-4">
-          {step === 'login' && (
-            <MobileLoginStep
-              onLoginSuccess={handleLoginSuccess}
-              onSignupClick={() => setStep('signup')}
-            />
-          )}
-          {step === 'signup' && (
-            <SignupStep
-              onSignupSuccess={handleSignupSuccess}
-              onBackToLogin={() => setStep('login')}
-            />
-          )}
-          {step === 'address' && <AddressStep onContinue={handleAddressSuccess} />}
-          {step === 'payment' && (
-            <PaymentStep
-              selectedAddressId={selectedAddressId}
-              onOrderComplete={handleOrderComplete}
-            />
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[480px] h-[90vh] flex flex-col relative overflow-hidden animate-slideUp">
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white sticky top-0 z-10">
+          <button onClick={handleBack} className="p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200">
+            <ArrowLeft size={20} className="text-gray-600" />
+          </button>
+          <img src={logo} alt="Astrotring" className="h-8" />
+          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200">
+            <X size={20} className="text-gray-600" />
+          </button>
+        </div>
+
+        {/* Collapsible Order Summary */}
+        <div className="border-b border-gray-100 bg-white flex-shrink-0">
+          <button
+            onClick={() => setIsSummaryOpen(!isSummaryOpen)}
+            className="w-full flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors duration-200"
+          >
+            <div className="flex items-center gap-2">
+              <span className="font-light text-xs text-gray-800">Order Summary</span>
+            {isSummaryOpen ? <ChevronUp size={12} className="text-gray-500" /> : <ChevronDown size={12} className="text-gray-500" />}
+
+              {appliedCoupon && <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Coupon</span>}
+            </div>
+              <span className="text-xs font-bold text-amber-600">₹{grandTotal.toLocaleString()}</span>
+
+          </button>
+
+          {isSummaryOpen && (
+            <div className="px-5 pb-4 space-y-4 max-h-64 overflow-y-auto border-t border-gray-100">
+              {cartItems.map((item) => (
+                <div key={item.id} className="flex gap-3 items-center">
+                  <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-lg border border-gray-200" />
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-800">{item.name}</p>
+                    <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                    {item.ratti && <p className="text-xs text-gray-500">Ratti: {item.ratti}</p>}
+                    <p className="text-xs text-gray-500 ">Price: ₹{item.price}</p>
+
+                  </div>
+                  
+                </div>
+              ))}
+              <div className="border-t pt-3 space-y-1.5 text-sm">
+                <div className="flex justify-between text-gray-600">
+                  <span>Subtotal</span>
+                  <span>₹{subtotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping</span>
+                  <span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span>
+                </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Coupon ({appliedCoupon.code})</span>
+                    <span>-₹{couponDiscount.toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between font-bold text-gray-800 pt-2 border-t">
+                  <span>Total</span>
+                  <span>₹{grandTotal.toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
           )}
         </div>
+
+        {/* Step Content */}
+        <div className="flex-1 overflow-y-auto p-5">
+          {step === 'login' && <MobileLoginStep onLoginSuccess={handleLoginSuccess} onSignupClick={() => setStep('signup')} />}
+          {step === 'signup' && <SignupStep onSignupSuccess={handleSignupSuccess} onBackToLogin={() => setStep('login')} />}
+          {step === 'address' && <AddressStep selectedAddressId={selectedAddressId} onSelectAddress={setSelectedAddressId} />}
+          {step === 'payment' && <PaymentStep ref={paymentRef} selectedAddressId={selectedAddressId} onOrderComplete={handleOrderComplete} />}
+        </div>
+
+        {/* Fixed Bottom Button */}
+        {bottomButton && (
+          <div className="p-4 border-t border-gray-100 bg-white sticky bottom-0">
+            <button
+              onClick={bottomButton.onClick}
+              disabled={bottomButton.disabled}
+              className="w-full py-3.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-semibold text-base transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {bottomButton.label}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ import {
 } from '../redux/slices/cartSlice';
 import { validateCoupon } from '../redux/slices/couponSlice';
 import { toast } from 'react-toastify';
-import CheckoutHeader from '@/components/checkout/CheckoutHeader';
+// import CheckoutHeader from '@/components/checkout/CheckoutHeader';
 import CheckoutPopup from '@/components/checkout/CheckoutPopup';
 // import { openLoginModal } from '../redux/slices/uiSlice'; // no longer needed
 // import CheckoutModal from '../components/checkout/CheckoutModal'; // removed – using inline modal
@@ -405,15 +405,8 @@ const CartPage = () => {
       {showPopup && (
         <div className="fixed inset-0 bg-black/30  bg-opacity-50 flex items-center justify-center z-500">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-[400px] h-[90vh] overflow-y-auto relative">
-            <CheckoutHeader
-              onBack={() => {
-                // Will handle back navigation later (e.g., go to previous step)
-                console.log("Back clicked");
-              }}
-              onClose={() => setShowPopup(false)}
-            />
-          </div>
           <CheckoutPopup isOpen={showPopup} onClose={() => setShowPopup(false)} />
+          </div>
         </div>
       )}
     </>

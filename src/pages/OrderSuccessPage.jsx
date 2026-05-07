@@ -13,10 +13,19 @@ const OrderSuccessPage = () => {
   const { currentOrder: order, loading, error } = useSelector((state) => state.order);
   
   // Navigation state se orderId lo
-  const orderId = location.state?.orderData?.order_id;
+  const orderId = location.state?.orderData.order_id;
 
   useEffect(() => {
+    console.log("successpageorderid",orderId)
     if (orderId) {
+
+       // GTM Event Fire
+      window.dataLayer = window.dataLayer || [];
+
+      window.dataLayer.push({
+        event: "purchase_success",
+        transaction_id: orderId,
+      });
       // Redux thunk se order details fetch karo
       dispatch(fetchOrderDetails(orderId));
     }
