@@ -60,6 +60,7 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
           wallet_amount: useWallet ? walletAmount : 0,
           amount: grandTotal,
         });
+        console.log("walletverify",verify)
         if (verify.data.status) {
           toast.success('Order placed!');
           navigate('/order-success', { state: { orderData: verify.data.order } });
@@ -88,8 +89,11 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
               wallet_amount: useWallet ? walletAmount : 0,
               amount: grandTotal,
             });
+
+            console.log("verify",verify)
             if (verify.data.status) {
               toast.success('Payment successful!');
+              
               navigate('/order-success', { state: { orderData: verify.data.order } });
               dispatch(clearCart());
               onOrderComplete();
