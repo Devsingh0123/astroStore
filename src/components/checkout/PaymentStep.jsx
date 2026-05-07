@@ -7,7 +7,7 @@ import { api } from '../../redux/baseApi';
 import { clearCart } from '../../redux/slices/cartSlice';
 import { fetchWallet } from '../../redux/slices/walletSlice';
 
-const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID;
+const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID; 
 
 const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => {
   const dispatch = useDispatch();
@@ -62,7 +62,7 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
         });
         if (verify.data.status) {
           toast.success('Order placed!');
-          navigate('/order-success', { state: { orderData: verify.data } });
+          navigate('/order-success', { state: { orderData: verify.data.order } });
           dispatch(clearCart());
           onOrderComplete();
         } else toast.error('Verification failed');
@@ -90,7 +90,7 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
             });
             if (verify.data.status) {
               toast.success('Payment successful!');
-              navigate('/order-success', { state: { orderData: verify.data.order.order_id } });
+              navigate('/order-success', { state: { orderData: verify.data.order } });
               dispatch(clearCart());
               onOrderComplete();
             } else toast.error('Verification failed');
