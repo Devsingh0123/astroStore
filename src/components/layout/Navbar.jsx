@@ -103,7 +103,8 @@ const Navbar = () => {
 
           {/* User / Login button */}
           {isLoggedIn ? (
-            <div className="relative user-menu">
+            <div className="relative user-menu ">
+              <div className="flex items-center">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="focus:outline-none cursor-pointer"
@@ -112,14 +113,15 @@ const Navbar = () => {
                   <img
                     src={user.profile_image}
                     alt={user?.name?.charAt(0).toUpperCase()}
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-amber-200 object-cover cursor-pointer"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-amber-200 object-cover cursor-pointer"
                   />
                 ) : (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-medium text-sm sm:text-lg cursor-pointer">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-medium text-sm sm:text-lg cursor-pointer">
                     {user?.name?.charAt(0).toUpperCase()}
                   </div>
                 )}
               </button>
+              </div>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
                   <div className="px-4 py-3 border-b border-gray-100">
