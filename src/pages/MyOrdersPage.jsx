@@ -121,7 +121,7 @@ const MyOrdersPage = () => {
                     <p className="text-sm text-gray-500">Order Number : #{order.order_number}</p>
                     {order.timestamps?.created_at && (
                       <p className="text-sm text-gray-500 mt-1">
-                        Order On : {new Date(order.timestamps.created_at).toLocaleDateString()}
+                        Order On : {new Date(order.timestamps.created_at).toLocaleDateString('en-IN')}
                       </p>
                     )}
                   </div>

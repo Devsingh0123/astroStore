@@ -8,9 +8,9 @@ import Loader from "./components/common/Loader";
 import Layout from "./components/layout/Layout";
 import HomePage from "./pages/HomePage";
 import CategoryPage from "./pages/CategoryPage";
-import ProfilePage from "./pages/ProfilePage";
+// import ProfilePage from "./pages/ProfilePage";
 
-import AddressesPage from "./pages/AddressesPage";
+// import AddressesPage from "./pages/AddressesPage";
 
 import CheckoutPage from "./pages/CheckoutPage";
 // import MyOrderDetailsPage from "./pages/MyOrderDetailsPage";
@@ -19,9 +19,9 @@ import CheckoutPage from "./pages/CheckoutPage";
 // import OrderSuccessPage from "./pages/OrderSuccessPage";
 // import WishlistPage from "./pages/WishlistPage";
 // import Gemstonesinfo from "./pages/product info/GemstonesInfo";
-import GemstoneDetails from "./pages/product info/GemstoneDetails";
-import TrackMyOrderPage from "./pages/TrackMyOrderPage";
-import ComingSoon from "./components/common/ComingSoon";
+// import GemstoneDetails from "./pages/product info/GemstoneDetails";
+// import TrackMyOrderPage from "./pages/TrackMyOrderPage";
+// import ComingSoon from "./components/common/ComingSoon";
 import GoogleTagManager from "./components/common/GoogleTagManager";
 
 // Lazy load all pages
@@ -33,12 +33,18 @@ const PrivacyPolicyPage = lazy(() => import("./pages/legal/PrivacyPolicyPage"));
 const RefundPolicyPage = lazy(() => import("./pages/legal/RefundPolicyPage"));
 const ShippingPolicyPage = lazy(() => import("./pages/legal/ShippingPolicyPage"));
 const TermsAndConditionsPage = lazy(() => import("./pages/legal/TermsAndConditionsPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const AddressesPage = lazy(() => import("./pages/AddressesPage"));
 const MyOrderDetailsPage = lazy(() => import("./pages/MyOrderDetailsPage"));
 const MyOrdersPage = lazy(() => import("./pages/MyOrdersPage"));
 const WalletPage = lazy(() => import("./pages/WalletPage"));
 const OrderSuccessPage = lazy(() => import("./pages/OrderSuccessPage"));
 const WishlistPage = lazy(() => import("./pages/WishlistPage"));
 const Gemstonesinfo = lazy(() => import("./pages/product info/GemstonesInfo"));
+const GemstoneDetails = lazy(() => import("./pages/product info/GemstoneDetails"));
+const TrackMyOrderPage = lazy(() => import("./pages/TrackMyOrderPage"));
+const ComingSoon = lazy(() => import("./components/common/ComingSoon"));
+
 
 function App() {
   const path = useLocation().pathname;
@@ -85,31 +91,30 @@ function App() {
 
           {/* comming soon route */}
           <Route path="/coming-soon" element={<ComingSoon />} />
+          {/* user details */}
+          <Route path="/profile" element={<ProfilePage />} />
+          {/* ordersuccess */}
+          <Route path="order-success" element={<OrderSuccessPage />} />
+          {/* my order page */}
+          <Route path="/orders" element={<MyOrdersPage />} />
+          {/* order details page */}
+          <Route path="/orders/:id" element={<MyOrderDetailsPage />} />
+          {/* track my order page */}
+          <Route path="/track-order/:orderId?" element={<TrackMyOrderPage />} />
+          <Route path="/track-order/" element={<TrackMyOrderPage />} />
+          {/* user wallet */}
+          <Route path="/wallet" element={<WalletPage />} />
+          {/* wishlist */}
+          <Route path="/wishlist" element={<WishlistPage />} />
+          {/* address */}
+          <Route path="addresses" element={<AddressesPage />} />
 
         </Route>
 
         {/* ====================================================================================== */}
-
-        {/* user details */}
-        <Route path="/profile" element={<ProfilePage />} />
-
         {/* checkout currently not in use  */}
         <Route path="checkout" element={<CheckoutPage />} />
-        {/* ordersuccess */}
-        <Route path="order-success" element={<OrderSuccessPage />} />
-        {/* my order page */}
-        <Route path="/orders" element={<MyOrdersPage />} />
-        {/* order details page */}
-        <Route path="/orders/:id" element={<MyOrderDetailsPage />} />
-        {/* track my order page */}
-        <Route path="/track-order/:orderId?" element={<TrackMyOrderPage />} />
-        <Route path="/track-order/" element={<TrackMyOrderPage />} />
-        {/* user wallet */}
-        <Route path="/wallet" element={<WalletPage />} />
-        {/* wishlist */}
-        <Route path="/wishlist" element={<WishlistPage />} />
-        {/* address */}
-        <Route path="addresses" element={<AddressesPage />} />
+
 
 
 
