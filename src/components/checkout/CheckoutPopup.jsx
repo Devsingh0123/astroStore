@@ -14,6 +14,7 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(() => (!isLoggedIn ? 'login' : 'address'));
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [isSummaryOpen, setIsSummaryOpen] = useState(true);
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
   const paymentRef = useRef();
 
   if (!isOpen) return null;
@@ -57,11 +58,16 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[480px] h-[90vh] flex flex-col relative overflow-hidden animate-slideUp">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white sticky top-0 z-10">
+          {/* back button */}
           <button onClick={handleBack} className="p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200">
             <ArrowLeft size={20} className="text-gray-600" />
           </button>
           <img src={logo} alt="Astrotring" className="h-8" />
-          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200">
+          {/* cross button */}
+          <button
+            onClick={() => setShowCancelPopup(true)}
+            className="p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
+          >
             <X size={20} className="text-gray-600" />
           </button>
         </div>
@@ -74,27 +80,27 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
           >
             <div className="flex items-center gap-2">
               <span className="font-light text-xs text-gray-800">Order Summary</span>
-            {isSummaryOpen ? <ChevronUp size={12} className="text-gray-500" /> : <ChevronDown size={12} className="text-gray-500" />}
+              {isSummaryOpen ? <ChevronUp size={12} className="text-gray-500" /> : <ChevronDown size={12} className="text-gray-500" />}
 
               {appliedCoupon && <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Coupon</span>}
             </div>
-              <span className="text-xs font-bold text-amber-600">₹{grandTotal.toLocaleString()}</span>
+            <span className="text-xs font-bold text-amber-600">₹{grandTotal.toLocaleString()}</span>
 
           </button>
 
           {isSummaryOpen && (
-            <div className="px-5 pb-4 space-y-4 max-h-64 overflow-y-auto border-t border-gray-100">
+            <div className="px-5 pb-4 space-y-4 max-h-50 overflow-y-auto border-t border-gray-100 scrollbar-hide">
               {cartItems.map((item) => (
                 <div key={item.id} className="flex gap-3 items-center">
                   <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-lg border border-gray-200" />
                   <div className="flex-1">
-                    <p className="font-medium text-gray-800">{item.name}</p>
+                    <p className="font-sm text-sm text-gray-800">{item.name}</p>
                     <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                     {item.ratti && <p className="text-xs text-gray-500">Ratti: {item.ratti}</p>}
                     <p className="text-xs text-gray-500 ">Price: ₹{item.price}</p>
 
                   </div>
-                  
+
                 </div>
               ))}
               <div className="border-t pt-3 space-y-1.5 text-sm">
@@ -122,10 +128,13 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
         </div>
 
         {/* Step Content */}
-        <div className="flex-1 overflow-y-auto p-5">
+        <div className="flex-1 overflow-y-auto p-5 scrollbar-hide">
           {step === 'login' && <MobileLoginStep onLoginSuccess={handleLoginSuccess} onSignupClick={() => setStep('signup')} />}
+
           {step === 'signup' && <SignupStep onSignupSuccess={handleSignupSuccess} onBackToLogin={() => setStep('login')} />}
+
           {step === 'address' && <AddressStep selectedAddressId={selectedAddressId} onSelectAddress={setSelectedAddressId} />}
+          
           {step === 'payment' && <PaymentStep ref={paymentRef} selectedAddressId={selectedAddressId} onOrderComplete={handleOrderComplete} />}
         </div>
 
@@ -141,7 +150,38 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
             </button>
           </div>
         )}
-      </div>
+      </div>{/* Cancel Payment Popup */}
+      {showCancelPopup && (
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-4 w-[90%] max-w-sm shadow-2xl animate-fadeIn">
+
+            <p className="text-sm text-gray-900">
+              Are you sure you want to cancel the payment process?
+            </p>
+
+            <div className="flex gap-10 justify-between">
+               {/* YES BUTTON */}
+              <div
+                onClick={onClose}
+                className="flex-1 text-gray-400 font-semibold text-center cursor-pointer"
+              >
+                Yes
+              </div>
+              {/* NO BUTTON */}
+              <div
+                onClick={() => setShowCancelPopup(false)}
+                className="flex-1 text-gray-400 font-semibold text-center cursor-pointer"
+              >
+                No
+              </div>
+
+             
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 };

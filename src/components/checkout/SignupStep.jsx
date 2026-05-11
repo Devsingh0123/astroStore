@@ -1,6 +1,7 @@
 // src/components/checkout/SignupStep.jsx
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { api } from '../../redux/baseApi';
 import { toast } from 'react-toastify';
 
@@ -10,12 +11,19 @@ const SignupStep = ({ onSignupSuccess, onBackToLogin }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? (checked ? 1 : 0) : value }));
+    if (type === 'checkbox') {
+      setForm(prev => ({ ...prev, [name]: checked ? 1 : 0 }));
+    } else {
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.terms_accepted) return toast.error('Accept terms');
+    if (!form.terms_accepted) {
+      toast.error('You must accept the Terms & Conditions');
+      return;
+    }
     setLoading(true);
     try {
       const res = await api.post('/user/register', form);
@@ -23,7 +31,7 @@ const SignupStep = ({ onSignupSuccess, onBackToLogin }) => {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('role_id', res.data.role_id);
         toast.success('Registration successful! Please login.');
-        onBackToLogin();
+        onBackToLogin(); // go back to login step
       } else {
         toast.error('Registration failed');
       }
@@ -36,29 +44,81 @@ const SignupStep = ({ onSignupSuccess, onBackToLogin }) => {
 
   return (
     <div className="space-y-5">
-      <h2 className="text-2xl font-bold text-gray-800">Create Account</h2>
+      <h2 className="text-xl font-semibold text-gray-800">Create Account</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="name" placeholder="Full name" value={form.name} onChange={handleChange} className="w-full px-4 py-3 border rounded-xl" required />
-        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full px-4 py-3 border rounded-xl" required />
+        <input
+          name="name"
+          placeholder="Full name"
+          value={form.name}
+          onChange={handleChange}
+          className="w-full px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-1 focus:ring-amber-300 focus:border-amber-300 transition"
+          required
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          className="w-full px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-1 focus:ring-amber-300 focus:border-amber-300 transition"
+          required
+        />
         <div className="flex gap-2">
-          <select name="country_code" value={form.country_code} onChange={handleChange} className="px-3 py-3 border rounded-xl bg-white">
+          <select
+            name="country_code"
+            value={form.country_code}
+            onChange={handleChange}
+            className="px-3 py-3 border rounded-xl bg-white border-gray-300 focus:outline-none focus:ring-1 focus:ring-amber-300 focus:border-amber-300 transition"
+          >
             <option value="+91">+91</option>
             <option value="+1">+1</option>
             <option value="+44">+44</option>
           </select>
-          <input name="mobile" placeholder="Mobile number" value={form.mobile} onChange={handleChange} className="flex-1 px-4 py-3 border rounded-xl" required />
+          <input
+            name="mobile"
+            placeholder="Mobile number"
+            value={form.mobile}
+            onChange={handleChange}
+            className="flex-1 px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-1 focus:ring-amber-300 focus:border-amber-300 transition"
+            required
+          />
         </div>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={form.terms_accepted === 1} onChange={handleChange} />
-          I accept the <a href="/terms-conditions" className="text-amber-600">Terms & Conditions</a>
-        </label>
-        <button type="submit" disabled={loading} className="w-full py-3 bg-amber-600 text-white rounded-xl font-semibold">
+
+        {/* Terms and conditions checkbox */}
+        <div className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            id="terms"
+            name="terms_accepted"
+            checked={form.terms_accepted === 1}
+            onChange={handleChange}
+            className="mt-1 cursor-pointer"
+          />
+          <label htmlFor="terms" className="text-xs text-gray-600">
+            I have read and agree to the{" "}
+            <Link to="/terms-conditions" target="_blank" className="text-amber-600 hover:underline">
+              Terms & Conditions
+            </Link>{" "}
+            and{" "}
+            <Link to="/privacy-policy" target="_blank" className="text-amber-600 hover:underline">
+              Privacy Policy
+            </Link>.
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700 transition"
+        >
           {loading ? 'Creating...' : 'Sign Up'}
         </button>
       </form>
       <p className="text-center text-gray-500">
         Already have an account?{' '}
-        <button onClick={onBackToLogin} className="text-amber-600 font-medium">Login</button>
+        <button onClick={onBackToLogin} className="text-amber-600 font-medium hover:underline">
+          Login
+        </button>
       </p>
     </div>
   );

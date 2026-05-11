@@ -48,7 +48,7 @@ const MobileLoginStep = ({ onLoginSuccess, onSignupClick }) => {
 
   return (
     <div className="space-y-5">
-      <h2 className="text-2xl font-bold text-gray-800">Login to Checkout</h2>
+      <h2 className="text-xl font-semibold text-gray-800">Login to Checkout</h2>
       {step === 'email' ? (
         <form onSubmit={handleSendOtp} className="space-y-4">
           <input
@@ -57,7 +57,7 @@ const MobileLoginStep = ({ onLoginSuccess, onSignupClick }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email address"
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-amber-300 focus:border-transparent transition" 
             required
           />
           <button
@@ -75,7 +75,7 @@ const MobileLoginStep = ({ onLoginSuccess, onSignupClick }) => {
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
             placeholder="6-digit OTP"
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-amber-300"
             required
           />
           <button

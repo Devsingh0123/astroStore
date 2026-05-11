@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderDetails, clearOrderError, clearCurrentOrder, cancelOrder } from '../redux/slices/orderSlice';
 import { toast } from 'react-toastify';
 import Loader from '@/components/common/Loader';
-import { ArrowLeft, Calendar, Package, MapPin, CreditCard, XCircle, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Package, MapPin, CreditCard, XCircle, Printer, CheckCircle } from 'lucide-react';
 
 const MyOrderDetailsPage = () => {
   const { id } = useParams();
@@ -53,7 +53,9 @@ const MyOrderDetailsPage = () => {
       </div>
     );
   }
-
+  const handleInvoicePrint = () => {
+    navigate("/order-success", { state: { orderData: currentOrder.order_id } })
+  };
   if (loading) return <Loader data="Loading order details..." />;
 
   if (!currentOrder) {
@@ -71,12 +73,20 @@ const MyOrderDetailsPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <button
-          onClick={() => navigate('/orders')}
-          className="flex items-center gap-2 text-amber-600 hover:underline mb-6 cursor-pointer"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to Orders
-        </button>
+        <div className="flex justify-between items-center mb-6">
+          <button
+            onClick={() => navigate('/orders')}
+            className="flex items-center gap-2 text-amber-600 hover:underline cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to Orders
+          </button>
+          <button
+            onClick={handleInvoicePrint}
+            className="flex items-center gap-2 px-2 py-2 mr-2 bg-amber-500 text-white/90 rounded-lg hover:bg-amber-600 transition"
+          >
+            <Printer className="w-4 h-4" /> Print Invoice
+          </button>
+        </div>
 
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           {/* Header */}
@@ -87,7 +97,7 @@ const MyOrderDetailsPage = () => {
               <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
                 <Calendar className="w-3 h-3" />Order On : {order?.timestamps?.created_at ? new Date(order.timestamps.created_at).toLocaleString('en-IN') : 'N/A'}
               </p>
-              
+
               {order.timestamps?.delivered_at && (
                 <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
                   <CheckCircle className="w-3 h-3 text-green-500" /> Delivered On : {new Date(order.timestamps.delivered_at).toLocaleString()}
@@ -99,12 +109,11 @@ const MyOrderDetailsPage = () => {
                 </p>
               )}
             </div>
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-              order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-              order.status === 'paid' ? 'bg-green-100 text-green-800' :
-              order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-              'bg-yellow-100 text-yellow-800'
-            }`}>
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                order.status === 'paid' ? 'bg-green-100 text-green-800' :
+                  order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800'
+              }`}>
               {order.status?.toUpperCase() || 'PENDING'}
             </span>
           </div>

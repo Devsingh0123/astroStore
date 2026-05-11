@@ -13,7 +13,7 @@ const OrderSuccessPage = () => {
   const { currentOrder: order, loading, error } = useSelector((state) => state.order);
   
   // Navigation state se orderId lo
-  const orderId = location.state?.orderData?.order_id;
+  const orderId = location.state?.orderData;
 
   useEffect(() => {
     console.log("successpageorderid",orderId)

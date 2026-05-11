@@ -61,9 +61,14 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
           amount: grandTotal,
         });
         console.log("walletverify",verify)
+        
+           
+            console.log("walletverify2",verify.data)
+            console.log("walletverify3",verify.data.order)
+            console.log("walletverify4",verify.data.order.order_id)
         if (verify.data.status) {
           toast.success('Order placed!');
-          navigate('/order-success', { state: { orderData: verify.data.order } });
+          navigate('/order-success', { state: { orderData: verify.data.order.order_id } });
           dispatch(clearCart());
           onOrderComplete();
         } else toast.error('Verification failed');
@@ -91,10 +96,13 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
             });
 
             console.log("verify",verify)
+            console.log("verify2",verify.data)
+            console.log("verify3",verify.data.order)
+            console.log("verify4",verify.data.order.order_id)
             if (verify.data.status) {
               toast.success('Payment successful!');
               
-              navigate('/order-success', { state: { orderData: verify.data.order } });
+              navigate('/order-success', { state: { orderData: verify.data.order.order_id } });
               dispatch(clearCart());
               onOrderComplete();
             } else toast.error('Verification failed');
