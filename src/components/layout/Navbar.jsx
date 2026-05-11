@@ -61,7 +61,7 @@ const Navbar = () => {
     <div className="relative">
       <button
         onClick={onClick}
-        className="group relative w-10 sm:w-auto h-10 rounded-full border border-[#cfcfcf] bg-[#f7f7f7] overflow-hidden flex items-center justify-center cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300"
+        className="group relative w-10 sm:w-auto h-10 rounded-full border border-amber-500 bg-[#f7f7f7] overflow-hidden flex items-center justify-center cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300"
       >
         {/* Top cut */}
         <span className="absolute top-[-1px] left-1/2 -translate-x-1/2 w-[52%] h-[6px] bg-[#f7f7f7] transition-all duration-500 group-hover:w-0" />

@@ -184,7 +184,7 @@ const ProfilePage = () => {
                     </h2>
                     <p className="text-gray-500 text-sm">
                       Member since{" "}
-                      {new Date(user.created_at).toLocaleDateString()}
+                      {user.join_us}
                     </p>
                   </div>
                 </div>
