@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../redux/slices/cartSlice";
 import {
   Settings,
   ShoppingCart,
+  ShoppingBag,
   Heart,
   ChevronLeft,
   ChevronRight,
@@ -65,6 +66,8 @@ const ProductDetailsPage = () => {
   const [selectedRatti, setSelectedRatti] = useState("");
   const [openFaq, setOpenFaq] = useState(null);
   const [pincode, setPincode] = useState("");
+
+  const navigate = useNavigate();
 
 
   // Redux state
@@ -176,12 +179,12 @@ const ProductDetailsPage = () => {
 
   // --- Media: objects with url, type, and thumbnail ---
   let mediaItems = [];
-  if (product?.image){
-    const url =product.image;
+  if (product?.image) {
+    const url = product.image;
     mediaItems.push({
-        url
-        
-      });
+      url
+
+    });
   }
   if (product?.images?.length) {
     product.images.forEach(item => {
@@ -209,7 +212,7 @@ const ProductDetailsPage = () => {
         specs.push({ label: spec.title, value: spec.value });
       });
     }
-   if (product?.weight) specs.push({ label: "Weight", value: product.weight + " gm" });
+    if (product?.weight) specs.push({ label: "Weight", value: product.weight + " gm" });
     // if (product?.length && product?.breadth && product?.height) specs.push({ label: "Dimension", value: `${Math.round(product.length)} X ${Math.round(product?.breadth)} X ${Math.round(product?.height)}` });
     if (product?.length) specs.push({ label: "Length", value: product.length + " cm" });
     if (product?.breadth) specs.push({ label: "Breadth", value: product.breadth + " cm" });
@@ -266,7 +269,24 @@ const ProductDetailsPage = () => {
     setQuantity((prev) => Math.max(1, prev + delta));
   };
 
- const handleAddToCart = async () => {
+  const handleAddToCart = async () => {
+    try {
+      await dispatch(addToCart({
+        product_id: product.id,
+        quantity,
+        ratti: selectedRatti,
+        name: product.name,
+        price: displayAfterPrice,
+        image: product.image,
+      })).unwrap();
+      toast.success(`${product?.name} added to cart!`);
+      dispatch(fetchCart());
+    } catch (err) {
+      toast.error(err || "Failed to add to cart");
+    }
+  };
+
+  const handleBuyNow = async () => {
   try {
     await dispatch(addToCart({
       product_id: product.id,
@@ -277,7 +297,7 @@ const ProductDetailsPage = () => {
       image: product.image,
     })).unwrap();
     toast.success(`${product?.name} added to cart!`);
-    dispatch(fetchCart());
+    navigate('/cart'); // redirect to cart page
   } catch (err) {
     toast.error(err || "Failed to add to cart");
   }
@@ -400,8 +420,8 @@ const ProductDetailsPage = () => {
                       key={idx}
                       onClick={() => setSelectedMediaIndex(idx)}
                       className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-sm md:rounded-lg border-2 overflow-hidden transition-all cursor-pointer ${selectedMediaIndex === idx
-                          ? "border-amber-600 shadow-md"
-                          : "border-gray-200 hover:border-gray-300"
+                        ? "border-amber-600 shadow-md"
+                        : "border-gray-200 hover:border-gray-300"
                         }`}
                     >
                       {isVideo ? (
@@ -501,8 +521,8 @@ const ProductDetailsPage = () => {
                       key={opt.ratti}
                       onClick={() => setSelectedRatti(opt.ratti.toString())}
                       className={`px-4 py-2 border rounded-lg text-sm font-medium transition-all cursor-pointer ${selectedRatti === opt.ratti.toString()
-                          ? "border-amber-600 bg-amber-50 text-amber-700"
-                          : "border-gray-300 hover:border-gray-400 text-gray-700"
+                        ? "border-amber-600 bg-amber-50 text-amber-700"
+                        : "border-gray-300 hover:border-gray-400 text-gray-700"
                         }`}
                     >
                       {opt.ratti}
@@ -523,38 +543,21 @@ const ProductDetailsPage = () => {
             {/* Quantity & Add to Cart */}
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex items-center border border-gray-300 rounded-lg w-fit">
-                <button
-                  onClick={() => handleQuantityChange(-1)}
-                  className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg cursor-pointer"
-                >
-                  -
-                </button>
+                <button onClick={() => handleQuantityChange(-1)} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg">-</button>
                 <span className="w-12 text-center font-medium">{quantity}</span>
-                <button
-                  onClick={() => handleQuantityChange(1)}
-                  className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg cursor-pointer"
-                >
-                  +
-                </button>
+                <button onClick={() => handleQuantityChange(1)} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg">+</button>
               </div>
-              <button
-                onClick={handleAddToCart}
-                className="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-3 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
-              >
+              <button onClick={handleAddToCart} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white/80 py-2 px-2 rounded-lg font-medium flex items-center justify-center gap-2 transition">
                 <ShoppingCart className="w-5 h-5" /> Add to Cart
               </button>
-              <button
-                onClick={handleWishlistToggle}
-                className="flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition cursor-pointer gap-2"
-              >
-                <Heart
-                  className={`w-5 h-5 ${isInWishlist ? "fill-red-500 text-red-500" : "text-red-600"
-                    }`}
-                />
-               <h1 className="sm:hidden">  Add to Wishlist</h1>
+              <button onClick={handleBuyNow} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white/80 py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition">
+                <ShoppingBag className="w-5 h-5" /> Buy Now
+              </button>
+              <button onClick={handleWishlistToggle} className="flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition gap-2">
+                <Heart className={`w-5 h-5 ${isInWishlist ? "fill-red-500 text-red-500" : "text-red-600"}`} />
+                <span className="sm:hidden">Wishlist</span>
               </button>
             </div>
-
             {/* Shipping Info Summary */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 border-t border-gray-200 pt-4">
               <div className="flex items-center gap-2">

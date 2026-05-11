@@ -13,12 +13,12 @@ import ProfilePage from "./pages/ProfilePage";
 import AddressesPage from "./pages/AddressesPage";
 
 import CheckoutPage from "./pages/CheckoutPage";
-import MyOrderDetailsPage from "./pages/MyOrderDetailsPage";
-import MyOrdersPage from "./pages/MyOrdersPage";
-import WalletPage from "./pages/WalletPage";
-import OrderSuccessPage from "./pages/OrderSuccessPage";
-import WishlistPage from "./pages/WishlistPage";
-import Gemstonesinfo from "./pages/product info/GemstonesInfo";
+// import MyOrderDetailsPage from "./pages/MyOrderDetailsPage";
+// import MyOrdersPage from "./pages/MyOrdersPage";
+// import WalletPage from "./pages/WalletPage";
+// import OrderSuccessPage from "./pages/OrderSuccessPage";
+// import WishlistPage from "./pages/WishlistPage";
+// import Gemstonesinfo from "./pages/product info/GemstonesInfo";
 import GemstoneDetails from "./pages/product info/GemstoneDetails";
 import TrackMyOrderPage from "./pages/TrackMyOrderPage";
 import ComingSoon from "./components/common/ComingSoon";
@@ -33,6 +33,12 @@ const PrivacyPolicyPage = lazy(() => import("./pages/legal/PrivacyPolicyPage"));
 const RefundPolicyPage = lazy(() => import("./pages/legal/RefundPolicyPage"));
 const ShippingPolicyPage = lazy(() => import("./pages/legal/ShippingPolicyPage"));
 const TermsAndConditionsPage = lazy(() => import("./pages/legal/TermsAndConditionsPage"));
+const MyOrderDetailsPage = lazy(() => import("./pages/MyOrderDetailsPage"));
+const MyOrdersPage = lazy(() => import("./pages/MyOrdersPage"));
+const WalletPage = lazy(() => import("./pages/WalletPage"));
+const OrderSuccessPage = lazy(() => import("./pages/OrderSuccessPage"));
+const WishlistPage = lazy(() => import("./pages/WishlistPage"));
+const Gemstonesinfo = lazy(() => import("./pages/product info/GemstonesInfo"));
 
 function App() {
   const path = useLocation().pathname;
@@ -87,7 +93,7 @@ function App() {
         {/* user details */}
         <Route path="/profile" element={<ProfilePage />} />
 
-        {/* checkout  */}
+        {/* checkout currently not in use  */}
         <Route path="checkout" element={<CheckoutPage />} />
         {/* ordersuccess */}
         <Route path="order-success" element={<OrderSuccessPage />} />
