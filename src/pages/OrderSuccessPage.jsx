@@ -8,18 +8,18 @@ import Loader from '@/components/common/Loader';
 const OrderSuccessPage = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  
+
   // Redux state se data lo
   const { currentOrder: order, loading, error } = useSelector((state) => state.order);
-  
+
   // Navigation state se orderId lo
   const orderId = location.state?.orderData;
 
   useEffect(() => {
-    console.log("successpageorderid",orderId)
+    console.log("successpageorderid", orderId)
     if (orderId) {
 
-       // GTM Event Fire
+      // GTM Event Fire
       window.dataLayer = window.dataLayer || [];
 
       window.dataLayer.push({
@@ -29,7 +29,7 @@ const OrderSuccessPage = () => {
       // Redux thunk se order details fetch karo
       dispatch(fetchOrderDetails(orderId));
     }
-    
+
     // Cleanup: page leave karte time current order clear karo
     return () => {
       dispatch(clearCurrentOrder());
@@ -40,7 +40,7 @@ const OrderSuccessPage = () => {
     window.print();
   };
 
-  
+
 
   // Loading state
   if (loading) {
@@ -107,7 +107,7 @@ const OrderSuccessPage = () => {
   const discount = order.pricing?.discount || order.discount || 0;
   const walletUsed = order.pricing?.wallet_used || order.wallet_used || 0;
   const totalPaid = order.pricing?.paid_online || order.pricing?.total_amount || order.total_amount || order.total || 0;
-  
+
   const items = order.items || order.order_items || [];
   const address = order.address?.snapshot || order.address || {};
   const payment = order.payment || {};
@@ -124,7 +124,7 @@ const OrderSuccessPage = () => {
 
         {/* Invoice Card */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          
+
           {/* Header - Order Number & Date */}
           <div className="border-b border-gray-200 px-5 py-4">
             <div className="flex justify-between items-center flex-wrap gap-3">
@@ -151,7 +151,7 @@ const OrderSuccessPage = () => {
               <span className="text-sm text-green-600 font-medium">✓ Payment Successful</span>
               <span className="text-gray-300">|</span>
               <span className="text-sm text-gray-600">
-                Order Status: 
+                Order Status:
                 <span className="ml-1 font-semibold text-green-600">
                   {order.status?.toUpperCase() || 'CONFIRMED'}
                 </span>
@@ -159,7 +159,7 @@ const OrderSuccessPage = () => {
             </div>
           </div>
 
-          
+
           {/* Delivery Address */}
           {order.address?.snapshot && (
             <div className="border-b border-gray-200 px-5 py-4 flex flex-wrap gap-2 items-center">
@@ -192,11 +192,11 @@ const OrderSuccessPage = () => {
                       <td className="py-3">
                         <div className="flex items-center gap-3">
                           {item.image && (
-                            <img 
-                              src={item.image} 
-                              alt={item.name} 
+                            <img
+                              src={item.image}
+                              alt={item.name}
                               className="w-12 h-12 object-cover rounded-lg border border-gray-200"
-                              
+
                             />
                           )}
                           <div>
@@ -279,12 +279,15 @@ const OrderSuccessPage = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
-          <button
-            onClick={handlePrint}
+          <Link
+            to="/invoice"
+            state={{ orderData: orderId }}
+            
+            rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm font-medium"
           >
             <Printer className="w-4 h-4" /> Print Invoice
-          </button>
+          </Link>
           <div className="flex gap-3">
             <Link
               to="/orders"
