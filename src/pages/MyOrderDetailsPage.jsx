@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderDetails, clearOrderError, clearCurrentOrder, cancelOrder } from '../redux/slices/orderSlice';
 import { toast } from 'react-toastify';
 import Loader from '@/components/common/Loader';
-import { ArrowLeft, Calendar, Package, MapPin, CreditCard, XCircle, Printer, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Package, MapPin, CreditCard, XCircle, CheckCircle, BookOpen } from 'lucide-react';
 
 const MyOrderDetailsPage = () => {
   const { id } = useParams();
@@ -53,8 +53,8 @@ const MyOrderDetailsPage = () => {
       </div>
     );
   }
-  const handleInvoicePrint = () => {
-    navigate("/order-success", { state: { orderData: currentOrder.order_id } })
+  const handleInvoiceOpen = () => {
+    navigate("/invoice", { state: { orderData: currentOrder.order_id } })
   };
   if (loading) return <Loader data="Loading order details..." />;
 
@@ -81,10 +81,10 @@ const MyOrderDetailsPage = () => {
             <ArrowLeft className="w-4 h-4" /> Back to Orders
           </button>
           <button
-            onClick={handleInvoicePrint}
+            onClick={handleInvoiceOpen}
             className="flex items-center gap-2 px-2 py-2 mr-2 bg-amber-500 text-white/90 rounded-lg hover:bg-amber-600 transition"
           >
-            <Printer className="w-4 h-4" /> Print Invoice
+            <BookOpen  className="w-4 h-4" /> View Invoice
           </button>
         </div>
 

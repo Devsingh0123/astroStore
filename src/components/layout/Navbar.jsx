@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FaUser, FaShoppingCart, FaSignOutAlt, FaUserCircle, FaClipboardList, FaHeart, FaHome } from "react-icons/fa";
 import logo from "../../assets/logo.png";
-import { logout } from "../../redux/slices/userAuthSlice";
+import { logout, userLogout} from "../../redux/slices/userAuthSlice";
 import { openLoginModal } from "../../redux/slices/uiSlice";
 import { toast } from "react-toastify";
 import { fetchCart } from "@/redux/slices/cartSlice";
@@ -49,12 +49,20 @@ const Navbar = () => {
     return () => document.removeEventListener("click", closeDropdown);
   }, []);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    setDropdownOpen(false);
+
+
+const handleLogout = async () => {
+  setDropdownOpen(false);
+  try {
+    await dispatch(userLogout()).unwrap();
     toast.success("Logged out!!");
-    navigate("/");
-  };
+  } catch (err) {
+    // fallback to local logout if backend fails
+    dispatch(logout());
+    toast.error("Logged out!!");
+  }
+  navigate("/");
+};
 
   // Reusable button component for cart and login
   const NavButton = ({ onClick, icon: Icon, label, count = 0 }) => (

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { logout } from "./slices/userAuthSlice";
 
 export const api = axios.create({
   baseURL: "https://backend.astrotring.shop/api",
@@ -17,3 +18,22 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
+
+// Response interceptor – handle token expiry (401)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear local storage
+      localStorage.removeItem("token");
+      localStorage.removeItem("role_id");
+      // Dispatch logout action to clear Redux state
+      store.dispatch(logout());
+      // Optional: redirect to home page (avoid infinite loops)
+      if (window.location.pathname !== "/") {
+        window.location.href = "/";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
