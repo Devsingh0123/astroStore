@@ -23,6 +23,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 // import TrackMyOrderPage from "./pages/TrackMyOrderPage";
 // import ComingSoon from "./components/common/ComingSoon";
 import GoogleTagManager from "./components/common/GoogleTagManager";
+import OrderInvoice from "./pages/OrderInvoice";
 
 // Lazy load all pages
 
@@ -69,8 +70,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="product/:id" element={<ProductDetailsPage />} />
-          <Route path="cart" element={<CartPage />} />
+          <Route path="/product/:id" element={<ProductDetailsPage />} />
+          <Route path="/cart" element={<CartPage />} />
 
           {/* Policies and T&C */}
           <Route path="/disclaimer" element={<DisclaimerPage />} />
@@ -94,7 +95,7 @@ function App() {
           {/* user details */}
           <Route path="/profile" element={<ProfilePage />} />
           {/* ordersuccess */}
-          <Route path="order-success" element={<OrderSuccessPage />} />
+          <Route path="/order-success" element={<OrderSuccessPage />} />
           {/* my order page */}
           <Route path="/orders" element={<MyOrdersPage />} />
           {/* order details page */}
@@ -107,13 +108,14 @@ function App() {
           {/* wishlist */}
           <Route path="/wishlist" element={<WishlistPage />} />
           {/* address */}
-          <Route path="addresses" element={<AddressesPage />} />
+          <Route path="/addresses" element={<AddressesPage />} />
 
         </Route>
 
         {/* ====================================================================================== */}
         {/* checkout currently not in use  */}
-        <Route path="checkout" element={<CheckoutPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/invoice" element={<OrderInvoice />} />
 
 
 
