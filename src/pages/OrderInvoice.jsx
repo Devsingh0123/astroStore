@@ -51,7 +51,7 @@ const OrderInvoice = () => {
     };
   }, [dispatch, orderId]);
 
-   // Auto-print when order loads
+  // Auto-print when order loads
   const [hasAutoPrinted, setHasAutoPrinted] = useState(false);
   useEffect(() => {
     if (order && !loading && !hasAutoPrinted) {
@@ -76,20 +76,20 @@ const OrderInvoice = () => {
   const orderNumber = order.order_number || '-';
   const orderDate = order.timestamps?.created_at
     ? new Date(order.timestamps.created_at).toLocaleDateString('en-IN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    })
     : '-';
 
   const invoiceNo = order.invoice_number || '-';
   const invoiceDetails = order.payment?.transaction_id || '-';
   const invoiceDate = order.timestamps?.created_at
     ? new Date(order.timestamps.created_at).toLocaleDateString('en-IN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    })
     : '-';
 
   // Address
@@ -121,16 +121,16 @@ const OrderInvoice = () => {
   const transactionId = order.payment?.transaction_id || '-';
   const paidAt = order.payment?.paid_at
     ? new Date(order.payment.paid_at).toLocaleString('en-IN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
     : '-';
   const paymentMode = order.payment?.mode || order.payment?.gateway || 'Online';
   const invoiceValue = grandTotal;
-  
+
   // Convert amount to words (e.g., 699 -> "Six Hundred Ninety Nine Rupees Only")
   const amountInWords = `${numberToWords(Math.floor(invoiceValue))} Rupees Only`;
 
@@ -227,7 +227,7 @@ const OrderInvoice = () => {
         <td className="border-r border-black p-1 align-middle text-right">₹{deliveryCharge.toFixed(2)}</td>
         <td className="border-r border-black p-1 align-middle text-center">1</td>
         <td className="border-r border-black p-1 align-middle text-right">₹{shippingNet.toFixed(2)}</td>
-        
+
         {/* Tax Rate column - stacked for CGST/SGST */}
         <td className="border-r border-black p-1 align-middle text-center">
           {isCgstSgst ? (
@@ -269,12 +269,12 @@ const OrderInvoice = () => {
     );
   }
 
-  
+
 
   return (
     <div className="w-full bg-amber-200 py-10">
       {/* A4 PAGE */}
-      <div className="w-[794px] min-h-[1123px] bg-white mx-auto text-black font-sans border border-gray-400">
+      <div className="w-[794px] min-h-[1123px] flex flex-col bg-white mx-auto text-black font-sans border border-gray-400">
         {/* HEADER */}
         <div className="flex justify-between items-center px-8 pt-6">
           <div>
@@ -413,7 +413,23 @@ const OrderInvoice = () => {
             </tfoot>
           </table>
         </div>
+        {/* 👇 DISCLAIMER / FOOTER - stays at bottom of every page */}
+        <div className="mt-auto text-[8px] font-semibold text-gray-600 bg-gray-50 border-t border-gray-200 p-4 rounded-b-md flex flex-col justify-center items-center flex-wrap ">
+          <p className="mb-1">Please note that this invoice is not a demand for payment.</p>
+          <p className="mb-1 ">
+            <p className="font-semibold flex justify-center">Regd Office: VELTEX SERVICES PRIVATE LIMITED</p> 
+            <p className="font-semibold flex flex-col items-center">711, Plot A09, ITL Towers, Netaji Subhash Place,<p> Pitampura, Delhi 110034, Bharat</p></p>
+          </p>
+          <p className="mb-1">
+            Email: care@astrotring.shop | Tel: +91 11 41103510
+          </p>
+          <p className="text-[8px] font-bold">
+            Customers desirous of availing input GST credit are requested to write an email at care@astrotring.com
+            and get a Business account on Business eligible offers.
+          </p>
+        </div>
       </div>
+
     </div>
   );
 };
