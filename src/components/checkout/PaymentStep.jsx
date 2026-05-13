@@ -32,7 +32,7 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
   }, [dispatch]);
 
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
-  const shipping = subtotal > 599 ? 0 : 199;
+  const shipping = subtotal >= 800 ? 0 : 149;
   const grandTotal = subtotal + shipping - couponDiscount;
 
   const handlePlaceOrder = async () => {
