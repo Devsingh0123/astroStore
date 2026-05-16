@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../redux/slices/cartSlice";
@@ -66,6 +66,8 @@ const ProductDetailsPage = () => {
   const [selectedRatti, setSelectedRatti] = useState("");
   const [openFaq, setOpenFaq] = useState(null);
   const [pincode, setPincode] = useState("");
+  const buttonSectionRef = useRef(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
 
   const navigate = useNavigate();
 
@@ -116,9 +118,9 @@ const ProductDetailsPage = () => {
   // --- Set default Ratti when product loads ---
   useEffect(() => {
     if (product?.ratti_options?.length > 0) {
-      setSelectedRatti(product.ratti_options[0].ratti.toString());
+      setSelectedRatti(product.ratti_options[0].ratti);
     } else {
-      setSelectedRatti("5"); // fallback only for ratti (UI control)
+      setSelectedRatti(null); // fallback only for ratti (UI control)
     }
   }, [product]);
 
@@ -129,6 +131,33 @@ const ProductDetailsPage = () => {
     }
   }, [dispatch]);
 
+  // add IntersectionObserver for bottom add to cart and buy now sticky button
+  useEffect(() => {
+    if (!buttonSectionRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: "0px 0px -80px 0px" } // thoda pehle trigger kare
+    );
+    observer.observe(buttonSectionRef.current);
+    return () => observer.disconnect();
+  }, [product]);
+
+  // add IntersectionObserver for bottom add to cart and buy now sticky button to prevent footer section 
+useEffect(() => {
+  const footer = document.querySelector('footer');
+  if (!footer) return;
+  const footerObserver = new IntersectionObserver(
+    ([entry]) => {
+      
+      setShowStickyBar(!entry.isIntersecting);
+    },
+    { threshold: 0 }
+  );
+  footerObserver.observe(footer);
+  return () => footerObserver.disconnect();
+}, []);
 
 
 
@@ -158,7 +187,7 @@ const ProductDetailsPage = () => {
 
   const rattiOptions = product?.ratti_options || [];
   const selectedRattiObj = rattiOptions.find(
-    (opt) => opt.ratti.toString() === selectedRatti
+    (opt) => opt.ratti === selectedRatti
   );
 
   const displayAfterPrice = selectedRattiObj
@@ -287,21 +316,21 @@ const ProductDetailsPage = () => {
   };
 
   const handleBuyNow = async () => {
-  try {
-    await dispatch(addToCart({
-      product_id: product.id,
-      quantity,
-      ratti: selectedRatti,
-      name: product.name,
-      price: displayAfterPrice,
-      image: product.image,
-    })).unwrap();
-    toast.success(`${product?.name} added to cart!`);
-    navigate('/cart'); // redirect to cart page
-  } catch (err) {
-    toast.error(err || "Failed to add to cart");
-  }
-};
+    try {
+      await dispatch(addToCart({
+        product_id: product.id,
+        quantity,
+        ratti: selectedRatti,
+        name: product.name,
+        price: displayAfterPrice,
+        image: product.image,
+      })).unwrap();
+      toast.success(`${product?.name} added to cart!`);
+      navigate('/cart'); // redirect to cart page
+    } catch (err) {
+      toast.error(err || "Failed to add to cart");
+    }
+  };
 
   const handleImageError = (e) => {
     e.target.src = fallbackImage;
@@ -359,11 +388,11 @@ const ProductDetailsPage = () => {
         </nav>
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           {/* LEFT COLUMN: MEDIA GALLERY */}
-          <div className="space-y-4 lg:sticky lg:top-8 lg:self-start">
+          <div className="space-y-4 lg:sticky lg:top-16 lg:self-start">
             {/* Main Media */}
-            <div className="relative aspect-square bg-white rounded-sm md:rounded-2xl overflow-hidden border border-gray-200 shadow-lg group">
+            <div className="relative aspect-square bg-white rounded-sm md:rounded-xl overflow-hidden border border-gray-200 shadow-lg group">
               {mediaItems[selectedMediaIndex]?.type === 'video' ? (
                 <video
                   src={mediaItems[selectedMediaIndex].url}
@@ -456,12 +485,20 @@ const ProductDetailsPage = () => {
                 {product?.name}
               </h1>
               <div className="flex items-center gap-3 mt-2">
-                <StarRating value={ratingValue} size={16} />
+                {/* <StarRating value={ratingValue} size={16} />
                 <span className="text-sm text-gray-600">
                   {ratingValue.toFixed(1)} ({reviewsCount} reviews)
-                </span>
-                <span className="text-sm text-gray-400">|</span>
-                <span className={`text-sm font-medium ${stockStatus.color}`}>
+                </span> */}
+
+                <div className="flex items-center gap-1 text-green-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18AC57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-percent-icon lucide-badge-percent"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" /><path d="m15 9-6 6" /><path d="M9 9h.01" /><path d="M15 15h.01" /></svg>
+                  <span className="text-lg font-semibold">Best price</span>
+                  <span className="font-semibold text-xl" >
+                    ₹{displayAfterPrice.toLocaleString()}
+                  </span>
+                </div>
+                <span className="text-lg text-gray-400">|</span>
+                <span className={`text-lg font-medium ${stockStatus.color}`}>
                   {stockStatus.text}
                 </span>
               </div>
@@ -484,30 +521,10 @@ const ProductDetailsPage = () => {
               )}
             </div>
 
-            {/* Payment Options */}
-            <section className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                Payment Options
-              </h3>
-              <p className="text-sm text-gray-500 mb-4">
-                100% secure payments • All major methods accepted
-              </p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
-                {paymentMethods.map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-center h-14 w-14 bg-gray-50 border border-gray-200 rounded-full p-2 hover:shadow-md transition"
-                  >
-                    <img
-                      src={item.src}
-                      alt={item.name}
-                      className="max-h-7 object-contain"
-                      onError={handleImageError}
-                    />
-                  </div>
-                ))}
-              </div>
-            </section>
+
+
+            {/* Offers Section */}
+            {offers.length > 0 && <ProductOffers offers={offers} />}
 
             {/* Ratti Selector */}
             {rattiOptions.length > 0 && (
@@ -519,8 +536,8 @@ const ProductDetailsPage = () => {
                   {rattiOptions.map((opt) => (
                     <button
                       key={opt.ratti}
-                      onClick={() => setSelectedRatti(opt.ratti.toString())}
-                      className={`px-4 py-2 border rounded-lg text-sm font-medium transition-all cursor-pointer ${selectedRatti === opt.ratti.toString()
+                      onClick={() => setSelectedRatti(opt.ratti)}
+                      className={`px-4 py-2 border rounded-lg text-sm font-medium transition-all cursor-pointer ${selectedRatti === opt.ratti
                         ? "border-amber-600 bg-amber-50 text-amber-700"
                         : "border-gray-300 hover:border-gray-400 text-gray-700"
                         }`}
@@ -537,27 +554,7 @@ const ProductDetailsPage = () => {
               </div>
             )}
 
-            {/* Offers Section */}
-            {offers.length > 0 && <ProductOffers offers={offers} />}
 
-            {/* Quantity & Add to Cart */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex items-center border border-gray-300 rounded-lg w-fit">
-                <button onClick={() => handleQuantityChange(-1)} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg">-</button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
-                <button onClick={() => handleQuantityChange(1)} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg">+</button>
-              </div>
-              <button onClick={handleAddToCart} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white/80 py-2 px-2 rounded-lg font-medium flex items-center justify-center gap-2 transition">
-                <ShoppingCart className="w-5 h-5" /> Add to Cart
-              </button>
-              <button onClick={handleBuyNow} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white/80 py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition">
-                <ShoppingBag className="w-5 h-5" /> Buy Now
-              </button>
-              <button onClick={handleWishlistToggle} className="flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition gap-2">
-                <Heart className={`w-5 h-5 ${isInWishlist ? "fill-red-500 text-red-500" : "text-red-600"}`} />
-                <span className="sm:hidden">Wishlist</span>
-              </button>
-            </div>
             {/* Shipping Info Summary */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 border-t border-gray-200 pt-4">
               <div className="flex items-center gap-2">
@@ -583,6 +580,54 @@ const ProductDetailsPage = () => {
               </div>
             </div>
 
+
+
+            {/* Quantity & Add to Cart */}
+            <div ref={buttonSectionRef} className="flex flex-col sm:flex-row gap-3">
+              <div className="flex items-center border border-gray-300 rounded-lg w-fit">
+                <button onClick={() => handleQuantityChange(-1)} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg">-</button>
+                <span className="w-12 text-center font-medium">{quantity}</span>
+                <button onClick={() => handleQuantityChange(1)} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg">+</button>
+              </div>
+
+              <button onClick={handleAddToCart} className="flex-1 bg-[#E17100] hover:bg-[#b05800] text-black py-2 px-2 rounded-lg font-medium flex items-center justify-center gap-2 transition">
+                <ShoppingCart className="w-5 h-5 text-black" /> Add to Cart
+              </button>
+              <button onClick={handleBuyNow} className="flex-1 bg-gray-900 hover:bg-gray-800 text-white/85 py-3 px-4  rounded-lg font-medium flex items-center justify-center gap-2 transition">
+                <ShoppingBag className="w-5 h-5" /> Buy Now
+              </button>
+
+              <button onClick={handleWishlistToggle} className="flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition gap-2">
+                <Heart className={`w-5 h-5 ${isInWishlist ? "fill-red-500 text-red-500" : "text-red-600"}`} />
+                <span className="sm:hidden">Wishlist</span>
+              </button>
+            </div>
+            {/* Payment Options */}
+            <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+              <h3 className="text-lg  font-semibold text-gray-900">
+                Payment Options
+              </h3>
+              <p className="text-xs text-gray-400 mb-2">
+                100% secure payments. All major methods accepted
+              </p>
+              <div className="grid grid-cols-7  md:grid-cols-7 ">
+                {paymentMethods.map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center justify-center h-10 w-10   bg-gray-50 border border-gray-200 rounded-full p-2 hover:shadow-md transition"
+                  >
+                    <img
+                      src={item.src}
+                      alt={item.name}
+                      className="max-h-7 object-cover"
+                      onError={handleImageError}
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+
+
             {/* Product Specifications */}
             {productSpecs.length > 0 && (
               <AccordionSection title="Product Specifications" icon={Settings} defaultOpen={true}>
@@ -602,7 +647,7 @@ const ProductDetailsPage = () => {
             )}
 
             {/* Shipping Details */}
-            <section className="bg-[#efe3d3] rounded-xl p-4 sm:p-5">
+            {/* <section className="bg-[#efe3d3] rounded-xl p-4 sm:p-5">
               <p className="text-sm text-gray-600">Prepaid orders are delivered on priority.</p>
               <p className="text-sm font-semibold text-gray-900 mb-3">
                 {product?.shipping_info || "Most orders are delivered in 7 - 10 days."}
@@ -641,7 +686,7 @@ const ProductDetailsPage = () => {
                   </div>
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* Accordion Sections – Product details */}
             {(benefitsParagraphs.length > 0 || howToUseSteps.length > 0) && (
@@ -718,10 +763,49 @@ const ProductDetailsPage = () => {
           {/* You May Also Like */}
           {suggestedProducts.length > 0 && <ProductYouMayAlsoLike products={suggestedProducts} />}
           {/* product reviews */}
-          <ProductReviews productId={product.id} />
+          {/* <ProductReviews productId={product.id} /> */}
         </div>
 
       </div>
+
+
+      {showStickyBar && (
+        <div className="fixed container bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2  ">
+            <img src={product.image} alt="image" className="w-10 h-10 rounded-md hidden sm:block" />
+            {/* Product info - mobile me left align, desktop me flex row */}
+
+            <div className="flex-1 flex flex-row items-center gap-2 ">
+              <div className="font-bold text-gray-900 text-sm md:text-base line-clamp-1 truncate">{product?.name}</div>
+              <div className="flex items-center md:gap-2">
+                <span className="text-amber-600 font-bold text-lg md:text-xl">₹{displayAfterPrice.toLocaleString()}</span>
+                {displayBeforePrice > displayAfterPrice && (
+                  <span className="text-gray-400 line-through text-sm">₹{displayBeforePrice.toLocaleString()}</span>
+                )}
+                {discountText && (
+                  <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-bold">
+                    {discountText}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-3 w-full md:w-auto">
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 md:flex-none bg-[#E17100] hover:bg-[#b05800] text-black py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition"
+              >
+                <ShoppingCart className="w-4 h-4 text-black" /> Add to Cart
+              </button>
+              <button
+                onClick={handleBuyNow}
+                className="flex-1 md:flex-none bg-gray-900 hover:bg-gray-800 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition"
+              >
+                <ShoppingBag className="w-4 h-4" /> Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

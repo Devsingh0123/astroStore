@@ -28,23 +28,40 @@ const MobileLoginStep = ({ onLoginSuccess, onSignupClick }) => {
     }
   };
 
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    if (!otp) return toast.error('Enter OTP');
-    setLoading(true);
-    try {
-      await dispatch(userVerifyLoginOtp({ email, otp })).unwrap();
-      await dispatch(userProfile()).unwrap();
-      await dispatch(mergeGuestCart()).unwrap();
-      await dispatch(fetchCart());
-      toast.success('Logged in');
-      onLoginSuccess();
-    } catch (err) {
-      toast.error(err || 'Invalid OTP');
-    } finally {
-      setLoading(false);
+
+
+const handleVerifyOtp = async (e) => {
+  e.preventDefault();
+  if (!otp) return toast.error("Please enter the OTP");
+  setLoading(true);
+  try {
+    await dispatch(userVerifyLoginOtp({ email, otp })).unwrap();
+    await dispatch(userProfile()).unwrap();
+
+    // toast.success('Logged in successfully');
+    onLoginSuccess();
+    
+    
+    const mergeResult = await dispatch(mergeGuestCart()).unwrap();
+    
+    // Only show toast if merge actually happened (guest cart had items)
+    if (mergeResult.partial) {
+      toast.warning(`Some items couldn't be added: ${mergeResult.errors.join(', ')}`);
+    } else if (mergeResult.merged) {
+      toast.success('Cart merged successfully');
     }
-  };
+    // if merged === false → guest cart was empty, no toast needed
+    
+    await dispatch(fetchCart());
+    
+  } catch (err) {
+    // All items failed → show error
+    console.log("error",err)
+    // toast.error(err || 'Failed to merge cart');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="space-y-5">

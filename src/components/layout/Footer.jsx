@@ -14,8 +14,8 @@ const Footer = () => {
   const collectionCategories = CATEGORIES.filter(cat => cat.id !== "all");
 
   return (
-    <footer className="bg-[#f7f5f2] border-t border-gray-300 mt-8 pt-8">
-      <div className="container mx-auto px-4 lg:px-8">
+    <footer className="footer bg-[#f7f5f2] border-t border-gray-300 mt-8 pt-8">
+      <div className=" mx-auto px-4 lg:px-8">
         {/* ABOUT */}
         <div className="lg:col-span-1">
           <Link to="/">

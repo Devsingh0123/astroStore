@@ -27,6 +27,9 @@ const CheckoutPage = () => {
   const [useWallet, setUseWallet] = useState(false);
   const [walletAmount, setWalletAmount] = useState(0);
 
+  const SHIPPING_CHARGES = +import.meta.env.VITE_SHIPING_CHARGES; // "149"
+const MIN_FREE_SHIPPING = +import.meta.env.VITE_MINIMUM_ORDER_FOR_AVOID_SHIPING;
+
   useEffect(() => {
     if (isLoggedIn && addresses.length === 0) dispatch(fetchAddresses());
     if (isLoggedIn) dispatch(fetchWallet());
@@ -40,7 +43,7 @@ const CheckoutPage = () => {
   }, [isLoggedIn, dispatch, navigate]);
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = subtotal > 599 ? 0 : 199;
+  const shipping = subtotal > MIN_FREE_SHIPPING  ? 0 : SHIPPING_CHARGES;
   const grandTotal = subtotal + shipping - couponDiscount;
 
   const handleUseWalletChange = (checked) => {

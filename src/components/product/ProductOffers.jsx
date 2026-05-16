@@ -6,17 +6,17 @@ const ProductOffers = ({ offers }) => {
   if (!offers?.length) return null;
 
   const handleCopyCoupon = (code) => {
-  navigator.clipboard.writeText(code);
-  toast.success(`Coupon ${code} copied!`);
-};
+    navigator.clipboard.writeText(code);
+    toast.success(`Coupon ${code} copied!`);
+  };
 
   return (
     <div>
-      <h3 className="flex items-center gap-2 font-bold text-stone-900 text-lg mb-5">
+      <h3 className="flex items-center gap-2 font-bold text-stone-900 text-lg mb-2">
         <Tag className="w-5 h-5 text-amber-500" />
         Best Offers
       </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-1 gap-5">
         {offers.map((offer, idx) => {
           if (offer.type === "discount" || (offer.price && offer.code)) {
             return (
@@ -32,15 +32,15 @@ const ProductOffers = ({ offers }) => {
                 </div>
                 <div className="border-t border-dashed bg-amber-50 px-5 py-3 flex justify-between items-center">
                   <span className="font-semibold text-stone-800 text-sm">
-                   
+
                     <span className="text-amber-600 font-bold text-base">{offer.price}</span>
                   </span>
-                  <button 
-  onClick={() => handleCopyCoupon(offer.code)}
-  className="text-amber-600 font-semibold text-sm flex items-center gap-1 hover:underline cursor-pointer"
->
-  {offer.code} ⧉
-</button>
+                  <button
+                    onClick={() => handleCopyCoupon(offer.code)}
+                    className="text-amber-600 font-semibold text-sm flex items-center gap-1 hover:underline cursor-pointer"
+                  >
+                    {offer.code} ⧉
+                  </button>
                 </div>
               </div>
             );

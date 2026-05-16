@@ -17,14 +17,14 @@ const ProductAccordionSections = ({
     <div className="space-y-3">
       {/* Description – only if description exists */}
       {description && (
-        <AccordionSection title="Description" icon={FileText}>
+        <AccordionSection title="Description" icon={FileText} defaultOpen={true}>
           <p className="text-gray-700 leading-relaxed">{description}</p>
         </AccordionSection>
       )}
 
       {/* Benefits – only if there are benefits paragraphs */}
       {benefitsParagraphs.length > 0 && (
-        <AccordionSection title="Benefits" icon={Sparkles}>
+        <AccordionSection title="Benefits" icon={Sparkles} defaultOpen={true}>
           {benefitsParagraphs.map((para, idx) => (
             para.includes(":") ?
             <p key={idx} className="text-gray-700 leading-relaxed mb-2 flex">

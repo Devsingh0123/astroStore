@@ -1,6 +1,6 @@
 // src/pages/OrderInvoice.jsx
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderDetails, clearCurrentOrder } from '../redux/slices/orderSlice';
 import Loader from '@/components/common/Loader';
@@ -8,38 +8,54 @@ import logo from '../assets/logo.png';
 import { ArrowLeft, Printer } from 'lucide-react';
 
 // ---------- Helper: Convert number to English words (Indian system) ----------
-function numberToWords(num) {
-  if (num === 0) return "Zero";
-  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
-  const teens = ["", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-  const tens = ["", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+function numberToWords(amount) {
+  // Split into rupees and paise
+  const rupees = Math.floor(amount);
+  const paise = Math.round((amount - rupees) * 100);
 
-  const convertChunk = (n) => {
-    if (n === 0) return "";
-    if (n < 10) return ones[n];
-    if (n < 20) return teens[n - 10];
-    if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + ones[n % 10] : "");
-    return ones[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertChunk(n % 100) : "");
+  // Helper for integer part (same as before)
+  const integerToWords = (num) => {
+    if (num === 0) return "";
+    const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+    const teens = ["", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+    const tens = ["", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+    const convertChunk = (n) => {
+      if (n === 0) return "";
+      if (n < 10) return ones[n];
+      if (n < 20) return teens[n - 10];
+      if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + ones[n % 10] : "");
+      return ones[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertChunk(n % 100) : "");
+    };
+
+    let result = "";
+    const crore = Math.floor(num / 10000000);
+    const lakh = Math.floor((num % 10000000) / 100000);
+    const thousand = Math.floor((num % 100000) / 1000);
+    const hundred = num % 1000;
+
+    if (crore > 0) result += convertChunk(crore) + " Crore ";
+    if (lakh > 0) result += convertChunk(lakh) + " Lakh ";
+    if (thousand > 0) result += convertChunk(thousand) + " Thousand ";
+    if (hundred > 0) result += convertChunk(hundred);
+    return result.trim();
   };
 
-  let result = "";
-  const crore = Math.floor(num / 10000000);
-  const lakh = Math.floor((num % 10000000) / 100000);
-  const thousand = Math.floor((num % 100000) / 1000);
-  const hundred = num % 1000;
+  const rupeesWords = rupees === 0 ? "" : integerToWords(rupees) + " Rupee" + (rupees > 1 ? "s" : "");
+  const paiseWords = paise === 0 ? "" : integerToWords(paise) + " Paise";
 
-  if (crore > 0) result += convertChunk(crore) + " Crore ";
-  if (lakh > 0) result += convertChunk(lakh) + " Lakh ";
-  if (thousand > 0) result += convertChunk(thousand) + " Thousand ";
-  if (hundred > 0) result += convertChunk(hundred);
-  return result.trim();
+  if (rupees === 0 && paise === 0) return "Zero Rupees Only";
+  if (rupees === 0) return `${paiseWords} Only`;
+  if (paise === 0) return `${rupeesWords} Only`;
+  return `${rupeesWords} and ${paiseWords} Only`;
 }
 
 const OrderInvoice = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const orderId = location.state?.orderData;
+  // const orderId = location.state?.orderData;
+  const { orderId } = useParams();
   const { currentOrder: order, loading, error } = useSelector((state) => state.order);
 
   useEffect(() => {
@@ -116,6 +132,7 @@ const OrderInvoice = () => {
   const taxTypeDisplay = isCgstSgst ? 'CGST+SGST' : 'IGST';
   const deliveryCharge = parseFloat(pricing.delivery_charge) || 0;
   const grandTotal = parseFloat(pricing.total_amount) || 0;
+  const discount = parseFloat(pricing.discount) || 0;
 
   // Payment
   const transactionId = order.payment?.transaction_id || '-';
@@ -131,8 +148,8 @@ const OrderInvoice = () => {
   const paymentMode = order.payment?.mode || order.payment?.gateway || 'Online';
   const invoiceValue = grandTotal;
 
-  // Convert amount to words (e.g., 699 -> "Six Hundred Ninety Nine Rupees Only")
-  const amountInWords = `${numberToWords(Math.floor(invoiceValue))} Rupees Only`;
+  // Convert amount to words
+  const amountInWords = numberToWords(invoiceValue);
 
   // Helper to calculate tax per item (based on gstRate) and split if needed
   const getItemTaxSplit = (netAmount) => {
@@ -372,14 +389,33 @@ const OrderInvoice = () => {
               {shippingRow}
             </tbody>
             <tfoot>
+              {/* Subtotal row - optional lekin helpful */}
+              <tr className="border-b border-black">
+                <td colSpan="5" className="border-r border-black p-1 text-left font-semibold">Subtotal:</td>
+                <td colSpan="3" className="border-r border-black p-1 text-center">–</td>
+                <td className="p-1 text-right">₹{subtotal.toFixed(2)}</td>
+              </tr>
+
+              {/* Discount row - sirf tab dikhe jab discount > 0 */}
+              {discount > 0 && (
+                <tr className="border-b border-black ">
+                  <td colSpan="5" className="border-r border-black p-1 text-left font-semibold">Discount:</td>
+                  <td colSpan="3" className="border-r border-black p-1 text-center ">–</td>
+                  <td className="p-1 text-right">-₹{discount.toFixed(2)}</td>
+                </tr>
+              )}
+
+              {/* Original TOTAL row */}
               <tr className="border-b border-black font-bold">
                 <td colSpan="8" className="border-r border-black p-1 text-left">TOTAL:</td>
                 <td className="p-1 text-right">₹{grandTotal.toFixed(2)}</td>
               </tr>
+
+              {/* Baki sab rows (Amount in Words, signature, etc.) wahi rahega */}
               <tr className="border-b border-black">
                 <td colSpan="9" className="p-2">
                   <div className="flex justify-between items-start">
-                    <div className="w-3/5 border-r border-gray-300 pr-2">
+                    <div className="w-3/5 pr-2">
                       <p className="font-bold text-sm">Amount in Words:</p>
                       <p className="font-bold text-sm">{amountInWords}</p>
                     </div>
@@ -413,13 +449,19 @@ const OrderInvoice = () => {
             </tfoot>
           </table>
         </div>
-        {/* 👇 DISCLAIMER / FOOTER - stays at bottom of every page */}
-        <div className="mt-auto text-[8px] font-semibold text-gray-600 bg-gray-50 border-t border-gray-200 p-4 rounded-b-md flex flex-col justify-center items-center flex-wrap ">
+        {/* DISCLAIMER / FOOTER - stays at bottom of every page */}
+        <div className="mt-auto text-[8px] font-semibold text-gray-600 p-4 rounded-b-md flex flex-col justify-center items-center flex-wrap ">
           <p className="mb-1">Please note that this invoice is not a demand for payment.</p>
-          <p className="mb-1 ">
-            <p className="font-semibold flex justify-center">Regd Office: VELTEX SERVICES PRIVATE LIMITED</p> 
-            <p className="font-semibold flex flex-col items-center">711, Plot A09, ITL Towers, Netaji Subhash Place,<p> Pitampura, Delhi 110034, Bharat</p></p>
-          </p>
+          <div className="mb-1">
+            <p className="font-semibold flex justify-center">
+              Regd Office: VELTEX SERVICES PRIVATE LIMITED
+            </p>
+
+            <div className="font-semibold flex flex-col items-center">
+              <p>711, Plot A09, ITL Towers, Netaji Subhash Place,</p>
+              <p>Pitampura, Delhi 110034, Bharat</p>
+            </div>
+          </div>
           <p className="mb-1">
             Email: care@astrotring.shop | Tel: +91 11 41103510
           </p>
