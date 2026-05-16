@@ -115,7 +115,7 @@ function App() {
         {/* ====================================================================================== */}
         {/* checkout currently not in use  */}
         <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/invoice" element={<OrderInvoice />} />
+        <Route path="/invoice/:orderId" element={<OrderInvoice />} />
 
 
 

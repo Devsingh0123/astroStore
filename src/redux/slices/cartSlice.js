@@ -145,7 +145,7 @@ export const updateCartItem = createAsyncThunk(
   async ({ item_id, quantity }, { rejectWithValue, getState }) => {
     const { userAuth } = getState();
     
-    // 🔥 GUEST USER – update localStorage
+    // GUEST USER – update localStorage
     if (!userAuth.isLoggedIn) {
       try {
         updateGuestCartItem(item_id, quantity);
@@ -156,7 +156,7 @@ export const updateCartItem = createAsyncThunk(
       }
     }
     
-    // 🔥 LOGGED IN USER – API call
+    // LOGGED IN USER – API call
     try {
       await api.post('/user/cart/update', { item_id, quantity });
       return { success: true };
@@ -205,34 +205,75 @@ export const mergeGuestCart = createAsyncThunk(
   'cart/mergeGuestCart',
   async (_, { rejectWithValue, getState }) => {
     const { userAuth } = getState();
-    
     if (!userAuth.isLoggedIn) {
       return rejectWithValue('User not logged in');
     }
     
-    const guestCart = getGuestCart();
-    
-    // No guest cart items -> nothing to merge
+    let guestCart = getGuestCart();
     if (guestCart.length === 0) {
       return { success: true, merged: false };
     }
     
-    try {
-      // Add each guest cart item to server cart
-      for (const item of guestCart) {
+    const errors = []; // will store { message, count }
+    const successItems = [];
+    
+    for (const item of guestCart) {
+      try {
         await api.post('/user/cart/add', {
           product_id: item.product_id,
           quantity: item.quantity,
           ratti: item.ratti
         });
+        successItems.push(item);
+      } catch (error) {
+        const msg = error.response?.data?.message || error.message || 'Failed to add item';
+        // Group identical errors
+        const existing = errors.find(e => e.message === msg);
+        if (existing) {
+          existing.count++;
+        } else {
+          errors.push({ message: msg, count: 1 });
+        }
       }
-      
-      // Clear guest cart after successful merge
-      clearGuestCart();
-      return { success: true, merged: true };
-    } catch (error) {
-      return rejectWithValue('Failed to merge cart');
     }
+    
+    // Remove successfully merged items from guest cart
+    if (successItems.length > 0) {
+      const remainingItems = guestCart.filter(
+        item => !successItems.some(success => 
+          success.product_id === item.product_id && 
+          success.ratti === item.ratti
+        )
+      );
+      if (remainingItems.length === 0) {
+        clearGuestCart();
+      } else {
+        saveGuestCart(remainingItems);
+      }
+    }
+    
+    // If all items failed, reject with grouped error string
+    if (successItems.length === 0) {
+      let errorString = '';
+      for (const err of errors) {
+        if (err.count > 1) {
+          errorString += `${err.message} (${err.count} items), `;
+        } else {
+          errorString += `${err.message}, `;
+        }
+      }
+      errorString = errorString.replace(/, $/, '');
+      return rejectWithValue(errorString || 'Failed to merge cart');
+    }
+    
+    // Partial success: return info about errors (grouped)
+    const groupedErrors = errors.map(e => e.count > 1 ? `${e.message} (${e.count} items)` : e.message);
+    return { 
+      success: true, 
+      merged: true, 
+      partial: errors.length > 0,
+      errors: groupedErrors
+    };
   }
 );
 

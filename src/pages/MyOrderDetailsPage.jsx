@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderDetails, clearOrderError, clearCurrentOrder, cancelOrder } from '../redux/slices/orderSlice';
 import { toast } from 'react-toastify';
@@ -37,7 +37,7 @@ const MyOrderDetailsPage = () => {
     try {
       await dispatch(cancelOrder(id)).unwrap();
       toast.success('Order cancelled successfully');
-      // ✅ Refetch order details to get updated status
+      // Refetch order details to get updated status
       await dispatch(fetchOrderDetails(id)).unwrap();
     } catch (err) {
       toast.error(err || 'Failed to cancel order');
@@ -46,6 +46,7 @@ const MyOrderDetailsPage = () => {
     }
   };
 
+
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -53,9 +54,9 @@ const MyOrderDetailsPage = () => {
       </div>
     );
   }
-  const handleInvoiceOpen = () => {
-    navigate("/invoice", { state: { orderData: currentOrder.order_id } })
-  };
+  // const handleInvoiceOpen = () => {
+  //   navigate("/invoice", { state: { orderData: currentOrder.order_id } })
+  // };
   if (loading) return <Loader data="Loading order details..." />;
 
   if (!currentOrder) {
@@ -63,10 +64,13 @@ const MyOrderDetailsPage = () => {
   }
 
   const order = currentOrder;
+
+  console.log(order)
+
   const subtotal = order.subtotal || order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
-  const shipping = order.shipping_cost || 0;
-  const discount = order.discount || 0;
-  const total = order.total || subtotal + shipping - discount;
+  const shipping = order?.pricing?.delivery_charge || 0;
+  const discount = order?.pricing?.discount || 0;
+  const total = order?.pricing?.total_amount || subtotal + shipping - discount;
   const isCancelled = order.status === 'cancelled';
   const canCancel = !isCancelled && order.status !== 'delivered';
 
@@ -80,12 +84,14 @@ const MyOrderDetailsPage = () => {
           >
             <ArrowLeft className="w-4 h-4" /> Back to Orders
           </button>
-          <button
-            onClick={handleInvoiceOpen}
+          <Link
+            to={`/invoice/${currentOrder.order_id}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 px-2 py-2 mr-2 bg-amber-500 text-white/90 rounded-lg hover:bg-amber-600 transition"
           >
-            <Printer  className="w-4 h-4" /> Print Invoice
-          </button>
+            <Printer className="w-4 h-4" /> Print Invoice
+          </Link>
         </div>
 
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -110,9 +116,9 @@ const MyOrderDetailsPage = () => {
               )}
             </div>
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                order.status === 'paid' ? 'bg-green-100 text-green-800' :
-                  order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                    'bg-yellow-100 text-yellow-800'
+              order.status === 'paid' ? 'bg-green-100 text-green-800' :
+                order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                  'bg-yellow-100 text-yellow-800'
               }`}>
               {order.status?.toUpperCase() || 'PENDING'}
             </span>
@@ -153,7 +159,7 @@ const MyOrderDetailsPage = () => {
                   <button
                     onClick={handleCancelOrder}
                     disabled={cancelling}
-                    className="group flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="group flex items-center gap-2 px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {cancelling ? (
                       <>
@@ -163,12 +169,12 @@ const MyOrderDetailsPage = () => {
                     ) : (
                       <>
                         <XCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        <span>Cancel Order</span>
+                        <span className="text-sm font-medium">Cancel Order</span>
                       </>
                     )}
                   </button>
                 ) : isCancelled ? (
-                  <div className="flex items-center gap-2 text-red-600 bg-red-50 px-4 py-2 rounded-lg">
+                  <div className="flex items-center gap-2 text-red-600  px-4 py-2 rounded-lg">
                     <XCircle className="w-4 h-4" />
                     <span className="text-sm font-medium">This order has been cancelled</span>
                   </div>
@@ -192,14 +198,18 @@ const MyOrderDetailsPage = () => {
             </h2>
             {order?.address?.snapshot ? (
               <>
-                <p className="text-gray-800 font-medium">{order?.address?.snapshot.name}</p>
-                {/* <p className="text-gray-500 text-sm">Email: {order?.address?.snapshot.email}</p> */}
-                <p className="text-gray-600 text-sm">Mobile: {order?.address?.snapshot.mobile}, {order?.address?.snapshot.alternative_mobile}</p>
+                <div className='flex gap-2 items-center'>
+                  <p className="text-gray-800 font-medium text-sm">{order?.address?.snapshot.name},</p>
+                  {/* <p className="text-gray-500 text-sm">Email: {order?.address?.snapshot.email}</p> */}
+                  <p className="text-gray-600 text-sm">Mobile: {order?.address?.snapshot.mobile}, {order?.address?.snapshot.alternative_mobile}</p>
+                </div>
                 <p className="text-gray-600 text-sm">Address: {order?.address?.snapshot.address}</p>
-                <p className="text-gray-500 text-sm">City: {order?.address?.snapshot.city}</p>
-                <p className="text-gray-500 text-sm">State: {order?.address?.snapshot.state}</p>
-                <p className="text-gray-500 text-sm">Country: {order?.address?.snapshot.country}</p>
-                <p className="text-gray-500 text-sm">Pin Code: {order?.address?.snapshot.pincode}</p>
+                <div className="flex gap-2 items-center">
+                  <p className="text-gray-500 text-sm">City: {order?.address?.snapshot.city},</p>
+                  <p className="text-gray-500 text-sm">State: {order?.address?.snapshot.state},</p>
+                  <p className="text-gray-500 text-sm">Country: {order?.address?.snapshot.country},</p>
+                  <p className="text-gray-500 text-sm">Pin Code: {order?.address?.snapshot.pincode}</p>
+                </div>
               </>
             ) : (
               <p className="text-gray-500">Address not available</p>

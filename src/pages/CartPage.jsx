@@ -27,13 +27,17 @@ const CartPage = () => {
   // const { isLoggedIn } = useSelector((state) => state.userAuth); // no longer needed
   const dispatch = useDispatch();
 
-  const [couponCode, setCouponCode] = useState('');
+  const [couponCode, setCouponCode] = useState('WELCOMEOFFER');
   const [couponStatus, setCouponStatus] = useState(null);
   const [couponValidating, setCouponValidating] = useState(false);
   const [removingId, setRemovingId] = useState(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   // New state for the simple popup
   const [showPopup, setShowPopup] = useState(false);
+
+
+  const SHIPPING_CHARGES = +import.meta.env.VITE_SHIPING_CHARGES;
+const MIN_FREE_SHIPPING = +import.meta.env.VITE_MINIMUM_ORDER_FOR_AVOID_SHIPING;
 
   useEffect(() => {
     dispatch(fetchCart());
@@ -45,6 +49,15 @@ const CartPage = () => {
       dispatch(clearCartError());
     }
   }, [error, dispatch]);
+
+  useEffect(() => {
+    if(couponCode==='WELCOMEOFFER' && cartItems.length > 0 && !appliedCoupon){
+     applyCoupon()
+    }
+  
+   
+  }, [cartItems,appliedCoupon])
+  
 
   const handleRemoveItem = (id) => {
     setRemovingId(id);
@@ -142,9 +155,9 @@ const CartPage = () => {
   const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
   const originalTotal = subtotal;
   const productSavings = originalTotal - subtotal;
-  const shippingFee = subtotal >= 800 ? 0 : 149;
-  const freeShippingRemaining = Math.max(0, 800 - subtotal);
-  const totalSavings = productSavings + couponDiscount + (shippingFee === 0 && subtotal >= 800 ? 149 : 0);
+  const shippingFee = subtotal >= MIN_FREE_SHIPPING  ? 0 : SHIPPING_CHARGES ;
+  const freeShippingRemaining = Math.max(0, MIN_FREE_SHIPPING  - subtotal);
+  const totalSavings = productSavings + couponDiscount + (shippingFee === 0 && subtotal >= MIN_FREE_SHIPPING  ? SHIPPING_CHARGES  : 0);
   const grandTotal = subtotal + shippingFee - couponDiscount;
 
   // Simple function – only opens the popup
@@ -278,7 +291,7 @@ const CartPage = () => {
                           Add <strong>₹{freeShippingRemaining.toLocaleString()}</strong> more for free shipping
                         </p>
                         <div className="w-full h-1.5 bg-stone-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-amber-600 to-amber-500 transition-all" style={{ width: `${Math.min(100, (subtotal / 800) * 100)}%` }} />
+                          <div className="h-full bg-gradient-to-r from-amber-600 to-amber-500 transition-all" style={{ width: `${Math.min(100, (subtotal / MIN_FREE_SHIPPING ) * 100)}%` }} />
                         </div>
                       </>
                     )}

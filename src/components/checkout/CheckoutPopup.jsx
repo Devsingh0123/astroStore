@@ -17,10 +17,14 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const paymentRef = useRef();
 
+  const SHIPPING_CHARGES = +import.meta.env.VITE_SHIPING_CHARGES; // "149"
+const MIN_FREE_SHIPPING = +import.meta.env.VITE_MINIMUM_ORDER_FOR_AVOID_SHIPING;
+
   if (!isOpen) return null;
 
   const subtotal = cartItems.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-  const shipping = subtotal > 599 ? 0 : 199;
+  const shipping = subtotal >= MIN_FREE_SHIPPING ? 0 : SHIPPING_CHARGES;
+
   const grandTotal = subtotal + shipping - couponDiscount;
 
   const handleBack = () => {

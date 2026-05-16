@@ -47,12 +47,12 @@ const YouMayAlsoLikeCard = ({ product }) => {
         <h3 className="font-medium text-gray-800 text-sm truncate">
           {product?.name}
         </h3>
-        <div className="flex items-center gap-1 mt-1">
+        {/* <div className="flex items-center gap-1 mt-1">
           <StarRating value={ratingValue} size={12} />
           <span className="text-xs text-gray-500">
             {ratingValue.toFixed(1)}
           </span>
-        </div>
+        </div> */}
         <div className="mt-1 flex items-center gap-1 flex-wrap">
           <span className="text-amber-600 font-bold text-sm">
             ₹{afterPrice.toLocaleString()}
@@ -63,6 +63,7 @@ const YouMayAlsoLikeCard = ({ product }) => {
             </span>
           )}
         </div>
+        
       </div>
     </div>
   );

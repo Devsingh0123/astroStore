@@ -89,7 +89,7 @@ const UserLogin = () => {
     }
   };
 
- const handleVerifyOtp = async (e) => {
+const handleVerifyOtp = async (e) => {
   e.preventDefault();
   if (!otp) {
     toast.error("Please enter the OTP");
@@ -100,17 +100,28 @@ const UserLogin = () => {
     await dispatch(userVerifyLoginOtp({ email, otp })).unwrap();
     await dispatch(userProfile()).unwrap();
 
-    // ✅ Merge guest cart after login
-    await dispatch(mergeGuestCart()).unwrap();
+    //  Merge guest cart – it can be partial
+    const mergeResult = await dispatch(mergeGuestCart()).unwrap();
+    
+    // Show appropriate message based on merge result
+    if (mergeResult.partial) {
+      toast.warning(`Some items couldn't be added: ${mergeResult.errors.join(', ')}`);
+    } else if (mergeResult.merged) {
+      toast.success('Cart merged successfully');
+    }
+    
     await dispatch(fetchCart());
-
     toast.success("Logged in successfully");
   } catch (err) {
-    toast.error(err || "Invalid OTP or login failed");
+    // Complete failure (no items merged)
+    console.log("error",err)
+    toast.error(err || 'Failed to merge cart');
   } finally {
     setLoadingBtn(false);
   }
 };
+
+
 
   // ========== SIGNUP (no image) ==========
   const handleSignup = async (e) => {

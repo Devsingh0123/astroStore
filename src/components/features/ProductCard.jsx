@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StarRating from "../common/StarRating";
+import { ShoppingBag } from "lucide-react";
 
 const ProductCard = ({ product, addToCart, compact = false }) => {
   const navigate = useNavigate();
@@ -62,12 +63,12 @@ if (product?.ratti_options && product.ratti_options.length > 0) {
     : "text-base sm:text-lg font-extrabold text-stone-900";
 
   const oldPriceClass = compact
-    ? "text-[8px] text-stone-400 line-through"
+    ? "text-[10px] text-stone-400 line-through"
     : "text-[10px] sm:text-xs text-stone-400 line-through";
 
   const ratingSize = compact ? 10 : 12;
   const ratingTextClass = compact ? "text-[8px]" : "text-[10px] sm:text-xs";
-  const quickAddSize = compact ? "w-6 h-6" : "w-7 h-7 sm:w-9 sm:h-9";
+  const quickAddSize = compact ? "w-20 h-8" : "w-20 h-8";
   const quickAddIconSize = compact ? 10 : 14;
 
   return (
@@ -117,8 +118,8 @@ if (product?.ratti_options && product.ratti_options.length > 0) {
         )}
 
         {/* Hover overlay */}
-        <div
-          className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-stone-900/70 to-transparent px-2 py-2 pt-6 transition-opacity duration-250 ${hovered ? "opacity-100" : "opacity-0"
+        {/* <div
+          className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-stone-900/70 to-transparent px-2 py-2 pt-6 transition-opacity duration-250 ${hovered ? "opacity-100" : "opacity-100"
             }`}
         >
           <div className="flex gap-1.5">
@@ -162,22 +163,30 @@ if (product?.ratti_options && product.ratti_options.length > 0) {
               <span className="hidden xs:inline">Cart</span>
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Product info */}
       <div className={`${compact ? "p-1.5" : "p-2.5 sm:p-3.5"} flex-1 flex flex-col`}>
         <h3 className={nameClass}>{product?.name}</h3>
 
-        <div className="flex items-center gap-1 mb-1">
+        {/* <div className="flex items-center gap-1 mb-1">
           <StarRating value={ratingValue} size={ratingSize} />
           <span className={`text-stone-500 font-semibold ${ratingTextClass}`}>
             {ratingValue.toFixed(1)}
           </span>
+        </div> */}
+
+         <div className="flex items-center gap-1 mb-1 text-green-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#18AC57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-percent-icon lucide-badge-percent"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m15 9-6 6"/><path d="M9 9h.01"/><path d="M15 15h.01"/></svg>
+          <span className="text-sm font-semibold">Best price</span>
+          <span className="font-semibold text-md" >
+            ₹{afterPrice.toLocaleString()}
+          </span>
         </div>
 
         <div className="mt-auto flex items-end justify-between">
-          <div>
+          <div className="flex gap-1 items-center">
             <div className={priceClass}>₹{afterPrice.toLocaleString()}</div>
             {beforePrice > afterPrice && (
               <div className={oldPriceClass}>₹{beforePrice.toLocaleString()}</div>
@@ -185,6 +194,24 @@ if (product?.ratti_options && product.ratti_options.length > 0) {
           </div>
 
           {/* Quick add button */}
+          {/* <button className="bg-black border border-black-300 flex justify-center items-center rounded-md px-4 py-2 gap-2  " aria-label="Add to cart">
+        
+            onClick={(e) => {
+              e.stopPropagation();
+              addToCart({
+                 product_id: product?.id,
+                  quantity: 1,
+                  name: product?.name,
+                  ratti: defaultRatti,
+                  price:product.after_price || afterPrice,
+                  image:product?.image,
+              });
+            }}
+           <ShoppingBag className="text-white w-4 h-4" />
+           <h3 className="text-white text-xs"> Add</h3>
+         
+          </button> */}
+
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -197,22 +224,11 @@ if (product?.ratti_options && product.ratti_options.length > 0) {
                   image:product?.image,
               });
             }}
-            className={`bg-amber-100 border border-amber-300 text-amber-900 rounded-lg cursor-pointer flex items-center justify-center transition-colors hover:bg-amber-200 ${quickAddSize}`}
+            className={`bg-black/85 border border-black-300 text-white rounded-md cursor-pointer gap-2 flex items-center justify-center  ${quickAddSize}`}
             aria-label="Add to cart"
           >
-            <svg
-              width={quickAddIconSize}
-              height={quickAddIconSize}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#92400e"
-              strokeWidth={2.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1={12} y1={5} x2={12} y2={19} />
-              <line x1={5} y1={12} x2={19} y2={12} />
-            </svg>
+            <ShoppingBag className="text-white w-3 h-3 font-semibold" />
+           <h3 className="text-white text-xs font-semibold"> Add</h3>
           </button>
         </div>
       </div>

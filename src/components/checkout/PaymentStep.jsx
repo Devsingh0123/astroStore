@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { api } from '../../redux/baseApi';
 import { clearCart } from '../../redux/slices/cartSlice';
 import { fetchWallet } from '../../redux/slices/walletSlice';
-import {FastForward,Wallet,CreditCard,Landmark,} from "lucide-react";
+import { FastForward, Wallet, CreditCard, Landmark, } from "lucide-react";
 
 const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
@@ -18,6 +18,8 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
   const [loading, setLoading] = useState(false);
   const [useWallet, setUseWallet] = useState(false);
   const [walletAmount, setWalletAmount] = useState(0);
+  const SHIPPING_CHARGES = +import.meta.env.VITE_SHIPING_CHARGES; // 
+  const MIN_FREE_SHIPPING = +import.meta.env.VITE_MINIMUM_ORDER_FOR_AVOID_SHIPING;
 
   useImperativeHandle(ref, () => ({ placeOrder: handlePlaceOrder }));
 
@@ -32,7 +34,7 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
   }, [dispatch]);
 
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
-  const shipping = subtotal >= 800 ? 0 : 149;
+  const shipping = subtotal >= MIN_FREE_SHIPPING ? 0 : SHIPPING_CHARGES;
   const grandTotal = subtotal + shipping - couponDiscount;
 
   const handlePlaceOrder = async () => {
@@ -47,6 +49,7 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
         wallet_amount: useWallet ? walletAmount : 0,
         address_id: selectedAddressId,
       });
+      console.log(data)
       if (!data.status) throw new Error(data.message);
       const { order_id, amount: onlineAmount, payment_mode } = data;
 
@@ -105,7 +108,7 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (err) {
-      toast.error(err.message || 'Order creation failed');
+      toast.error(err?.response?.data?.message || 'Order creation failed');
       setLoading(false);
     }
   };
@@ -145,46 +148,46 @@ const PaymentStep = forwardRef(({ selectedAddressId, onOrderComplete }, ref) => 
  */}
 
 
-<label className="flex items-start gap-3 cursor-pointer">
-  <input
-    type="radio"
-    checked
-    className="mt-1 w-4 h-4 text-amber-600 accent-amber-600"
-  />
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="radio"
+            checked
+            className="mt-1 w-4 h-4 text-amber-600 accent-amber-600"
+          />
 
-  <div className="flex flex-col gap-2">
-    <span className="font-medium text-sm text-gray-800">
-      Pay Using UPI / Wallet / Cards / Netbanking
-    </span>
+          <div className="flex flex-col gap-2">
+            <span className="font-medium text-sm text-gray-800">
+              Pay Using UPI / Wallet / Cards / Netbanking
+            </span>
 
-    {/* Payment Icons */}
-    <div className="flex items-center gap-3 flex-wrap">
-      {/* UPI */}
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-200">
-        <FastForward size={14} className="text-amber-600" />
-        <span className="text-xs text-gray-600">UPI</span>
-      </div>
+            {/* Payment Icons */}
+            <div className="flex items-center gap-3 flex-wrap">
+              {/* UPI */}
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-200">
+                <FastForward size={14} className="text-amber-600" />
+                <span className="text-xs text-gray-600">UPI</span>
+              </div>
 
-      {/* Wallet */}
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-200">
-        <Wallet size={14} className="text-amber-600" />
-        <span className="text-xs text-gray-600">Wallet</span>
-      </div>
+              {/* Wallet */}
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-200">
+                <Wallet size={14} className="text-amber-600" />
+                <span className="text-xs text-gray-600">Wallet</span>
+              </div>
 
-      {/* Cards */}
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-200">
-        <CreditCard size={14} className="text-amber-600" />
-        <span className="text-xs text-gray-600">Cards</span>
-      </div>
+              {/* Cards */}
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-200">
+                <CreditCard size={14} className="text-amber-600" />
+                <span className="text-xs text-gray-600">Cards</span>
+              </div>
 
-      {/* Netbanking */}
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-200">
-        <Landmark size={14} className="text-amber-600" />
-        <span className="text-xs text-gray-600">Netbanking</span>
-      </div>
-    </div>
-  </div>
-</label>
+              {/* Netbanking */}
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-200">
+                <Landmark size={14} className="text-amber-600" />
+                <span className="text-xs text-gray-600">Netbanking</span>
+              </div>
+            </div>
+          </div>
+        </label>
 
 
         <label className="flex items-center gap-2 cursor-pointer">

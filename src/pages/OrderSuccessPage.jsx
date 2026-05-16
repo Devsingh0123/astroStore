@@ -35,9 +35,9 @@ const OrderSuccessPage = () => {
     };
   }, [dispatch, orderId]);
 
-  const handlePrint = () => {
-    window.print();
-  };
+  // const handlePrint = () => {
+  //   window.print();
+  // };
 
 
 
@@ -279,9 +279,8 @@ const OrderSuccessPage = () => {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
           <Link
-            to="/invoice"
-            state={{ orderData: orderId }}
-            
+            to={`/invoice/${orderId}`}
+            target='_blank'
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm font-medium"
           >
