@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 // Components
@@ -77,6 +77,7 @@ const groupedCategories = CATEGORIES.filter(c => c.id !== "all");
 const HomePage = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate()
   const { items: products, loading, error } = useSelector((state) => state.product);
 
   // Filtering & UI state
@@ -182,6 +183,7 @@ const handleAddToCart = async ({ product_id, quantity, name, ratti,price ,image 
     await dispatch(addToCart({ product_id, quantity, name, ratti,price ,image })).unwrap();
     toast.success(`${name} added to cart!`);
     dispatch(fetchCart());
+    navigate("/cart")
   } catch (err) {
     toast.error(err || 'Failed to add to cart');
   }

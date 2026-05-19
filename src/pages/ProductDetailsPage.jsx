@@ -310,6 +310,7 @@ useEffect(() => {
       })).unwrap();
       toast.success(`${product?.name} added to cart!`);
       dispatch(fetchCart());
+      navigate('/cart');
     } catch (err) {
       toast.error(err || "Failed to add to cart");
     }
@@ -561,7 +562,7 @@ useEffect(() => {
                 <Truck className="w-5 h-5 text-gray-500" />
                 <div className="text-xs">
                   <p className="font-semibold">Free Shipping</p>
-                  <p className="text-gray-500">on ₹800+</p>
+                  <p className="text-gray-500">on ₹799+</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">

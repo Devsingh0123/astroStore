@@ -133,6 +133,8 @@ const OrderInvoice = () => {
   const deliveryCharge = parseFloat(pricing.delivery_charge) || 0;
   const grandTotal = parseFloat(pricing.total_amount) || 0;
   const discount = parseFloat(pricing.discount) || 0;
+  const isCod = order.payment.mode === "cod";
+  const COD_SURCHARGE =parseFloat(pricing.cod_charge)  ;
 
   // Payment
   const transactionId = order.payment?.transaction_id || '-';
@@ -239,7 +241,7 @@ const OrderInvoice = () => {
       <tr className="border-b border-black text-xs">
         <td className="border-r border-black p-1 align-top text-center"> </td>
         <td className="border-r border-black p-2 align-top">
-          <p>Shipping Charges</p>
+          <p>Shipping Charge</p>
         </td>
         <td className="border-r border-black p-1 align-middle text-right">₹{deliveryCharge.toFixed(2)}</td>
         <td className="border-r border-black p-1 align-middle text-center">1</td>
@@ -397,6 +399,15 @@ const OrderInvoice = () => {
               </tr>
 
               {/* Discount row - sirf tab dikhe jab discount > 0 */}
+              {isCod && (
+                <tr className="border-b border-black ">
+                  <td colSpan="5" className="border-r border-black p-1 text-left font-semibold">COD Charge:</td>
+                  <td colSpan="3" className="border-r border-black p-1 text-center ">–</td>
+                  <td className="p-1 text-right">₹{COD_SURCHARGE.toFixed(2)}</td>
+                </tr>
+              )}
+
+              {/* Discount row - sirf tab dikhe jab discount > 0 */}
               {discount > 0 && (
                 <tr className="border-b border-black ">
                   <td colSpan="5" className="border-r border-black p-1 text-left font-semibold">Discount:</td>
@@ -433,14 +444,14 @@ const OrderInvoice = () => {
                 <td colSpan="9" className="p-2 text-sm">Whether tax is payable under reverse charge - No</td>
               </tr>
               <tr>
-                <td colSpan="2" className="border-r border-black p-2 align-top">
+               {order?.payment?.mode !== "cod" && <td colSpan="2" className="border-r border-black p-2 align-top">
                   <p className="font-bold">Payment Transaction ID:</p>
                   <p>{transactionId}</p>
-                </td>
-                <td colSpan="4" className="border-r border-black p-2 align-top">
+                </td>}
+                {order?.payment?.mode !== "cod" && <td colSpan="4" className="border-r border-black p-2 align-top">
                   <p className="font-bold">Date & Time:</p>
                   <p className='text-nowrap'>{paidAt}</p>
-                </td>
+                </td>}
                 <td colSpan="2" className="p-2 align-top">
                   <p className="font-bold text-nowrap">Mode of Payment:</p>
                   <p>{paymentMode}</p>

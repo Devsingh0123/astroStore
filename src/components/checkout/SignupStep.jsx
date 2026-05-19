@@ -9,6 +9,8 @@ const SignupStep = ({ onSignupSuccess, onBackToLogin }) => {
   const [form, setForm] = useState({ name: '', email: '', country_code: '+91', mobile: '', terms_accepted: 0 });
   const [loading, setLoading] = useState(false);
 
+  
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === 'checkbox') {
@@ -48,21 +50,13 @@ const SignupStep = ({ onSignupSuccess, onBackToLogin }) => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           name="name"
-          placeholder="Full name"
+          placeholder="Full name *"
           value={form.name}
           onChange={handleChange}
           className="w-full px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-1 focus:ring-amber-300 focus:border-amber-300 transition"
           required
         />
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-1 focus:ring-amber-300 focus:border-amber-300 transition"
-          required
-        />
+      
         <div className="flex gap-2">
           <select
             name="country_code"
@@ -76,13 +70,21 @@ const SignupStep = ({ onSignupSuccess, onBackToLogin }) => {
           </select>
           <input
             name="mobile"
-            placeholder="Mobile number"
+            placeholder="Mobile number *"
             value={form.mobile}
             onChange={handleChange}
             className="flex-1 px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-1 focus:ring-amber-300 focus:border-amber-300 transition"
             required
           />
         </div>
+          <input
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          value={form.email}
+          onChange={handleChange}
+          className="w-full px-4 py-3 border rounded-xl border-gray-300 focus:outline-none focus:ring-1 focus:ring-amber-300 focus:border-amber-300 transition"
+        />
 
         {/* Terms and conditions checkbox */}
         <div className="flex items-start gap-2">

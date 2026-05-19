@@ -1,15 +1,19 @@
 import React from "react";
 import { FaWhatsapp } from "react-icons/fa";
+import { useLocation, useMatch } from "react-router-dom";
 
 const WhatsAppButton = () => {
   
+ const isProductPage = useMatch("/product/:id");
 
+  // Agar product page hai to button mat dikhao
+  if (isProductPage) return null;
   return (
     <a
       href="https://wa.me/919485628238?text=Hi"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-16 right-6 z-50 group"
+      className="fixed bottom-6 right-6 z-50 group"
       aria-label="Chat on WhatsApp"
     >
       {/* Button with floating animation */}

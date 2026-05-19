@@ -9,11 +9,14 @@ const OrderSuccessPage = () => {
   const location = useLocation();
   const dispatch = useDispatch();
 
+
+
   // Redux state se data lo
   const { currentOrder: order, loading, error } = useSelector((state) => state.order);
 
   // Navigation state se orderId lo
-  const orderId = location.state?.orderData;
+  const orderId = location.state?.orderData || 213;
+  
 
   useEffect(() => {
     if (orderId) {
@@ -110,6 +113,7 @@ const OrderSuccessPage = () => {
   const items = order.items || order.order_items || [];
   const address = order.address?.snapshot || order.address || {};
   const payment = order.payment || {};
+  const COD_SURCHARGE = order?.pricing?.cod_charge;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -131,10 +135,10 @@ const OrderSuccessPage = () => {
                 <p className="text-xs text-gray-400 uppercase tracking-wide">Order Number</p>
                 <p className="text-xs  text-gray-800">#{order.order_number}</p>
               </div>
-              <div>
+              {order?.payment?.mode !== "cod" &&<div>
                 <p className="text-xs text-gray-400 uppercase tracking-wide">Transaction Id</p>
                 <p className="text-xs  text-gray-800">#{order?.payment?.transaction_id}</p>
-              </div>
+              </div>}
               <div className="text-right">
                 <p className="text-xs text-gray-400 uppercase tracking-wide">Order Date</p>
                 <p className="text-xs text-gray-800">
@@ -219,12 +223,20 @@ const OrderSuccessPage = () => {
                     <td colSpan="3" className="pt-3 text-right">Subtotal:</td>
                     <td className="pt-3 text-right font-medium">₹{parseFloat(subtotal).toLocaleString()}</td>
                   </tr>
+                   {/* cod payment charge */}
+                  {order.payment.mode === "cod" && (
+                    <tr className="text-gray-600">
+                      <td colSpan="3" className="pt-1 text-right">COD Charge:</td>
+                      <td className="pt-1 text-right">₹{COD_SURCHARGE.toLocaleString()}</td>
+                    </tr>
+                  ) }
                   {deliveryCharge > 0 && (
                     <tr className="text-gray-600">
-                      <td colSpan="3" className="pt-1 text-right">Delivery Charge:</td>
+                      <td colSpan="3" className="pt-1 text-right">Shipping Charge:</td>
                       <td className="pt-1 text-right">₹{parseFloat(deliveryCharge).toLocaleString()}</td>
                     </tr>
                   )}
+                 
                   {discount > 0 && (
                     <tr className="text-green-600">
                       <td colSpan="3" className="pt-1 text-right">Discount:</td>
@@ -278,14 +290,14 @@ const OrderSuccessPage = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
-          <Link
+         {order.payment.status === "paid" && <Link
             to={`/invoice/${orderId}`}
             target='_blank'
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm font-medium"
           >
             <Printer className="w-4 h-4" /> Print Invoice
-          </Link>
+          </Link>}
           <div className="flex gap-3">
             <Link
               to="/orders"

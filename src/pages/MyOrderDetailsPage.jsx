@@ -73,6 +73,8 @@ const MyOrderDetailsPage = () => {
   const total = order?.pricing?.total_amount || subtotal + shipping - discount;
   const isCancelled = order.status === 'cancelled';
   const canCancel = !isCancelled && order.status !== 'delivered';
+  const isCod = order.payment.mode === "cod"
+  const COD_SURCHARGE = order?.pricing?.cod_charge
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -84,14 +86,22 @@ const MyOrderDetailsPage = () => {
           >
             <ArrowLeft className="w-4 h-4" /> Back to Orders
           </button>
-          <Link
+          {currentOrder.payment.status === "paid" && <Link
             to={`/invoice/${currentOrder.order_id}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-2 py-2 mr-2 bg-amber-500 text-white/90 rounded-lg hover:bg-amber-600 transition"
           >
             <Printer className="w-4 h-4" /> Print Invoice
-          </Link>
+          </Link>}
+          {currentOrder.payment.status === "paid" && <Link
+            to={`/invoice/${currentOrder.order_id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-2 py-2 mr-2 bg-amber-500 text-white/90 rounded-lg hover:bg-amber-600 transition"
+          >
+            <Printer className="w-4 h-4" /> Print Invoice
+          </Link>}
         </div>
 
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -184,7 +194,9 @@ const MyOrderDetailsPage = () => {
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-500">Subtotal: ₹{subtotal.toLocaleString()}</p>
-                {shipping > 0 && <p className="text-sm text-gray-500">Shipping: ₹{shipping.toLocaleString()}</p>}
+                {isCod  && <p className="text-sm text-gray-500">COD Charge: ₹{ COD_SURCHARGE.toLocaleString()}</p>}
+                {shipping > 0 && <p className="text-sm text-gray-500">Shipping Charge: ₹{shipping.toLocaleString()}</p>}
+
                 {discount > 0 && <p className="text-sm text-green-600">Discount: -₹{discount.toLocaleString()}</p>}
                 <p className="text-lg font-bold text-gray-900 mt-1">Total: ₹{total.toLocaleString()}</p>
               </div>

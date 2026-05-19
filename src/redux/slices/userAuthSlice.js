@@ -4,22 +4,15 @@ import { success } from "zod";
 
 export const userLogin = createAsyncThunk(
   "user/login",
-  async (data, thunkApi) => {
+  async (mobile, thunkApi) => {   // mobile number as argument
     try {
-      const res = await api.post("/user/login", data);
-      // console.log("checking user login data", res.data.user);
-      if (res?.data?.user?.role_id === 2) {
-        return thunkApi.rejectWithValue("Astrologer cannot login from here");
-      } else {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("role_id", res?.data?.user?.role_id);
-
-        // localStorage.setItem("token", res.data.token);
-        return res.data.token;
-      }
+      const res = await api.post("/user/login", { mobile });
+      // No token returned now, just success
+      console.log("userLOgin",res.data)
+      return res.data; // { message: "OTP sent", ... }
     } catch (error) {
       return thunkApi.rejectWithValue(
-        error.response?.data?.message || "Login failed",
+        error.response?.data?.message || "Failed to send OTP",
       );
     }
   },
@@ -27,9 +20,9 @@ export const userLogin = createAsyncThunk(
 
 export const userVerifyLoginOtp = createAsyncThunk(
   "user/verifyLoginOtp",
-  async ({ email, otp }, thunkApi) => {
+  async ({ mobile, otp }, thunkApi) => {
     try {
-      const res = await api.post("/user/verify-login-otp", { email, otp });
+      const res = await api.post("/user/verify-login-otp", { mobile, otp });
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role_id", res.data.user?.role_id);
@@ -182,8 +175,7 @@ const UserAuthSlice = createSlice({
       })
       .addCase(userLogin.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload;
-        state.isLoggedIn = true;
+        state.isLoggedIn = false;
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.loading = false;

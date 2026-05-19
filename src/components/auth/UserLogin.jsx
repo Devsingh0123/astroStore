@@ -6,12 +6,13 @@ import {
   userProfile,
   userVerifyLoginOtp,
   userRegister,
+  userLogin,
 } from "../../redux/slices/userAuthSlice";
 import { closeLoginModal } from "../../redux/slices/uiSlice";
 import { toast } from "react-toastify";
 import ForgotPassword from "./ForgotPassword";
 import { Link } from "react-router-dom";
-import { api } from "../../redux/baseApi"; // only needed for sending OTP (no thunk for that)
+import { api } from "../../redux/baseApi";
 import { X } from "lucide-react";
 import { fetchCart, mergeGuestCart } from "@/redux/slices/cartSlice";
 
@@ -20,8 +21,8 @@ const UserLogin = () => {
   const { user, error, loading } = useSelector((state) => state.userAuth);
   const { isLoginModalOpen } = useSelector((state) => state.ui);
   const [mode, setMode] = useState("login");
-  const [step, setStep] = useState("email");
-  const [email, setEmail] = useState("");
+  const [step, setStep] = useState("mobile");
+  const [mobile, setMobile] = useState("");   // changed from email to mobile
   const [otp, setOtp] = useState("");
   const [userType, setUserType] = useState("user");
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -38,7 +39,7 @@ const UserLogin = () => {
   // Reset OTP step when mode changes from login
   useEffect(() => {
     if (mode !== "login") {
-      setStep("email");
+      setStep("mobile");
       setOtp("");
     }
   }, [mode]);
@@ -47,9 +48,9 @@ const UserLogin = () => {
   useEffect(() => {
     if (user) {
       dispatch(closeLoginModal());
-      setEmail("");
+      setMobile("");
       setOtp("");
-      setStep("email");
+      setStep("mobile");
       setForm({
         name: "",
         email: "",
@@ -70,96 +71,89 @@ const UserLogin = () => {
     }));
   };
 
-  // ========== LOGIN OTP FLOW ==========
-  const handleSendOtp = async (e) => {
+  // ========== MOBILE OTP LOGIN FLOW ==========
+const handleSendOtp = async (e) => {
+  e.preventDefault();
+  if (!mobile) {
+    toast.error("Please enter your mobile number");
+    return;
+  }
+  setLoadingBtn(true);
+  try {
+    await dispatch(userLogin(mobile)).unwrap();
+    setStep("otp");
+    toast.success("OTP sent to your mobile number");
+  } catch (err) {
+    toast.error(err || "Failed to send OTP");
+  } finally {
+    setLoadingBtn(false);
+  }
+};
+
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email");
+    if (!otp) {
+      toast.error("Please enter the OTP");
       return;
     }
     setLoadingBtn(true);
     try {
-      await api.post("/user/login", { email });
-      setStep("otp");
-      toast.success("OTP sent to your email");
+      // Pass mobile and otp to thunk (thunk must accept { mobile, otp })
+      await dispatch(userVerifyLoginOtp({ mobile, otp })).unwrap();
+      await dispatch(userProfile()).unwrap();
+
+      const mergeResult = await dispatch(mergeGuestCart()).unwrap();
+      if (mergeResult.partial) {
+        toast.warning(`Some items couldn't be added: ${mergeResult.errors.join(', ')}`);
+      } else if (mergeResult.merged) {
+        toast.success('Cart merged successfully');
+      }
+
+      await dispatch(fetchCart());
+      toast.success("Logged in successfully");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to send OTP");
+      console.log("error", err);
+      toast.error(err || 'Failed to merge cart');
     } finally {
       setLoadingBtn(false);
     }
   };
 
-const handleVerifyOtp = async (e) => {
-  e.preventDefault();
-  if (!otp) {
-    toast.error("Please enter the OTP");
-    return;
-  }
-  setLoadingBtn(true);
-  try {
-    await dispatch(userVerifyLoginOtp({ email, otp })).unwrap();
-    await dispatch(userProfile()).unwrap();
-
-    //  Merge guest cart – it can be partial
-    const mergeResult = await dispatch(mergeGuestCart()).unwrap();
-    
-    // Show appropriate message based on merge result
-    if (mergeResult.partial) {
-      toast.warning(`Some items couldn't be added: ${mergeResult.errors.join(', ')}`);
-    } else if (mergeResult.merged) {
-      toast.success('Cart merged successfully');
-    }
-    
-    await dispatch(fetchCart());
-    toast.success("Logged in successfully");
-  } catch (err) {
-    // Complete failure (no items merged)
-    console.log("error",err)
-    toast.error(err || 'Failed to merge cart');
-  } finally {
-    setLoadingBtn(false);
-  }
-};
-
-
-
-  // ========== SIGNUP (no image) ==========
+  // ========== SIGNUP (unchanged but uses mobile) ==========
   const handleSignup = async (e) => {
-  e.preventDefault();
-  if (!termsAccepted) {
-    setErrors({ fields: {}, form: "You must accept the Terms & Conditions to sign up." });
-    return;
-  }
-  const submitData = {
-    name: form.name,
-    email: form.email,
-    country_code: form.country_code,
-    mobile: form.mobile,
-    terms_accepted: termsAccepted ? 1 : 0,
+    e.preventDefault();
+    if (!termsAccepted) {
+      setErrors({ fields: {}, form: "You must accept the Terms & Conditions to sign up." });
+      return;
+    }
+    const submitData = {
+      name: form.name,
+      email: form.email,
+      country_code: form.country_code,
+      mobile: form.mobile,
+      terms_accepted: termsAccepted ? 1 : 0,
+    };
+    setLoadingBtn(true);
+    try {
+      await dispatch(userRegister(submitData)).unwrap();
+      toast.success("Registration successful! Please login.");
+      setMode("login");
+      setStep("mobile");
+      setOtp("");
+      setForm({
+        name: "",
+        email: "",
+        country_code: "+91",
+        mobile: "",
+      });
+      setErrors({ fields: {}, form: "" });
+      setTermsAccepted(false);
+    } catch (err) {
+      toast.error(err || "Registration failed");
+    } finally {
+      setLoadingBtn(false);
+    }
   };
-  setLoadingBtn(true);
-  try {
-    const res = await dispatch(userRegister(submitData)).unwrap();
-    // Registration successful – but DON'T auto-login
-    toast.success("Registration successful! Please login.");
-    // Switch to login mode
-    setMode("login");
-    setStep("email");
-    setOtp("");
-    setForm({
-      name: "",
-      email: "",
-      country_code: "+91",
-      mobile: "",
-    });
-    setErrors({ fields: {}, form: "" });
-    setTermsAccepted(false);
-  } catch (err) {
-    toast.error(err || "Registration failed");
-  } finally {
-    setLoadingBtn(false);
-  }
-};
 
   if (!isLoginModalOpen) return null;
 
@@ -177,7 +171,7 @@ const handleVerifyOtp = async (e) => {
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">
-                {mode === "login" && step === "email" && "Login"}
+                {mode === "login" && step === "mobile" && "Login"}
                 {mode === "login" && step === "otp" && "Enter OTP"}
                 {mode === "signup" && "Create Account"}
                 {mode === "forgot" && "Forgot Password"}
@@ -196,18 +190,22 @@ const handleVerifyOtp = async (e) => {
               </p>
             )}
 
-            {/* LOGIN – EMAIL STEP */}
-            {mode === "login" && step === "email" && (
+            {/* LOGIN – MOBILE NUMBER STEP */}
+            {mode === "login" && step === "mobile" && (
               <form onSubmit={handleSendOtp} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
                   <input
-                  name="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    type="tel"
+                    value={mobile}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, ''); // sirf digits allow karo
+                          if (value.length <= 10) {   // max 10 digits
+                            setMobile(value);
+                          }
+                        }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                    placeholder="you@example.com"
+                    placeholder="Enter mobile number"
                     required
                   />
                 </div>
@@ -224,7 +222,7 @@ const handleVerifyOtp = async (e) => {
                     type="button"
                     onClick={() => {
                       setMode("signup");
-                      setStep("email");
+                      setStep("mobile");
                       setErrors({ fields: {}, form: "" });
                     }}
                     className="text-amber-600 hover:underline cursor-pointer"
@@ -259,32 +257,23 @@ const handleVerifyOtp = async (e) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setStep("email");
+                    setStep("mobile");
                     setOtp("");
                   }}
                   className="text-sm text-amber-600 hover:underline block text-center w-full"
                 >
-                  ← Back to email
+                  ← Back to mobile number
                 </button>
               </form>
             )}
 
-            {/* SIGNUP – clean, no image fields */}
+            {/* SIGNUP – unchanged */}
             {mode === "signup" && (
               <form onSubmit={handleSignup} className="space-y-3 mt-4">
                 <input
                   name="name"
                   placeholder="Full Name *"
                   value={form.name}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                  required
-                />
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="Email *"
-                  value={form.email}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                   required
@@ -309,6 +298,14 @@ const handleVerifyOtp = async (e) => {
                     required
                   />
                 </div>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={form.email}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                />
 
                 <div className="flex items-start gap-2">
                   <input
@@ -343,7 +340,7 @@ const handleVerifyOtp = async (e) => {
                     type="button"
                     onClick={() => {
                       setMode("login");
-                      setStep("email");
+                      setStep("mobile");
                       setErrors({ fields: {}, form: "" });
                       setOtp("");
                     }}

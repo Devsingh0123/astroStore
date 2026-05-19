@@ -36,7 +36,7 @@ const CartPage = () => {
   const [showPopup, setShowPopup] = useState(false);
 
 
-  const SHIPPING_CHARGES = +import.meta.env.VITE_SHIPING_CHARGES;
+  // const SHIPPING_CHARGES = +import.meta.env.VITE_SHIPING_CHARGES;
 const MIN_FREE_SHIPPING = +import.meta.env.VITE_MINIMUM_ORDER_FOR_AVOID_SHIPING;
 
   useEffect(() => {
@@ -155,10 +155,10 @@ const MIN_FREE_SHIPPING = +import.meta.env.VITE_MINIMUM_ORDER_FOR_AVOID_SHIPING;
   const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
   const originalTotal = subtotal;
   const productSavings = originalTotal - subtotal;
-  const shippingFee = subtotal >= MIN_FREE_SHIPPING  ? 0 : SHIPPING_CHARGES ;
+  const shippingFee = subtotal >= MIN_FREE_SHIPPING  && 0  ;
   const freeShippingRemaining = Math.max(0, MIN_FREE_SHIPPING  - subtotal);
-  const totalSavings = productSavings + couponDiscount + (shippingFee === 0 && subtotal >= MIN_FREE_SHIPPING  ? SHIPPING_CHARGES  : 0);
-  const grandTotal = subtotal + shippingFee - couponDiscount;
+  const totalSavings = productSavings + couponDiscount 
+  const grandTotal = subtotal  - couponDiscount;
 
   // Simple function – only opens the popup
   const handleCheckoutClick = () => {
@@ -369,10 +369,10 @@ const MIN_FREE_SHIPPING = +import.meta.env.VITE_MINIMUM_ORDER_FOR_AVOID_SHIPING;
                         <span>-₹{productSavings.toLocaleString()}</span>
                       </div>
                     )}
-                    <div className={`flex justify-between text-sm ${shippingFee === 0 ? 'text-green-600 font-semibold' : 'text-stone-600'}`}>
+                    {/* <div className={`flex justify-between text-sm ${shippingFee === 0 ? 'text-green-600 font-semibold' : 'text-stone-600'}`}>
                       <span>Shipping</span>
                       <span>{shippingFee === 0 ? 'FREE' : `₹${shippingFee}`}</span>
-                    </div>
+                    </div> */}
                     {appliedCoupon && (
                       <div className="flex justify-between text-sm text-green-600 font-semibold">
                         <span>Coupon ({appliedCoupon.code})</span>
