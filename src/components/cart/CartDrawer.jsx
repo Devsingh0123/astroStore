@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import CartPage from "@/pages/CartPage";
 import { closeCartDrawer } from "@/redux/slices/uiSlice";
+// import { useEffect } from "react";
 
 
 const CartDrawer = () => {
@@ -9,6 +10,17 @@ const CartDrawer = () => {
   const { isCartDrawerOpen } = useSelector(
     (state) => state.ui
   );
+  //   useEffect(() => {
+  //   if (isCartDrawerOpen) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "auto";
+  //   }
+
+  //   return () => {
+  //     document.body.style.overflow = "auto";
+  //   };
+  // }, [isCartDrawerOpen]);
 
   return (
     <>
@@ -17,7 +29,7 @@ const CartDrawer = () => {
         onClick={() => dispatch(closeCartDrawer())}
         className={`
           fixed inset-0 scrollbar-hide bg-black/40 z-40
-          transition-all duration-300
+          transition-all duration-300 
           ${
             isCartDrawerOpen
               ? "opacity-100 visible"

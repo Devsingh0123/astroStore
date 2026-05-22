@@ -39,6 +39,14 @@ const AddressStep = ({ selectedAddressId, onSelectAddress }) => {
       if (debounceTimer.current) clearTimeout(debounceTimer.current);
     };
   }, []);
+  // Auto‑select default or first address when addresses load
+useEffect(() => {
+  if (addresses.length > 0 && !selectedAddressId) {
+    const defaultAddr = addresses.find(addr => Number(addr.by_default) === 1);
+    const addrToSelect = defaultAddr ? defaultAddr.id : addresses[0].id;
+    onSelectAddress(addrToSelect);
+  }
+}, [addresses, selectedAddressId, onSelectAddress]);
 
   const fetchPincodeData = async (pincode) => {
     if (!pincode || pincode.length !== 6) return;

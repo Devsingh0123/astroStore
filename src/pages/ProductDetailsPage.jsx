@@ -771,7 +771,7 @@ useEffect(() => {
 
 
       {showStickyBar && (
-        <div className="fixed container bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+        <div className="fixed  bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 px-4 sm:px-6 lg:px-8 py-4 md:py-6">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2  ">
             <img src={product.image} alt="image" className="w-10 h-10 rounded-md hidden sm:block" />
             {/* Product info - mobile me left align, desktop me flex row */}

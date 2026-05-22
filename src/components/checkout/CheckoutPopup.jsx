@@ -36,7 +36,7 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
           const { data } = await api.get('/store/cod-charge', {
             address_id: selectedAddressId,
           });
-          console.log("codcharge",data)
+          console.log("codcharge", data)
           if (data.status) setCodCharge(data.cod_charge);
         } catch (err) {
           console.error('Failed to fetch COD charge', err);
@@ -249,7 +249,10 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
             <div className="flex gap-10 justify-between">
               {/* YES BUTTON */}
               <div
-                onClick={onClose}
+                onClick={() => {
+                  onClose();
+                  setShowCancelPopup(false);
+                }}
                 className="flex-1 text-gray-400 font-semibold text-center cursor-pointer"
               >
                 Yes

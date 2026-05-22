@@ -49,12 +49,12 @@ const CartPage = () => {
   }, [error, dispatch]);
 
   useEffect(() => {
-    if (couponCode === 'WELCOMEOFFER' && cartItems.length > 0 && !appliedCoupon) {
+    if (couponCode === 'WELCOMEOFFER' && cartItems.length > 0 ) {
       applyCoupon()
     }
 
 
-  }, [cartItems, appliedCoupon])
+  }, [cartItems])
 
 
   const handleRemoveItem = (id) => {
@@ -84,6 +84,7 @@ const CartPage = () => {
       });
     }
   };
+ 
 
   const applyCoupon = async () => {
     const code = couponCode.trim().toUpperCase();
