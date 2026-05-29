@@ -71,7 +71,9 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />
-          <Route path="/cart" element={<CartPage />} />
+
+          
+        
 
           {/* Policies and T&C */}
           <Route path="/disclaimer" element={<DisclaimerPage />} />
@@ -112,15 +114,15 @@ function App() {
 
         </Route>
 
-        {/* ====================================================================================== */}
+        {/* =============================================================== */}
         {/* checkout currently not in use  */}
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/invoice/:orderId" element={<OrderInvoice />} />
+        {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
 
+          {/* now cart is not used the cart page showing in the drawer not on route */}
+          {/* <Route path="/cart" element={<CartPage />} /> */}
 
-
-
-
+          {/* not in use the invoice will download directely from now */}
+        {/* <Route path="/invoice/:orderId" element={<OrderInvoice />} /> */}
 
       </Routes>
 

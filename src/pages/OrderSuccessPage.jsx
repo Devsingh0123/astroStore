@@ -1,22 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CheckCircle, Printer, ShoppingBag, Truck } from 'lucide-react';
+import { CheckCircle, Download, ShoppingBag, Truck } from 'lucide-react';
 import { fetchOrderDetails, clearCurrentOrder } from '../redux/slices/orderSlice';
 import Loader from '@/components/common/Loader';
+import OrderInvoice from './OrderInvoice';
+ import html2canvas from 'html2canvas-pro';
+import jsPDF from 'jspdf';
 
 const OrderSuccessPage = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-
+  const invoiceRef = useRef(null);
 
 
   // Redux state se data lo
   const { currentOrder: order, loading, error } = useSelector((state) => state.order);
 
   // Navigation state se orderId lo
-  const orderId = location.state?.orderData || 213;
+  const orderId = location.state?.orderData;
   
+
+console.log(order)
+
 
   useEffect(() => {
     if (orderId) {
@@ -38,10 +44,21 @@ const OrderSuccessPage = () => {
     };
   }, [dispatch, orderId]);
 
-  // const handlePrint = () => {
-  //   window.print();
-  // };
-
+  const handleDownloadInvoice = async () => {
+  if (!order || !invoiceRef.current) return;
+  const element = invoiceRef.current;
+  try {
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const imgWidth = 210;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+    pdf.save(`Invoice_${order.order_number}.pdf`);
+  } catch (err) {
+    toast.error(`Download failed: ${error.message}`);
+  }
+};
 
 
   // Loading state
@@ -267,10 +284,10 @@ const OrderSuccessPage = () => {
                   {payment.mode || 'Online'}
                 </span>
               </div>
-              <div>
+              {payment.mode === "online" && <div>
                 <span className="text-gray-500">Payment Status:</span>
-                <span className="ml-2 font-medium text-green-600">{order.status}</span>
-              </div>
+                <span className="ml-2 font-medium text-green-600">{payment?.status}</span>
+              </div>}
               {/* {payment.transaction_id && (
                 <div className="md:col-span-2">
                   <span className="text-gray-500">Transaction ID:</span>
@@ -290,14 +307,12 @@ const OrderSuccessPage = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
-         <Link
-            to={`/invoice/${orderId}`}
-            target='_blank'
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm font-medium"
+         <button
+            onClick={handleDownloadInvoice}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm font-medium cursor-pointer"
           >
-            <Printer className="w-4 h-4" /> Print Invoice
-          </Link>
+            <Download className="w-4 h-4" /> Download Invoice
+          </button>
           <div className="flex gap-3">
             <Link
               to="/orders"
@@ -321,6 +336,22 @@ const OrderSuccessPage = () => {
             Estimated delivery in 5-7 business days
           </p>
         </div>
+      </div>
+
+
+          {/* Hidden invoice template - same as MyOrderDetailsPage */}
+      <div
+        ref={invoiceRef}
+        style={{
+          position: 'absolute',
+          top: '-9999px',
+          left: '-9999px',
+          width: '794px',
+          background: 'white',
+          zIndex: -1,
+        }}
+      >
+        <OrderInvoice order={order} />
       </div>
     </div>
   );

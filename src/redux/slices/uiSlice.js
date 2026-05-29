@@ -6,7 +6,7 @@ const uiSlice = createSlice({
   initialState: {
     isLoginModalOpen: false,
     isCartDrawerOpen: false,
-     isCheckoutOpen: false,
+    isCheckoutOpen: false,
   },
   reducers: {
     // for login/signup pop-up

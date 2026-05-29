@@ -7,6 +7,7 @@ import { api } from '../../redux/baseApi';
 import { clearCart } from '../../redux/slices/cartSlice';
 import { fetchWallet } from '../../redux/slices/walletSlice';
 import { FastForward, Wallet, CreditCard, Landmark, Info, } from "lucide-react";
+import { closeCartDrawer } from '@/redux/slices/uiSlice';
 
 const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
@@ -63,12 +64,13 @@ const PaymentStep = forwardRef(({ selectedAddressId,
           address_id: selectedAddressId,
         });
 
-        console.log(data)
+        // console.log(data)
 
         if (data.status) {
           toast.success('Order placed successfully!');
           navigate('/order-success', { state: { orderData: data.data.order_id } });
           dispatch(clearCart());
+          dispatch(closeCartDrawer());
           onOrderComplete();
         } else {
           toast.error(data.message || 'COD order failed');
@@ -85,7 +87,7 @@ const PaymentStep = forwardRef(({ selectedAddressId,
         wallet_amount: useWallet ? walletAmount : 0,
         address_id: selectedAddressId,
       });
-      console.log(data)
+      // console.log(data)
       if (!data.status) throw new Error(data.message);
       const { order_id, amount: onlineAmount, payment_mode } = data;
 
@@ -134,6 +136,7 @@ const PaymentStep = forwardRef(({ selectedAddressId,
 
               navigate('/order-success', { state: { orderData: verify.data.order.order_id } });
               dispatch(clearCart());
+              dispatch(closeCartDrawer());
               onOrderComplete();
             } else toast.error('Verification failed');
           } catch (err) { toast.error('Verification error'); }
@@ -251,7 +254,7 @@ const PaymentStep = forwardRef(({ selectedAddressId,
           </details>
         </label>
       </div>
-      {/* <p className="text-sm text-gray-500 text-center">You will be redirected to Razorpay for secure payment.</p> */}
+     
     </div>
   );
 });

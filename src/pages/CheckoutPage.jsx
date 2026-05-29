@@ -38,7 +38,7 @@ const MIN_FREE_SHIPPING = +import.meta.env.VITE_MINIMUM_ORDER_FOR_AVOID_SHIPING;
   useEffect(() => {
     if (!isLoggedIn) {
       dispatch(openLoginModal());
-      navigate('/cart');
+      // navigate('/cart');
     }
   }, [isLoggedIn, dispatch, navigate]);
 
