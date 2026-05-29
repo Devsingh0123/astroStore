@@ -10,6 +10,8 @@ const CartDrawer = () => {
   const { isCartDrawerOpen } = useSelector(
     (state) => state.ui
   );
+
+  if (!isCartDrawerOpen) return null;
   //   useEffect(() => {
   //   if (isCartDrawerOpen) {
   //     document.body.style.overflow = "hidden";
@@ -24,35 +26,13 @@ const CartDrawer = () => {
 
   return (
     <>
-      {/*cart Overlay */}
+       {/* Overlay */}
       <div
         onClick={() => dispatch(closeCartDrawer())}
-        className={`
-          fixed inset-0 scrollbar-hide bg-black/40 z-40
-          transition-all duration-300 
-          ${
-            isCartDrawerOpen
-              ? "opacity-100 visible"
-              : "opacity-0 invisible"
-          }
-        `}
+        className="fixed inset-0 bg-black/40 z-40"
       />
-
-      {/*cart Drawer */}
-      <div
-        className={`
-          fixed scrollbar-hide top-0 right-0 h-screen
-          w-full sm:w-[60%]
-          bg-white z-50 overflow-y-auto
-          shadow-2xl
-          transition-transform duration-300 ease-in-out
-          ${
-            isCartDrawerOpen
-              ? "translate-x-0"
-              : "translate-x-full"
-          }
-        `}
-      >
+      {/* Drawer */}
+      <div className="fixed top-0 right-0 h-screen w-full sm:w-[60%] bg-white z-50 overflow-y-auto shadow-2xl">
         <CartPage />
       </div>
     </>

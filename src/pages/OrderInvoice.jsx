@@ -1,11 +1,6 @@
 // src/pages/OrderInvoice.jsx
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchOrderDetails, clearCurrentOrder } from '../redux/slices/orderSlice';
-import Loader from '@/components/common/Loader';
+import React from 'react';
 import logo from '../assets/logo.png';
-import { ArrowLeft, Printer } from 'lucide-react';
 
 // ---------- Helper: Convert number to English words (Indian system) ----------
 function numberToWords(amount) {
@@ -50,42 +45,9 @@ function numberToWords(amount) {
   return `${rupeesWords} and ${paiseWords} Only`;
 }
 
-const OrderInvoice = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  // const orderId = location.state?.orderData;
-  const { orderId } = useParams();
-  const { currentOrder: order, loading, error } = useSelector((state) => state.order);
+const OrderInvoice = ({order}) => {
 
-  useEffect(() => {
-    if (orderId) {
-      dispatch(fetchOrderDetails(orderId));
-    }
-    return () => {
-      dispatch(clearCurrentOrder());
-    };
-  }, [dispatch, orderId]);
 
-  // Auto-print when order loads
-  const [hasAutoPrinted, setHasAutoPrinted] = useState(false);
-  useEffect(() => {
-    if (order && !loading && !hasAutoPrinted) {
-      setHasAutoPrinted(true);
-      setTimeout(() => window.print(), 500);
-    }
-  }, [order, loading, hasAutoPrinted]);
-
-  if (!orderId) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-red-500">No order information found.</p>
-      </div>
-    );
-  }
-
-  if (loading) return <Loader data="Loading invoice..." />;
-  if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
   if (!order) return <p className="text-center py-10">Order not found.</p>;
 
   // ---------- Extract data directly from API ----------
@@ -291,7 +253,7 @@ const OrderInvoice = () => {
 
 
   return (
-    <div className="w-full bg-amber-200 py-10">
+    <div className="w-full">
       {/* A4 PAGE */}
       <div className="w-[794px] min-h-[1123px] flex flex-col bg-white mx-auto text-black font-sans border border-gray-400">
         {/* HEADER */}

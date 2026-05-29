@@ -21,11 +21,9 @@ const CheckoutPopup = ({ isOpen, onClose }) => {
 
   const [apiDeliveryCharge, setApiDeliveryCharge] = useState(null);
   const paymentRef = useRef();
-  console.log("paymentref", paymentRef)
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('online'); // 'online' or 'cod'
   // const COD_SURCHARGE = +import.meta.env.VITE_COD_SURCHARGE;
-  console.log("cartitems", cartItems)
 
   // cod charge fetch
   useEffect(() => {
