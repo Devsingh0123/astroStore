@@ -1,6 +1,6 @@
 // components/home/CategorySection.jsx
 import React, { forwardRef, useRef } from 'react';
-import ProductCard from '../features/ProductCard';
+import ProductCard from '../product/ProductCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const CategorySection = forwardRef(({ category, products, onAddToCart }, ref) => {

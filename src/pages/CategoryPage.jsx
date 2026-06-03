@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts } from "../redux/slices/productSlice";
 import { addToCart, fetchCart } from "../redux/slices/cartSlice";
 import Loader from "@/components/common/Loader";
-import ProductCard from "@/components/features/ProductCard";
+import ProductCard from "@/components/product/ProductCard";
 import { toast } from "react-toastify";
 import { categoryStaticData } from "../constants/categoryStaticData";
 import AccordionSection from "@/components/common/AccordionSection";

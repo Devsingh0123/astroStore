@@ -8,10 +8,8 @@ import logo from "../../assets/logo.png";
 import { CATEGORIES } from "../../constants/categories";
 
 const Footer = () => {
-
-
   // Filter out "all" from categories for collections
-  const collectionCategories = CATEGORIES.filter(cat => cat.id !== "all");
+  const collectionCategories = CATEGORIES.filter((cat) => cat.id !== "all");
 
   return (
     <footer className="footer bg-[#f7f5f2] border-t border-gray-300 mt-8 pt-8">
@@ -22,19 +20,16 @@ const Footer = () => {
             <img src={logo} alt="Astrotring" className="h-10 mb-4" />
           </Link>
           <p className="text-sm text-gray-700 leading-relaxed">
-            Astrotring Shop offers a curated collection of authentic
-            astrology and spiritual products designed to enhance positivity
-            and balance in life. Explore a wide range of gemstones, rudraksha,
-            healing bracelets, and vastu items carefully selected by experts.
+            Astrotring Shop offers a curated collection of authentic astrology
+            and spiritual products designed to enhance positivity and balance in
+            life. Explore a wide range of gemstones, rudraksha, healing
+            bracelets, and vastu items carefully selected by experts.
           </p>
         </div>
         <hr className="text-gray-300 mt-4" />
         <br />
         {/* Main Footer Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 pb-8">
-
-
-
           {/* COLLECTIONS - Dynamic from CATEGORIES */}
           <div>
             <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
@@ -60,29 +55,122 @@ const Footer = () => {
               More Info
             </h2>
             <ul className="mt-4 space-y-2">
-              <li><Link to="/gemstones" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">About Gemstones</Link></li>
-              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Zodiac Signs</Link></li>
-              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Numerology</Link></li>
-              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Vastu Shastra</Link></li>
-              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Tarot</Link></li>
-              <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Love Calculator</Link></li>
+              <li>
+                <Link
+                  to="/gemstones"
+                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                >
+                  About Gemstones
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                >
+                  Zodiac Signs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                >
+                  Numerology
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                >
+                  Vastu Shastra
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                >
+                  Tarot
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                >
+                  Love Calculator
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Privacy Policy */}
-          <div>
-            <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
-              Corporate Info
-            </h2>
-            <ul className="mt-4 space-y-2">
-              {/* <li><Link to="/" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">About Us</Link></li> */}
-              <li><Link to="/privacy-policy" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Privacy Policy</Link></li>
-              <li><Link to="/terms-conditions" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Terms & Conditions</Link></li>
-              <li><Link to="/refund-policy" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Refund & Cancellation</Link></li>
-              <li><Link to="/shipping-policy" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">
-                Shipping Policy</Link></li>
-              <li><Link to="/disclaimer" className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1">Disclaimer</Link></li>
-            </ul>
+          <div className="flex flex-col gap-4" >
+            <div>
+              <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
+                Corporate Info
+              </h2>
+              <ul className="mt-4 space-y-2">
+                <li>
+                  <Link
+                    to="/privacy-policy"
+                    className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/terms-conditions"
+                    className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                  >
+                    Terms & Conditions
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/refund-policy"
+                    className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                  >
+                    Refund & Cancellation
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/shipping-policy"
+                    className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                  >
+                    Shipping Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/disclaimer"
+                    className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                  >
+                    Disclaimer
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
+                Affiliate Program
+              </h2>
+
+              <ul className="mt-4 space-y-2">
+                <li>
+                  <Link
+                    to="/become-an-affiliate"
+                    className="flex items-center gap-2 text-sm text-gray-700 transition-all duration-300 hover:text-amber-600 hover:translate-x-1"
+                  >
+                    Become an Affiliate
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* CONTACT  */}
@@ -92,7 +180,7 @@ const Footer = () => {
             </h2>
 
             <p className="text-sm text-gray-700 leading-relaxed mt-4">
-              We are available 24x7 on chat support,{' '}
+              We are available 24x7 on chat support,{" "}
               <a
                 href="https://wa.me/919485628238?text=Hi"
                 target="_blank"
@@ -113,33 +201,45 @@ const Footer = () => {
                 <span className="group/link relative inline-block font-normal transition-colors duration-300 cursor-pointer">
                   care@astrotring.com
                   <span className="absolute bottom-[-2px] left-0 w-full h-[1.5px] bg-amber-500 scale-x-0 group-hover/link:scale-x-100 transition-transform duration-300 origin-left" />
-
                 </span>
               </a>
             </div>
 
             {/* social icons */}
 
-
             <div className="flex gap-2 mt-5">
               {[
-                { Icon: FaFacebook, href: "https://www.facebook.com/profile.php?id=61589487082042", textColor: "text-[#1877F2]" },
-                { Icon: FaInstagram, href: "https://www.instagram.com/astrotring/", textColor: "text-[#E4405F]" },
-                { Icon: FaTwitter, href: "coming-soon", textColor: "text-[#1DA1F2]" },
-                { Icon: FaYoutube, href: "coming-soon", textColor: "text-[#FF0000]" },
+                {
+                  Icon: FaFacebook,
+                  href: "https://www.facebook.com/profile.php?id=61589487082042",
+                  textColor: "text-[#1877F2]",
+                },
+                {
+                  Icon: FaInstagram,
+                  href: "https://www.instagram.com/astrotring/",
+                  textColor: "text-[#E4405F]",
+                },
+                {
+                  Icon: FaTwitter,
+                  href: "coming-soon",
+                  textColor: "text-[#1DA1F2]",
+                },
+                {
+                  Icon: FaYoutube,
+                  href: "coming-soon",
+                  textColor: "text-[#FF0000]",
+                },
               ].map(({ Icon, href, textColor }, i) => (
                 <a
                   key={i}
                   href={href}
                   target="_blank"
-
                   className="border border-gray-600 rounded-full h-8 w-8 grid place-items-center text-gray-700 hover:bg-amber-600 hover:border-amber-600 hover:text-white transition"
                 >
                   <Icon className={`size-5 ${textColor}`} />
                 </a>
               ))}
             </div>
-
           </div>
 
           {/* APP */}
@@ -151,7 +251,6 @@ const Footer = () => {
               {/* Google Play Button */}
               <Link
                 to="coming-soon"
-
                 className="flex items-center gap-2 bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-all duration-300 hover:scale-105 shadow-md w-fit min-w-[160px]"
               >
                 <FaGooglePlay size={20} className="text-white" />
@@ -164,7 +263,6 @@ const Footer = () => {
               {/* App Store Button */}
               <Link
                 to="coming-soon"
-
                 className="flex items-center gap-2 bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-all duration-300 hover:scale-105 shadow-md w-fit min-w-[160px]"
               >
                 <FaApple size={20} className="text-white" />
@@ -193,8 +291,6 @@ const Footer = () => {
       <div className="bg-black text-white text-center py-5">
         © {new Date().getFullYear()} Astrotring. All Rights Reserved.
       </div>
-
-
     </footer>
   );
 };

@@ -1,4 +1,3 @@
-"use client";
 
 import { useRef, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";

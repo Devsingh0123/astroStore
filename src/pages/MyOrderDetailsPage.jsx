@@ -1,4 +1,4 @@
-import React, {  useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -35,49 +35,62 @@ const MyOrderDetailsPage = () => {
   const { isLoggedIn } = useSelector((state) => state.userAuth);
   const [cancelling, setCancelling] = useState(false);
   const invoiceRef = useRef(null);
-  const [downloadInvoiceLoading, setDownloadInvoiceLoading]= useState(false)
+  const [downloadInvoiceLoading, setDownloadInvoiceLoading] = useState(false);
 
   const handleDownloadInvoice = async () => {
-  if (!order || !invoiceRef.current) {
-    toast.error("Invoice data not ready.");
-    return;
-  }
+    if (!order || !invoiceRef.current) {
+      toast.error("Invoice data not ready.");
+      return;
+    }
 
-  const element = invoiceRef.current;
-  setDownloadInvoiceLoading(true);
+    const element = invoiceRef.current;
+    setDownloadInvoiceLoading(true);
 
-  try {
-    // Step 1: Generate PDF using html2canvas + jsPDF
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-    });
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-    const imgWidth = 210;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+    try {
+      // Step 1: Generate PDF using html2canvas + jsPDF
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+      });
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(
+        imgData,
+        "PNG",
+        0,
+        0,
+        imgWidth,
+        imgHeight,
+        undefined,
+        "FAST",
+      );
 
-    // Step 2: Convert PDF to Data URL (Base64) – No blob involved
-    const pdfDataUrl = pdf.output('dataurlstring');
+      // Step 2: Convert PDF to Data URL (Base64) – No blob involved
+      const pdfDataUrl = pdf.output("dataurlstring");
 
-    // Step 3: Create a temporary anchor and trigger download
-    const link = document.createElement('a');
-    link.href = pdfDataUrl;
-    link.download = `Invoice_${order.order_number}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      // Step 3: Create a temporary anchor and trigger download
+      const link = document.createElement("a");
+      link.href = pdfDataUrl;
+      link.download = `Invoice_${order.order_number}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    // toast.success("Invoice downloaded successfully!");
-  } catch (err) {
-    console.error("PDF Generation Error:", err);
-    toast.error(`Download failed: ${err.message || "Download failed"}`);
-  } finally {
-    setDownloadInvoiceLoading(false);
-  }
-};
+      // toast.success("Invoice downloaded successfully!");
+    } catch (err) {
+      console.error("PDF Generation Error:", err);
+      toast.error(`Download failed: ${err.message || "Download failed"}`);
+    } finally {
+      setDownloadInvoiceLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (isLoggedIn && id) {
@@ -158,7 +171,8 @@ const MyOrderDetailsPage = () => {
               onClick={handleDownloadInvoice}
               className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition font-medium cursor-pointer"
             >
-              <Download className="w-4 h-4" /> {downloadInvoiceLoading ? "Downloading...": "Download Invoice"}
+              <Download className="w-4 h-4" />{" "}
+              {downloadInvoiceLoading ? "Downloading..." : "Download Invoice"}
             </button>
           </div>
 
@@ -169,9 +183,11 @@ const MyOrderDetailsPage = () => {
                 <p className="text-sm text-gray-500">
                   Order Number : #{order.order_number}
                 </p>
-               {!isCod && <p className="text-sm text-gray-500">
-                  Transaction ID : #{order?.payment?.transaction_id}
-                </p>}
+                {!isCod && (
+                  <p className="text-sm text-gray-500">
+                    Transaction ID : #{order?.payment?.transaction_id}
+                  </p>
+                )}
                 <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
                   Order On :{" "}
@@ -186,13 +202,17 @@ const MyOrderDetailsPage = () => {
                   <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
                     <CheckCircle className="w-3 h-3 text-green-500" /> Delivered
                     On :{" "}
-                    {new Date(order.timestamps.delivered_at).toLocaleString()}
+                    {new Date(order.timestamps.delivered_at).toLocaleString(
+                      "en-IN",
+                    )}
                   </p>
                 )}
                 {order.timestamps?.cancelled_at && (
                   <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
                     <XCircle className="w-3 h-3 text-red-500" /> Cancelled On :{" "}
-                    {new Date(order.timestamps.cancelled_at).toLocaleString()}
+                    {new Date(order.timestamps.cancelled_at).toLocaleString(
+                      "en-IN",
+                    )}
                   </p>
                 )}
               </div>
@@ -369,7 +389,11 @@ const MyOrderDetailsPage = () => {
               <p className="text-gray-600">
                 Mode: {order?.payment?.mode || "Online"}
               </p>
-             {!isCod && <p className="text-gray-600">Payment Status : {order?.payment?.status}</p>}
+              {!isCod && (
+                <p className="text-gray-600">
+                  Payment Status : {order?.payment?.status}
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -3,9 +3,14 @@
 @import "tailwindcss";
  
 
-.swiper-pagination {
-  bottom: -6px !important;
+/* Pagination dots for Swiper (used in BecomeAnAffiliate page) */
+.custom-swiper-pagination .swiper-pagination-bullet {
+  @apply w-2.5 h-2.5 bg-gray-300 opacity-100 transition-all duration-300;
 }
+.custom-swiper-pagination .swiper-pagination-bullet-active {
+  @apply  bg-amber-600;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   font-weight: normal;

@@ -1,5 +1,3 @@
-
-
 import { Routes, Route, useLocation } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +10,7 @@ import CategoryPage from "./pages/CategoryPage";
 
 // import AddressesPage from "./pages/AddressesPage";
 
-import CheckoutPage from "./pages/CheckoutPage";
+// import CheckoutPage from "./pages/CheckoutPage";
 // import MyOrderDetailsPage from "./pages/MyOrderDetailsPage";
 // import MyOrdersPage from "./pages/MyOrdersPage";
 // import WalletPage from "./pages/WalletPage";
@@ -23,7 +21,10 @@ import CheckoutPage from "./pages/CheckoutPage";
 // import TrackMyOrderPage from "./pages/TrackMyOrderPage";
 // import ComingSoon from "./components/common/ComingSoon";
 import GoogleTagManager from "./components/common/GoogleTagManager";
-import OrderInvoice from "./pages/OrderInvoice";
+// import OrderInvoice from "./pages/OrderInvoice";
+// import BecomeAnAffiliate from "./components/affiliate/BecomeAnAffiliate";
+// import AffiliateSignup from "./components/affiliate/AffiliateSignup";
+// import AffiliateLayout from "./components/layout/affiliatelayout/AffiliateLayout";
 
 // Lazy load all pages
 
@@ -32,8 +33,12 @@ const CartPage = lazy(() => import("./pages/CartPage"));
 const DisclaimerPage = lazy(() => import("./pages/legal/DisclaimerPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/legal/PrivacyPolicyPage"));
 const RefundPolicyPage = lazy(() => import("./pages/legal/RefundPolicyPage"));
-const ShippingPolicyPage = lazy(() => import("./pages/legal/ShippingPolicyPage"));
-const TermsAndConditionsPage = lazy(() => import("./pages/legal/TermsAndConditionsPage"));
+const ShippingPolicyPage = lazy(
+  () => import("./pages/legal/ShippingPolicyPage"),
+);
+const TermsAndConditionsPage = lazy(
+  () => import("./pages/legal/TermsAndConditionsPage"),
+);
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const AddressesPage = lazy(() => import("./pages/AddressesPage"));
 const MyOrderDetailsPage = lazy(() => import("./pages/MyOrderDetailsPage"));
@@ -42,9 +47,19 @@ const WalletPage = lazy(() => import("./pages/WalletPage"));
 const OrderSuccessPage = lazy(() => import("./pages/OrderSuccessPage"));
 const WishlistPage = lazy(() => import("./pages/WishlistPage"));
 const Gemstonesinfo = lazy(() => import("./pages/product info/GemstonesInfo"));
-const GemstoneDetails = lazy(() => import("./pages/product info/GemstoneDetails"));
+const GemstoneDetails = lazy(
+  () => import("./pages/product info/GemstoneDetails"),
+);
 const TrackMyOrderPage = lazy(() => import("./pages/TrackMyOrderPage"));
 const ComingSoon = lazy(() => import("./components/common/ComingSoon"));
+
+
+// lazy load for affiliate layout (other seperate layout )
+const BecomeAnAffiliate = lazy(() => import("./components/affiliate/BecomeAnAffiliate"));
+const AffiliateSignup = lazy(() => import("./components/affiliate/AffiliateSignup"));
+const AffiliateLayout = lazy(() => import("./components/layout/affiliatelayout/AffiliateLayout"));
+
+
 
 
 function App() {
@@ -58,39 +73,34 @@ function App() {
     }
   }, [token, user, dispatch]);
 
-
   useEffect(() => {
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [path]);
   return (
     <Suspense fallback={<Loader data="Loading..." />}>
-
       <GoogleTagManager />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />
 
-          
-        
-
           {/* Policies and T&C */}
           <Route path="/disclaimer" element={<DisclaimerPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/refund-policy" element={<RefundPolicyPage />} />
           <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
-          <Route path="/terms-conditions" element={<TermsAndConditionsPage />} />
+          <Route
+            path="/terms-conditions"
+            element={<TermsAndConditionsPage />}
+          />
           {/* product catogaries page */}
           <Route path="/category/:slug" element={<CategoryPage />} />
-
 
           {/* product info */}
 
           <Route path="/gemstones" element={<Gemstonesinfo />} />
           {/* <Route path="/gemstones/:name" element={<GemstoneDetails />} /> */}
           <Route path="/gemstones/:name/:id" element={<GemstoneDetails />} />
-
 
           {/* comming soon route */}
           <Route path="/coming-soon" element={<ComingSoon />} />
@@ -111,21 +121,26 @@ function App() {
           <Route path="/wishlist" element={<WishlistPage />} />
           {/* address */}
           <Route path="/addresses" element={<AddressesPage />} />
-
         </Route>
 
         {/* =============================================================== */}
         {/* checkout currently not in use  */}
         {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
 
-          {/* now cart is not used the cart page showing in the drawer not on route */}
-          {/* <Route path="/cart" element={<CartPage />} /> */}
+        {/* now cart is not used the cart page showing in the drawer not on route */}
+        {/* <Route path="/cart" element={<CartPage />} /> */}
 
-          {/* not in use the invoice will download directely from now */}
+        {/* not in use the invoice will download directely from now */}
         {/* <Route path="/invoice/:orderId" element={<OrderInvoice />} /> */}
 
+        {/* Affiliate routes – separate layout with new childrens */}
+      <Route path="/become-an-affiliate" element={<AffiliateLayout />}>
+        <Route index element={<BecomeAnAffiliate />} />
+        <Route path="affiliate-signup" element={<AffiliateSignup />} />
+      </Route>
       </Routes>
 
+      
     </Suspense>
   );
 }
