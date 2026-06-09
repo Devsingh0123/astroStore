@@ -12,6 +12,8 @@ const ReviewCard = ({ review }) => {
     displayedText = reviewText.slice(0, MAX_LENGTH) + '...';
   }
 
+  console.log(review)
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString(undefined, {
       year: 'numeric',
@@ -23,7 +25,7 @@ const ReviewCard = ({ review }) => {
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
   return (
-    <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col">
+    <div className="bg-white p-2 rounded-xl shadow-sm border border-gray-200 flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
@@ -33,15 +35,16 @@ const ReviewCard = ({ review }) => {
             {review?.user?.name || 'Anonymous'}
           </span>
         </div>
-        <span className="text-xs text-gray-500 flex items-center gap-1">
+        {/* <span className="text-xs text-gray-500 flex items-center gap-1">
           <Calendar className="w-3 h-3" /> {formatDate(review.created_at)}
-        </span>
+        </span> */}
+        <div className="flex text-xs items-center ">
+        <StarRating value={review.rating} size={12} />
+        <span className="text-xs text-gray-600 ml-1">{review.rating}/5</span>
       </div>
-      <div className="flex items-center gap-1 mb-2">
-        <StarRating value={review.rating} size={16} />
-        <span className="text-sm text-gray-600 ml-1">{review.rating}/5</span>
       </div>
-      <div className="text-gray-700 flex-1">
+      
+      <div className="text-gray-700  text-sm flex-1">
         <p className="whitespace-pre-wrap break-words">{displayedText}</p>
         {isLong && (
           <button

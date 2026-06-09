@@ -45,12 +45,12 @@ const WishlistCard = ({ product, onRemove }) => {
               <h3 className="text-xs text-overflow: ellipsis;  font-bold text-stone-800 leading-snug line-clamp-2 mb-1">
                 {product.name}
               </h3>
-              <div className="flex items-center gap-1 mb-1">
+              {/* <div className="flex items-center gap-1 mb-1">
                 <StarRating value={ratingValue} size={10} />
                 <span className="text-[10px]  text-stone-500 font-semibold">
                   {ratingValue.toFixed(1)}
                 </span>
-              </div>
+              </div> */}
             </div>
             <button
               onClick={() => onRemove(product.id, product.name)}

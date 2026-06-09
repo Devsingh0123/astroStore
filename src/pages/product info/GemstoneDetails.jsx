@@ -234,12 +234,12 @@ const ProductDetailsPage = () => {
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                 {product?.name}
               </h1>
-              <div className="flex items-center gap-3 mt-2">
+              {/* <div className="flex items-center gap-3 mt-2">
                 <StarRating value={parseFloat(product?.rating_avg) || 0} size={16} />
                 <span className="text-sm text-gray-600">
                   {(parseFloat(product?.rating_avg) || 0).toFixed(1)} ({product?.rating_count || 0} reviews)
                 </span>
-              </div>
+              </div> */}
             </div>
 
             {/* Product Specifications */}

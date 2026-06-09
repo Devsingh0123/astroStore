@@ -7,25 +7,25 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-const Slider = ({ children, slideCount }) => {
+const Slider = ({ children, slideCount, showBtn=true }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
   return (
     <div className="relative">
       {/* Navigation buttons */}
-      <button
+      {showBtn &&<button
         ref={prevRef}
         className="absolute left-0 md:-left-4 top-1/2 z-10 -translate-y-1/2 bg-gradient-to-br from-amber-100 to-amber-200 text-amber-900 font-bold shadow-[inset_0_0_0_1.5px_#fcd34d] rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
       >
         <FaArrowLeft />
-      </button>
-      <button
+      </button>}
+     {showBtn && <button
         ref={nextRef}
         className="absolute right-0 md:-right-4 top-1/2 z-10 -translate-y-1/2 bg-gradient-to-br from-amber-100 to-amber-200 text-amber-900 font-bold shadow-[inset_0_0_0_1.5px_#fcd34d] rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
       >
         <FaArrowRight />
-      </button>
+      </button>}
 
       <Swiper
         modules={[Navigation, Pagination, Autoplay, Mousewheel]}
