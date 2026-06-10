@@ -39,13 +39,20 @@ import {
   fetchWishlist,
   addToWishlist,
   removeFromWishlist,
-} from '../redux/slices/wishlistSlice';
+} from "../redux/slices/wishlistSlice";
 
 // ---------- Helper Functions ----------
 const getStockStatus = (status, qty) => {
-  if (!status && !qty) return { text: "Out of Stock", color: "text-red-600", bg: "bg-red-50" };
-  if (status === "few_left") return { text: "Only Few Left!", color: "text-orange-600", bg: "bg-orange-50" };
-  if (qty > 0) return { text: "In Stock", color: "text-green-600", bg: "bg-green-50" };
+  if (!status && !qty)
+    return { text: "Out of Stock", color: "text-red-600", bg: "bg-red-50" };
+  if (status === "few_left")
+    return {
+      text: "Only Few Left!",
+      color: "text-orange-600",
+      bg: "bg-orange-50",
+    };
+  if (qty > 0)
+    return { text: "In Stock", color: "text-green-600", bg: "bg-green-50" };
   return { text: "Out of Stock", color: "text-red-600", bg: "bg-red-50" };
 };
 
@@ -54,7 +61,6 @@ const fallbackImage =
 
 // ---------- Main Component ----------
 const ProductDetailsPage = () => {
-  
   const { slug } = useParams();
   const dispatch = useDispatch();
 
@@ -69,26 +75,31 @@ const ProductDetailsPage = () => {
 
   const navigate = useNavigate();
 
-
   // Redux state
-  const { selectedProduct: product, items: allProducts, loading, error } = useSelector(
-    (state) => state.product
-  );
+  const {
+    selectedProduct: product,
+    items: allProducts,
+    loading,
+    error,
+  } = useSelector((state) => state.product);
   const { isLoggedIn } = useSelector((state) => state.userAuth);
-  const { list: coupons, loading: couponsLoading } = useSelector((state) => state.coupon);
+  const { list: coupons, loading: couponsLoading } = useSelector(
+    (state) => state.coupon,
+  );
   const wishlistItems = useSelector((state) => state.wishlist.items);
 
   // --- Coupons (static fallback if no coupons) ---
   const offers = useMemo(() => {
     if (coupons.length > 0) {
-      return coupons.map(coupon => ({
+      return coupons.map((coupon) => ({
         title: coupon.label,
         description: `Min order ₹${parseFloat(coupon.min_amount).toLocaleString()}`,
-        price: coupon.discount_type === 'percentage'
-          ? `${coupon.discount_value}% OFF`
-          : `₹${parseFloat(coupon.discount_value).toLocaleString()} OFF`,
+        price:
+          coupon.discount_type === "percentage"
+            ? `${coupon.discount_value}% OFF`
+            : `₹${parseFloat(coupon.discount_value).toLocaleString()} OFF`,
         code: coupon.code,
-        type: 'discount',
+        type: "discount",
       }));
     }
     return [];
@@ -103,7 +114,7 @@ const ProductDetailsPage = () => {
 
   //Fetch current product
   useEffect(() => {
-    if (slug) dispatch(fetchProductByIdorSlug({slug}));
+    if (slug) dispatch(fetchProductByIdorSlug({ slug }));
     return () => dispatch(clearSelectedProduct());
   }, [dispatch, slug]);
   // wishlist
@@ -136,39 +147,36 @@ const ProductDetailsPage = () => {
       ([entry]) => {
         setShowStickyBar(!entry.isIntersecting);
       },
-      { threshold: 0, rootMargin: "0px 0px -80px 0px" } // thoda pehle trigger kare
+      { threshold: 0, rootMargin: "0px 0px -80px 0px" }, // thoda pehle trigger kare
     );
     observer.observe(buttonSectionRef.current);
     return () => observer.disconnect();
   }, [product]);
 
-  // add IntersectionObserver for bottom add to cart and buy now sticky button to prevent footer section 
-useEffect(() => {
-  const footer = document.querySelector('footer');
-  if (!footer) return;
-  const footerObserver = new IntersectionObserver(
-    ([entry]) => {
-      
-      setShowStickyBar(!entry.isIntersecting);
-    },
-    { threshold: 0 }
-  );
-  footerObserver.observe(footer);
-  return () => footerObserver.disconnect();
-}, []);
-
-
+  // add IntersectionObserver for bottom add to cart and buy now sticky button to prevent footer section
+  useEffect(() => {
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+    const footerObserver = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting);
+      },
+      { threshold: 0 },
+    );
+    footerObserver.observe(footer);
+    return () => footerObserver.disconnect();
+  }, []);
 
   // --- Related products (only from API, no fallback) ---
   const suggestedProducts = useMemo(() => {
     if (!allProducts.length || !product) return [];
     const currentCategory = product?.category?.slug;
     return allProducts.filter(
-      (p) => p.category?.slug === currentCategory && p.id !== product?.id
+      (p) => p.category?.slug === currentCategory && p.id !== product?.id,
     );
   }, [allProducts, product]);
   const isInWishlist = useMemo(() => {
-    return wishlistItems.some(item => item.id === product?.id);
+    return wishlistItems.some((item) => item.id === product?.id);
   }, [wishlistItems, product?.id]);
 
   // console.log('Wishlist items:', wishlistItems);
@@ -176,8 +184,10 @@ useEffect(() => {
   // console.log('Is in wishlist?', isInWishlist);
 
   if (loading) return <Loader data="Loading product..." />;
-  if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
-  if (!product) return <div className="text-center py-10">Product not found</div>;
+  if (error)
+    return <div className="text-center py-10 text-red-500">{error}</div>;
+  if (!product)
+    return <div className="text-center py-10">Product not found</div>;
 
   // ----- Data Extraction from API -----
   const baseAfterPrice = Number(product?.after_price) || 0;
@@ -185,7 +195,7 @@ useEffect(() => {
 
   const rattiOptions = product?.ratti_options || [];
   const selectedRattiObj = rattiOptions.find(
-    (opt) => opt.ratti === selectedRatti
+    (opt) => opt.ratti === selectedRatti,
   );
 
   const displayAfterPrice = selectedRattiObj
@@ -197,7 +207,9 @@ useEffect(() => {
 
   const discountPercent =
     displayBeforePrice > displayAfterPrice && displayAfterPrice > 0
-      ? Math.round(((displayBeforePrice - displayAfterPrice) / displayBeforePrice) * 100)
+      ? Math.round(
+          ((displayBeforePrice - displayAfterPrice) / displayBeforePrice) * 100,
+        )
       : 0;
   const discountText = discountPercent > 0 ? `${discountPercent}% OFF` : null;
 
@@ -209,24 +221,27 @@ useEffect(() => {
   if (product?.image) {
     const url = product.image;
     mediaItems.push({
-      url
-
+      url,
     });
   }
   if (product?.images?.length) {
-    product.images.forEach(item => {
+    product.images.forEach((item) => {
       const url = item.image;
-      const isVideo = url?.endsWith('.mp4') || url?.endsWith('.webm') || item.media_type === 'video';
+      const isVideo =
+        url?.endsWith(".mp4") ||
+        url?.endsWith(".webm") ||
+        item.media_type === "video";
       // Try to get a thumbnail: if the API provides a thumbnail field, use it; else replace .mp4 with .jpg
-      const thumbnail = item.thumbnail || (isVideo ? url.replace(/\.mp4$/, '.jpg') : null);
+      const thumbnail =
+        item.thumbnail || (isVideo ? url.replace(/\.mp4$/, ".jpg") : null);
       mediaItems.push({
         url,
-        type: isVideo ? 'video' : 'image',
+        type: isVideo ? "video" : "image",
         thumbnail,
       });
     });
   }
-  const mediaList = mediaItems.map(m => m.url);
+  const mediaList = mediaItems.map((m) => m.url);
   const totalMedia = mediaList.length;
 
   const stockStatus = getStockStatus(product?.stock_status, product?.stock_qty);
@@ -239,11 +254,15 @@ useEffect(() => {
         specs.push({ label: spec.title, value: spec.value });
       });
     }
-    if (product?.weight) specs.push({ label: "Weight", value: product.weight + " gm" });
+    if (product?.weight)
+      specs.push({ label: "Weight", value: product.weight + " gm" });
     // if (product?.length && product?.breadth && product?.height) specs.push({ label: "Dimension", value: `${Math.round(product.length)} X ${Math.round(product?.breadth)} X ${Math.round(product?.height)}` });
-    if (product?.length) specs.push({ label: "Length", value: product.length + " cm" });
-    if (product?.breadth) specs.push({ label: "Breadth", value: product.breadth + " cm" });
-    if (product?.height) specs.push({ label: "Height", value: product.height + " cm" });
+    if (product?.length)
+      specs.push({ label: "Length", value: product.length + " cm" });
+    if (product?.breadth)
+      specs.push({ label: "Breadth", value: product.breadth + " cm" });
+    if (product?.height)
+      specs.push({ label: "Height", value: product.height + " cm" });
     if (product?.origin) specs.push({ label: "Origin", value: product.origin });
     if (product?.planet) specs.push({ label: "Planet", value: product.planet });
     if (product?.purity) specs.push({ label: "Purity", value: product.purity });
@@ -268,9 +287,9 @@ useEffect(() => {
   const certificates =
     product?.lab_certificates && Array.isArray(product.lab_certificates)
       ? product.lab_certificates.map((cert, idx) => ({
-        id: idx,
-        image: cert.image || cert,
-      }))
+          id: idx,
+          image: cert.image || cert,
+        }))
       : [];
 
   // Payment methods (static)
@@ -298,17 +317,19 @@ useEffect(() => {
 
   const handleAddToCart = async () => {
     try {
-      await dispatch(addToCart({
-        product_id: product.id,
-        quantity,
-        ratti: selectedRatti,
-        name: product.name,
-        price: displayAfterPrice,
-        image: product.image,
-      })).unwrap();
+      await dispatch(
+        addToCart({
+          product_id: product.id,
+          quantity,
+          ratti: selectedRatti,
+          name: product.name,
+          price: displayAfterPrice,
+          image: product.image,
+        }),
+      ).unwrap();
       toast.success(`${product?.name} added to cart!`);
       dispatch(fetchCart());
-      dispatch(openCartDrawer())
+      dispatch(openCartDrawer());
     } catch (err) {
       toast.error(err || "Failed to add to cart");
     }
@@ -316,16 +337,18 @@ useEffect(() => {
 
   const handleBuyNow = async () => {
     try {
-      await dispatch(addToCart({
-        product_id: product.id,
-        quantity,
-        ratti: selectedRatti,
-        name: product.name,
-        price: displayAfterPrice,
-        image: product.image,
-      })).unwrap();
+      await dispatch(
+        addToCart({
+          product_id: product.id,
+          quantity,
+          ratti: selectedRatti,
+          name: product.name,
+          price: displayAfterPrice,
+          image: product.image,
+        }),
+      ).unwrap();
       toast.success(`${product?.name} added to cart!`);
-      dispatch(openCartDrawer()) // redirect to cart page
+      dispatch(openCartDrawer()); // redirect to cart page
     } catch (err) {
       toast.error(err || "Failed to add to cart");
     }
@@ -375,7 +398,10 @@ useEffect(() => {
         <nav className="flex mb-4 text-xs sm:text-sm text-gray-500">
           <ol className="flex items-center flex-wrap gap-1">
             <li>
-              <a href="/" className="hover:text-amber-600 transition cursor-pointer">
+              <a
+                href="/"
+                className="hover:text-amber-600 transition cursor-pointer"
+              >
                 Home
               </a>
             </li>
@@ -392,7 +418,7 @@ useEffect(() => {
           <div className="space-y-4 lg:sticky lg:top-16 lg:self-start">
             {/* Main Media */}
             <div className="relative aspect-square bg-white rounded-sm md:rounded-xl overflow-hidden border border-gray-200 shadow-lg group">
-              {mediaItems[selectedMediaIndex]?.type === 'video' ? (
+              {mediaItems[selectedMediaIndex]?.type === "video" ? (
                 <video
                   src={mediaItems[selectedMediaIndex].url}
                   poster={mediaItems[selectedMediaIndex].thumbnail || undefined}
@@ -403,7 +429,7 @@ useEffect(() => {
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     // Fallback: hide video and maybe show image placeholder
-                    e.target.style.display = 'none';
+                    e.target.style.display = "none";
                   }}
                 />
               ) : (
@@ -441,16 +467,19 @@ useEffect(() => {
             {totalMedia >= 1 && (
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 {mediaItems.map((item, idx) => {
-                  const isVideo = item.type === 'video';
-                  const thumbUrl = isVideo ? (item.thumbnail || item.url) : item.url;
+                  const isVideo = item.type === "video";
+                  const thumbUrl = isVideo
+                    ? item.thumbnail || item.url
+                    : item.url;
                   return (
                     <button
                       key={idx}
                       onClick={() => setSelectedMediaIndex(idx)}
-                      className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-sm md:rounded-lg border-2 overflow-hidden transition-all cursor-pointer ${selectedMediaIndex === idx
-                        ? "border-amber-600 shadow-md"
-                        : "border-gray-200 hover:border-gray-300"
-                        }`}
+                      className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-sm md:rounded-lg border-2 overflow-hidden transition-all cursor-pointer ${
+                        selectedMediaIndex === idx
+                          ? "border-amber-600 shadow-md"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
                     >
                       {isVideo ? (
                         <video
@@ -490,9 +519,25 @@ useEffect(() => {
                 </span> */}
 
                 <div className="flex items-center gap-1 text-green-600">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18AC57" strokeWidth="3" strokeLinecap="round" strokeLyinejoin="round" className="lucide lucide-badge-percent-icon lucide-badge-percent"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" /><path d="m15 9-6 6" /><path d="M9 9h.01" /><path d="M15 15h.01" /></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#18AC57"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-badge-percent-icon lucide-badge-percent"
+                  >
+                    <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+                    <path d="m15 9-6 6" />
+                    <path d="M9 9h.01" />
+                    <path d="M15 15h.01" />
+                  </svg>
                   <span className="text-lg font-semibold">Best price</span>
-                  <span className="font-semibold text-xl" >
+                  <span className="font-semibold text-xl">
                     ₹{displayAfterPrice.toLocaleString()}
                   </span>
                 </div>
@@ -520,8 +565,6 @@ useEffect(() => {
               )}
             </div>
 
-
-
             {/* Offers Section */}
             {offers.length > 0 && <ProductOffers offers={offers} />}
 
@@ -536,10 +579,11 @@ useEffect(() => {
                     <button
                       key={opt.ratti}
                       onClick={() => setSelectedRatti(opt.ratti)}
-                      className={`px-4 py-2 border rounded-lg text-sm font-medium transition-all cursor-pointer ${selectedRatti === opt.ratti
-                        ? "border-amber-600 bg-amber-50 text-amber-700"
-                        : "border-gray-300 hover:border-gray-400 text-gray-700"
-                        }`}
+                      className={`px-4 py-2 border rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                        selectedRatti === opt.ratti
+                          ? "border-amber-600 bg-amber-50 text-amber-700"
+                          : "border-gray-300 hover:border-gray-400 text-gray-700"
+                      }`}
                     >
                       {opt.ratti}
                     </button>
@@ -547,12 +591,13 @@ useEffect(() => {
                 </div>
                 {selectedRattiObj && (
                   <p className="text-xs text-gray-500 mt-2">
-                    Price: ₹{selectedRattiObj.ratti_afterPrice} (MRP: ₹{selectedRattiObj.ratti_beforePrice}) for {selectedRatti} Ratti
+                    Price: ₹{selectedRattiObj.ratti_afterPrice} (MRP: ₹
+                    {selectedRattiObj.ratti_beforePrice}) for {selectedRatti}{" "}
+                    Ratti
                   </p>
                 )}
               </div>
             )}
-
 
             {/* Shipping Info Summary */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 border-t border-gray-200 pt-4">
@@ -579,25 +624,47 @@ useEffect(() => {
               </div>
             </div>
 
-
-
             {/* Quantity & Add to Cart */}
-            <div ref={buttonSectionRef} className="flex flex-col sm:flex-row gap-3">
+            <div
+              ref={buttonSectionRef}
+              className="flex flex-col sm:flex-row gap-3"
+            >
               <div className="flex items-center border border-gray-300 rounded-lg w-fit">
-                <button onClick={() => handleQuantityChange(-1)} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg">-</button>
+                <button
+                  onClick={() => handleQuantityChange(-1)}
+                  className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg"
+                >
+                  -
+                </button>
                 <span className="w-12 text-center font-medium">{quantity}</span>
-                <button onClick={() => handleQuantityChange(1)} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg">+</button>
+                <button
+                  onClick={() => handleQuantityChange(1)}
+                  className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg"
+                >
+                  +
+                </button>
               </div>
 
-              <button onClick={handleAddToCart} className="flex-1 bg-[#E17100] hover:bg-[#b05800] text-black py-2 px-2 rounded-lg font-medium flex items-center justify-center gap-2 transition">
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 bg-[#E17100] hover:bg-[#b05800] text-black py-2 px-2 rounded-lg font-medium flex items-center justify-center gap-2 transition"
+              >
                 <ShoppingCart className="w-5 h-5 text-black" /> Add to Cart
               </button>
-              <button onClick={handleBuyNow} className="flex-1 bg-gray-900 hover:bg-gray-800 text-white/85 py-3 px-4  rounded-lg font-medium flex items-center justify-center gap-2 transition">
+              <button
+                onClick={handleBuyNow}
+                className="flex-1 bg-gray-900 hover:bg-gray-800 text-white/85 py-3 px-4  rounded-lg font-medium flex items-center justify-center gap-2 transition"
+              >
                 <ShoppingBag className="w-5 h-5" /> Buy Now
               </button>
-{/* add to wishlist */}
-              <button onClick={handleWishlistToggle} className="flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition gap-2">
-                <Heart className={`w-5 h-5 ${isInWishlist ? "fill-red-500 text-red-500" : "text-red-600"}`} />
+              {/* add to wishlist */}
+              <button
+                onClick={handleWishlistToggle}
+                className="flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition gap-2"
+              >
+                <Heart
+                  className={`w-5 h-5 ${isInWishlist ? "fill-red-500 text-red-500" : "text-red-600"}`}
+                />
                 <span className="sm:hidden">Wishlist</span>
               </button>
             </div>
@@ -626,19 +693,26 @@ useEffect(() => {
               </div>
             </section>
 
-
             {/* Product Specifications */}
             {productSpecs.length > 0 && (
-              <AccordionSection title="Product Specifications" icon={Settings} defaultOpen={true}>
+              <AccordionSection
+                title="Product Specifications"
+                icon={Settings}
+                defaultOpen={true}
+              >
                 <div className="divide-y text-gray-200">
                   {productSpecs.map((spec, idx) => (
                     <div
                       key={idx}
                       className="grid grid-cols-[160px_10px_1fr] py-2 text-sm items-center"
                     >
-                      <span className="text-gray-700 font-semibold">{spec.label}</span>
+                      <span className="text-gray-700 font-semibold">
+                        {spec.label}
+                      </span>
                       <span className="text-center text-gray-700">:</span>
-                      <span className="text-gray-900 text-xs font-medium">{spec.value}</span>
+                      <span className="text-gray-900 text-xs font-medium">
+                        {spec.value}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -688,7 +762,7 @@ useEffect(() => {
             </section> */}
 
             {/* Accordion Sections – Product details */}
-            {(benefitsParagraphs.length > 0 || howToUseSteps.length > 0) && (
+            {(benefitsParagraphs.length > 0 || howToUseSteps.length > 0 || product?.description ) && (
               <ProductAccordionSections
                 description={product?.description}
                 benefitsParagraphs={benefitsParagraphs}
@@ -707,7 +781,8 @@ useEffect(() => {
                 <Award className="w-6 h-6 text-amber-500" /> Our Certificates
               </h1>
               <p className="text-sm text-gray-500 text-center mb-8 max-w-2xl mx-auto">
-                Every product comes with authentic lab certificates to guarantee purity and origin.
+                Every product comes with authentic lab certificates to guarantee
+                purity and origin.
               </p>
               <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 px-4">
                 {certificates.map((cert) => (
@@ -729,23 +804,34 @@ useEffect(() => {
           {/* FAQ's */}
           {faqs.length > 0 && (
             <section className="bg-white py-6 rounded-xl border border-gray-100">
-              <h1 className="text-3xl text-center font-semibold text-gray-800 mb-6">FAQs</h1>
+              <h1 className="text-3xl text-center font-semibold text-gray-800 mb-6">
+                FAQs
+              </h1>
               <div className="max-w-3xl mx-auto px-4 space-y-3">
                 {faqs.map((faq, idx) => (
-                  <div key={idx} className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div
+                    key={idx}
+                    className="border border-gray-200 rounded-lg overflow-hidden"
+                  >
                     <button
                       onClick={() => toggleFaq(idx)}
                       className="w-full flex items-center justify-between p-4 text-left bg-gray-50 hover:bg-gray-100 transition cursor-pointer"
                     >
                       <span
-                        className={`text-sm ${openFaq === idx ? "text-amber-500 font-medium" : "text-gray-700"
-                          }`}
+                        className={`text-sm ${
+                          openFaq === idx
+                            ? "text-amber-500 font-medium"
+                            : "text-gray-700"
+                        }`}
                       >
                         {faq.question}
                       </span>
                       <ChevronDown
-                        className={`w-5 h-5 transition-transform ${openFaq === idx ? "rotate-180 text-amber-500" : "text-gray-400"
-                          }`}
+                        className={`w-5 h-5 transition-transform ${
+                          openFaq === idx
+                            ? "rotate-180 text-amber-500"
+                            : "text-gray-400"
+                        }`}
                       />
                     </button>
                     {openFaq === idx && (
@@ -760,26 +846,36 @@ useEffect(() => {
           )}
 
           {/* You May Also Like */}
-          {suggestedProducts.length > 0 && <ProductYouMayAlsoLike products={suggestedProducts} />}
+          {suggestedProducts.length > 0 && (
+            <ProductYouMayAlsoLike products={suggestedProducts} />
+          )}
           {/* product reviews */}
           <ProductReviews productId={product.id} />
         </div>
-
       </div>
-
 
       {showStickyBar && (
         <div className="fixed  bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 px-4 sm:px-6 lg:px-8 py-4 md:py-6">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2  ">
-            <img src={product.image} alt="image" className="w-10 h-10 rounded-md hidden sm:block" />
+            <img
+              src={product.image}
+              alt="image"
+              className="w-10 h-10 rounded-md hidden sm:block"
+            />
             {/* Product info - mobile me left align, desktop me flex row */}
 
             <div className="flex-1 flex flex-row items-center gap-2 ">
-              <div className="font-bold text-gray-900 text-sm md:text-base line-clamp-1 truncate">{product?.name}</div>
+              <div className="font-bold text-gray-900 text-sm md:text-base line-clamp-1 truncate">
+                {product?.name}
+              </div>
               <div className="flex items-center md:gap-2">
-                <span className="text-amber-600 font-bold text-lg md:text-xl">₹{displayAfterPrice.toLocaleString()}</span>
+                <span className="text-amber-600 font-bold text-lg md:text-xl">
+                  ₹{displayAfterPrice.toLocaleString()}
+                </span>
                 {displayBeforePrice > displayAfterPrice && (
-                  <span className="text-gray-400 line-through text-sm">₹{displayBeforePrice.toLocaleString()}</span>
+                  <span className="text-gray-400 line-through text-sm">
+                    ₹{displayBeforePrice.toLocaleString()}
+                  </span>
                 )}
                 {discountText && (
                   <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-bold">

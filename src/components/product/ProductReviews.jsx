@@ -4,6 +4,7 @@ import { fetchProductReviews, submitReview, clearReviewError } from '../../redux
 import { toast } from 'react-toastify';
 import { Star } from 'lucide-react';
 import ReviewCard from './ReviewCard';
+import Slider from '../common/Slider';
 
 const ProductReviews = ({ productId }) => {
   const dispatch = useDispatch();
@@ -58,7 +59,7 @@ const ProductReviews = ({ productId }) => {
       {isLoggedIn && (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h3 className="text-lg font-semibold mb-4">Write a Review</h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-2">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Your Rating
@@ -72,7 +73,7 @@ const ProductReviews = ({ productId }) => {
                     className="focus:outline-none"
                   >
                     <Star
-                      className={`w-6 h-6 ${
+                      className={`w-4 h-4 ${
                         star <= rating
                           ? 'fill-yellow-400 text-yellow-400'
                           : 'text-gray-300'
@@ -87,11 +88,11 @@ const ProductReviews = ({ productId }) => {
                 Your Review
               </label>
               <textarea
-                rows="4"
+                rows="2"
                 value={review}
                 onChange={(e) => setReview(e.target.value)}
                 placeholder="Share your experience with this product..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500"
+                className="w-full px-3 py-2 border focus:outline-none border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500"
               />
             </div>
             <button
@@ -113,10 +114,13 @@ const ProductReviews = ({ productId }) => {
           No reviews yet. Be the first to review!
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-start">
+        
+        <div className=" items-start">
+          <Slider slideCount={5} showBtn={false} >
           {reviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+            <ReviewCard key={review.id} review={review}  />
           ))}
+         </Slider>
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import StarRating from "../common/StarRating";
 import { Gem } from "lucide-react";
 import Slider from "../common/Slider";
@@ -16,13 +16,13 @@ const YouMayAlsoLikeCard = ({ product }) => {
       ? Math.round(((beforePrice - afterPrice) / beforePrice) * 100)
       : 0;
 
-  const handleClick = () => {
-    navigate(`/product/${product.id}`);
-  };
+  // const handleClick = () => {
+  //   navigate(`/product/${product.id}`);
+  // };
 
   return (
-    <div
-      onClick={handleClick}
+    <Link
+      to={`/product/${product.slug}`}
       className="bg-white rounded-sm md:rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition cursor-pointer group w-full"
     >
       <div className="relative aspect-square bg-gray-100 flex items-center justify-center md:p-2">
@@ -65,7 +65,7 @@ const YouMayAlsoLikeCard = ({ product }) => {
         </div>
         
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -77,7 +77,7 @@ const ProductYouMayAlsoLike = ({ products = [] }) => {
       <h2 className="text-xl font-bold text-gray-900 mb-6">You May Also Like</h2>
       <Slider slideCount={4}>
         {products.map((product) => (
-          <YouMayAlsoLikeCard key={product.id} product={product} />
+          <YouMayAlsoLikeCard key={product.id} product={product}  />
         ))}
       </Slider>
     </section>
