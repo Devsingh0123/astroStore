@@ -329,7 +329,7 @@ const ProductDetailsPage = () => {
       ).unwrap();
       toast.success(`${product?.name} added to cart!`);
       dispatch(fetchCart());
-      dispatch(openCartDrawer());
+      // dispatch(openCartDrawer());
     } catch (err) {
       toast.error(err || "Failed to add to cart");
     }
@@ -348,6 +348,7 @@ const ProductDetailsPage = () => {
         }),
       ).unwrap();
       toast.success(`${product?.name} added to cart!`);
+      dispatch(fetchCart());
       dispatch(openCartDrawer()); // redirect to cart page
     } catch (err) {
       toast.error(err || "Failed to add to cart");
@@ -850,7 +851,7 @@ const ProductDetailsPage = () => {
             <ProductYouMayAlsoLike products={suggestedProducts} />
           )}
           {/* product reviews */}
-          <ProductReviews productId={product.id} />
+          <ProductReviews catId={product.category_id} />
         </div>
       </div>
 

@@ -21,7 +21,7 @@ const OrderSuccessPage = () => {
   const { currentOrder: order, loading, error } = useSelector((state) => state.order);
 
   // Navigation state se orderId lo
-  const orderId = location.state?.orderData || 253;
+  const orderId = location.state?.orderData;
   
 
 console.log(order)

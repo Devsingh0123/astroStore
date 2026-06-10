@@ -21,6 +21,7 @@ import CategoryPage from "./pages/CategoryPage";
 // import TrackMyOrderPage from "./pages/TrackMyOrderPage";
 // import ComingSoon from "./components/common/ComingSoon";
 import GoogleTagManager from "./components/common/GoogleTagManager";
+import OrderInvoice from "./pages/OrderInvoice";
 // import OrderInvoice from "./pages/OrderInvoice";
 // import BecomeAnAffiliate from "./components/affiliate/BecomeAnAffiliate";
 // import AffiliateSignup from "./components/affiliate/AffiliateSignup";
@@ -131,7 +132,7 @@ function App() {
         {/* <Route path="/cart" element={<CartPage />} /> */}
 
         {/* not in use the invoice will download directely from now */}
-        {/* <Route path="/invoice/:orderId" element={<OrderInvoice />} /> */}
+        <Route path="/invoice" element={<OrderInvoice />} />
 
         {/* Affiliate routes – separate layout with new childrens */}
       <Route path="/become-an-affiliate" element={<AffiliateLayout />}>

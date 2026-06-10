@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProductReviews, submitReview, clearReviewError } from '../../redux/slices/reviewSlice';
+import { fetchProductReviewsByCategory, submitReviewByCategory, clearReviewError } from '../../redux/slices/reviewSlice';
 import { toast } from 'react-toastify';
 import { Star } from 'lucide-react';
 import ReviewCard from './ReviewCard';
 import Slider from '../common/Slider';
 
-const ProductReviews = ({ productId }) => {
+const ProductReviews = ({ catId }) => {
   const dispatch = useDispatch();
   const { reviews, loading, error, submitLoading, submitError } = useSelector(
     (state) => state.review
@@ -16,8 +16,8 @@ const ProductReviews = ({ productId }) => {
   const [review, setReview] = useState('');
 
   useEffect(() => {
-    dispatch(fetchProductReviews(productId));
-  }, [dispatch, productId]);
+    dispatch(fetchProductReviewsByCategory(catId));
+  }, [dispatch, catId]);
 
   useEffect(() => {
     if (error) {
@@ -39,12 +39,12 @@ const ProductReviews = ({ productId }) => {
       return;
     }
     try {
-      await dispatch(submitReview({ product_id: productId, rating, review })).unwrap();
+      await dispatch(submitReviewByCategory({ catId:catId, rating, review })).unwrap();
       toast.success('Review submitted!');
       setRating(0);
       setReview('');
       // Refetch the reviews to get the updated list
-      dispatch(fetchProductReviews(productId));
+      dispatch(fetchProductReviewsByCategory(catId));
     } catch (err) {
       toast.error(err || 'Failed to submit review');
     dispatch(clearReviewError());
@@ -116,7 +116,7 @@ const ProductReviews = ({ productId }) => {
       ) : (
         
         <div className=" items-start">
-          <Slider slideCount={5} showBtn={false} >
+          <Slider slideCount={3} showBtn={false} >
           {reviews.map((review) => (
             <ReviewCard key={review.id} review={review}  />
           ))}

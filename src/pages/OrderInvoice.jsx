@@ -1,6 +1,7 @@
 // src/pages/OrderInvoice.jsx
 import React from 'react';
 import logo from '../assets/logo.png';
+import { useLocation } from 'react-router-dom';
 
 // ---------- Helper: Convert number to English words (Indian system) ----------
 function numberToWords(amount) {
@@ -47,7 +48,11 @@ function numberToWords(amount) {
 
 const OrderInvoice = ({order}) => {
 
-  //  console.log("OrderInvoice rendered", Date.now());
+  
+ 
+  // const location = useLocation()
+  // const order = location.state?.orderData ;
+  // console.log(order)
 
 
   if (!order) return <p className="text-center py-10">Order not found.</p>;
@@ -74,7 +79,7 @@ const OrderInvoice = ({order}) => {
 
   // Address
   const addr = order.address?.snapshot || {};
-  const billingAddress = `${addr.name || ''}, ${addr.address || ''}, ${addr.city || ''}, ${addr.state || ''}, ${addr.country || ''} - ${addr.pincode || ''}`.replace(/,\s*,/g, ',').replace(/,\s*$/, '');
+  const billingAddress = `${addr.name || ''}, ${addr.address || ''}, ${addr.city || ''}, ${addr.state || ''}, ${addr.country || ''} - ${addr.pincode || ''}, Mob - ${addr.mobile || ''}`.replace(/,\s*,/g, ',').replace(/,\s*$/, '');
   const shippingAddress = billingAddress;
   const stateCode = addr.state_code || null;
   const placeOfSupply = addr.state || '-';
@@ -142,14 +147,15 @@ const OrderInvoice = ({order}) => {
 
     return (
       <tr key={idx} className="border-b border-black text-xs">
-        <td className="border-r border-black p-1 align-top text-center">{idx + 1}</td>
-        <td className="border-r border-black p-2 align-top">
+        <td className="border-r border-black p-1 align-middle text-center">{idx + 1}</td>
+        <td className="border-r border-black p-2 flex items-center justify-center">
+          <div>
           <p>{item.name}</p>
-          <p className="mt-1">HSN: {hsnCode || 'N/A'}</p>
+          <p className="mt-1">HSN: {hsnCode || 'N/A'}</p></div>
         </td>
-        <td className="border-r border-black p-1 align-middle text-right">₹{price.toFixed(2)}</td>
+        <td className="border-r border-black p-1 align-middle text-center">₹{price.toFixed(2)}</td>
         <td className="border-r border-black p-1 align-middle text-center">{qty}</td>
-        <td className="border-r border-black p-1 align-middle text-right">₹{net.toFixed(2)}</td>
+        <td className="border-r border-black p-1 align-middle text-center">₹{net.toFixed(2)}</td>
 
         {/* Tax Rate column - stacked for CGST/SGST */}
         <td className="border-r border-black p-1 align-middle text-center">
@@ -176,7 +182,7 @@ const OrderInvoice = ({order}) => {
         </td>
 
         {/* Tax Amount column - stacked for CGST/SGST */}
-        <td className="border-r border-black p-1 align-middle text-right">
+        <td className="border-r border-black p-1 align-middle text-center">
           {isCgstSgst ? (
             <>
               <div>₹{taxSplit.cgst.toFixed(2)}</div>
@@ -187,7 +193,7 @@ const OrderInvoice = ({order}) => {
           )}
         </td>
 
-        <td className="p-1 align-middle text-right">₹{total.toFixed(2)}</td>
+        <td className="p-1 align-middle text-center">₹{total.toFixed(2)}</td>
       </tr>
     );
   });
@@ -204,12 +210,12 @@ const OrderInvoice = ({order}) => {
     shippingRow = (
       <tr className="border-b border-black text-xs">
         <td className="border-r border-black p-1 align-top text-center"> </td>
-        <td className="border-r border-black p-2 align-top">
+        <td className="border-r border-black p-2 align-middle text-center">
           <p>Shipping Charge</p>
         </td>
-        <td className="border-r border-black p-1 align-middle text-right">₹{deliveryCharge.toFixed(2)}</td>
+        <td className="border-r border-black p-1 align-middle text-center">₹{deliveryCharge.toFixed(2)}</td>
         <td className="border-r border-black p-1 align-middle text-center">1</td>
-        <td className="border-r border-black p-1 align-middle text-right">₹{shippingNet.toFixed(2)}</td>
+        <td className="border-r border-black p-1 align-middle text-center">₹{shippingNet.toFixed(2)}</td>
 
         {/* Tax Rate column - stacked for CGST/SGST */}
         <td className="border-r border-black p-1 align-middle text-center">
@@ -236,7 +242,7 @@ const OrderInvoice = ({order}) => {
         </td>
 
         {/* Tax Amount column - stacked for CGST/SGST */}
-        <td className="border-r border-black p-1 align-middle text-right">
+        <td className="border-r border-black p-1 align-middle text-center">
           {isCgstSgst ? (
             <>
               <div>₹{taxSplit.cgst.toFixed(2)}</div>
@@ -247,7 +253,7 @@ const OrderInvoice = ({order}) => {
           )}
         </td>
 
-        <td className="p-1 align-middle text-right">₹{shippingTotal.toFixed(2)}</td>
+        <td className="p-1 align-middle text-center">₹{shippingTotal.toFixed(2)}</td>
       </tr>
     );
   }
@@ -336,18 +342,19 @@ const OrderInvoice = ({order}) => {
 
         {/* FULL TABLE WITH ALL COLUMNS (original layout) */}
         <div className="mx-8 mt-6 border border-black">
-          <table className="w-full border-collapse text-sm ">
+          <table className="w-full table-fixed border-collapse text-xs ">
             <thead>
-              <tr className="bg-white font-bold border-b">
-                <th className="border-r border-black p-1 w-[40px] align-middle">Sl.<br />No</th>
-                <th className="border-r border-black p-1 text-left align-middle">Description</th>
-                <th className="border-r border-black p-1 w-[70px] text-center align-middle">Unit<br />Price</th>
-                <th className="border-r border-black p-1 w-[40px] text-center align-middle">Qty</th>
-                <th className="border-r border-black p-1 w-[80px] text-right align-middle">Net<br />Amount</th>
-                <th className="border-r border-black p-1 w-[55px] text-center align-middle">Tax<br />Rate</th>
-                <th className="border-r border-black p-1 w-[60px] text-center align-middle">Tax<br />Type</th>
-                <th className="border-r border-black p-1 w-[70px] text-right align-middle">Tax<br />Amount</th>
-                <th className="p-1 w-[80px] text-right align-middle">Total<br />Amount</th>
+              <tr className="bg-white font-bold border-b border-black text-center">
+                <th className="border-r border-black p-1 w-[6%]">Sl.No</th>
+                <th className="border-r border-black p-1 text-center align-middle w-[36%]">Description</th>
+
+                <th className="border-r border-black p-1 w-[11%] text-center align-middle">Unit<br />Price</th>
+                <th className="border-r border-black p-1 w-[6%] text-center align-middle">Qty</th>
+                <th className="border-r border-black p-1 w-[11%] text-center align-middle">Net<br />Amount</th>
+                <th className="border-r border-black p-1 w-[8%] text-center align-middle">Tax<br />Rate</th>
+                <th className="border-r border-black p-1 w-[8%] text-center align-middle">Tax<br />Type</th>
+                <th className="border-r border-black p-1 w-[11%] text-center align-middle">Tax<br />Amount</th>
+                <th className="p-1 w-[11%] text-center align-middle">Total<br />Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -359,7 +366,7 @@ const OrderInvoice = ({order}) => {
               <tr className="border-b border-black">
                 <td colSpan="5" className="border-r border-black p-1 text-left font-semibold">Subtotal:</td>
                 <td colSpan="3" className="border-r border-black p-1 text-center">–</td>
-                <td className="p-1 text-right">₹{subtotal.toFixed(2)}</td>
+                <td className="p-1 text-center">₹{subtotal.toFixed(2)}</td>
               </tr>
 
               {/* Discount row - sirf tab dikhe jab discount > 0 */}
@@ -367,7 +374,7 @@ const OrderInvoice = ({order}) => {
                 <tr className="border-b border-black ">
                   <td colSpan="5" className="border-r border-black p-1 text-left font-semibold">COD Charge:</td>
                   <td colSpan="3" className="border-r border-black p-1 text-center ">–</td>
-                  <td className="p-1 text-right">₹{COD_SURCHARGE.toFixed(2)}</td>
+                  <td className="p-1 text-center">₹{COD_SURCHARGE.toFixed(2)}</td>
                 </tr>
               )}
 
@@ -376,14 +383,14 @@ const OrderInvoice = ({order}) => {
                 <tr className="border-b border-black ">
                   <td colSpan="5" className="border-r border-black p-1 text-left font-semibold">Discount:</td>
                   <td colSpan="3" className="border-r border-black p-1 text-center ">–</td>
-                  <td className="p-1 text-right">-₹{discount.toFixed(2)}</td>
+                  <td className="p-1 text-center">-₹{discount.toFixed(2)}</td>
                 </tr>
               )}
 
               {/* Original TOTAL row */}
               <tr className="border-b border-black font-bold">
                 <td colSpan="8" className="border-r border-black p-1 text-left">TOTAL:</td>
-                <td className="p-1 text-right">₹{grandTotal.toFixed(2)}</td>
+                <td className="p-1 text-center">₹{grandTotal.toFixed(2)}</td>
               </tr>
 
               {/* Baki sab rows (Amount in Words, signature, etc.) wahi rahega */}
@@ -405,7 +412,7 @@ const OrderInvoice = ({order}) => {
                 </td>
               </tr>
               <tr className="border-b border-black">
-                <td colSpan="9" className="p-2 text-sm">Whether tax is payable under reverse charge - No</td>
+                <td colSpan="9" className="p-2 text-sm">Whether tax is payable under reverse charge - NO</td>
               </tr>
               <tr>
                {order?.payment?.mode !== "cod" && <td colSpan="2" className="border-r border-black p-2 align-top">

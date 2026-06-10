@@ -101,6 +101,7 @@ const CartPage = () => {
       if (subtotal < minAmount) {
         toast.error(`Minimum order amount ₹${minAmount.toLocaleString()} required`);
         setCouponStatus('error');
+        dispatch(clearAppliedCoupon());
         setCouponValidating(false);
         return;
       }

@@ -118,7 +118,7 @@ const MyOrderDetailsPage = () => {
     );
   }
   // const handleInvoiceOpen = () => {
-  //   navigate("/invoice", { state: { orderData: currentOrder.order_id } })
+  //   navigate("/invoice", { state: { orderData: currentOrder } })
   // };
   if (loading) return <Loader data="Loading order details..." />;
 
