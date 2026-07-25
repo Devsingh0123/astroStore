@@ -113,7 +113,7 @@ const OrderInvoice = ({order}) => {
 
   // Address
   const addr = order.address?.snapshot || {};
-  const billingAddress = `${addr.name || ''}, ${addr.email || ''}, ${addr.address || ''}, ${addr.city || ''}, ${addr.state || ''}, ${addr.country || ''} - ${addr.pincode || ''}, Mob - ${addr.mobile || ''}`.replace(/,\s*,/g, ',').replace(/,\s*$/, '');
+  const billingAddress = `${addr.name || ''}, ${addr.email || ''}, ${addr.address || ''}, ${addr.city || ''}, ${addr.state || ''}, ${addr.country || ''} - ${addr.pincode || ''}, Mob - ${addr.mobile || ''}, ${addr.alternative_mobile || ''}`.replace(/,\s*,/g, ',').replace(/,\s*$/, '');
   const shippingAddress = billingAddress;
   const stateCode = addr.state_code || null;
   const placeOfSupply = addr.state || '-';
@@ -393,9 +393,9 @@ if (isCod && COD_SURCHARGE > 0) {
   return (
     <div className="w-full">
       {/* A4 PAGE */}
-      <div className="w-[794px] min-h-[1123px] flex flex-col bg-white mx-auto text-black font-sans border border-gray-400">
+      <div className="w-[794px] min-h-[1123px] flex flex-col bg-white mx-auto text-black font-sans ">
         {/* HEADER */}
-        <div className="flex justify-between items-center px-8 pt-6">
+        <div className="flex justify-between items-center px-8 pt-6 ">
           <div>
             <img src={logo} alt="Logo" className="h-14" />
           </div>

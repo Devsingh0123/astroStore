@@ -30,7 +30,7 @@ const OrderSuccessPage = () => {
   } = useSelector((state) => state.order);
 
   // Navigation state se orderId lo
-  // const orderId = 366;
+  // const orderId = 406;
   const orderId = location.state?.orderData;
 
   // console.log(order);
@@ -79,24 +79,38 @@ const OrderSuccessPage = () => {
     }
   }, [order]);
 
-  const generateInvoiceBase64 = async (element) => {
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-    });
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({
-      unit: "mm",
-      format: "a4",
-      orientation: "portrait",
-    });
-    const imgWidth = 210;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight, undefined, "FAST");
-    const pdfDataUrl = pdf.output("dataurlstring");
-    return pdfDataUrl;
-  };
+const generateInvoiceBase64 = async (element) => {
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+    logging: false,
+  });
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF({
+    unit: "mm",
+    format: "a4",
+    orientation: "portrait",
+  });
+
+  const pageWidth = 210;
+  const pageHeight = 297;
+
+  let imgWidth = pageWidth;
+  let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  if (imgHeight > pageHeight) {
+    const scale = pageHeight / imgHeight;
+    imgWidth = imgWidth * scale;
+    imgHeight = pageHeight;
+  }
+
+  const xOffset = (pageWidth - imgWidth) / 2;
+
+  pdf.addImage(imgData, "PNG", xOffset, 0, imgWidth, imgHeight, undefined, "FAST");
+  const pdfDataUrl = pdf.output("dataurlstring");
+  return pdfDataUrl;
+};
 
   useEffect(() => {
     const autoUpload = async () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../redux/slices/cartSlice";
 import {
@@ -461,12 +461,14 @@ const ProductDetailsPage = () => {
                   }}
                 />
               ) : (
+                <Link to={mediaItems[selectedMediaIndex]?.url || fallbackImage}>
                 <img
                   src={mediaItems[selectedMediaIndex]?.url || fallbackImage}
                   alt={product?.name}
                   className="w-full h-full object-cover"
                   onError={handleImageError}
                 />
+                </Link>
               )}
               {totalMedia > 1 && (
                 <>
@@ -519,12 +521,14 @@ const ProductDetailsPage = () => {
                           playsInline
                         />
                       ) : (
+                        
                         <img
                           src={thumbUrl}
                           alt={`thumb-${idx}`}
                           className="w-full h-full object-cover"
                           onError={handleImageError}
                         />
+                       
                       )}
                     </button>
                   );

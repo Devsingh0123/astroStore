@@ -42,13 +42,14 @@ const AddressSection = () => {
     email: "", // 2. Email (mandatory)
     country_code: "+91", // 3. Country Code
     mobile: "", // 4. Mobile Number
-    pincode: "", // 5. Pincode
-    address: "", // 6. Full Address Line
-    city: "", // 7. City
-    state: "", // 8. State
-    state_code: "", // 9. State Code
-    country: "India", // 10. Country
-    by_default: false, // 11. Default Checklist Flag
+    alternative_mobile: "", // 5. Mobile Number
+    pincode: "", // 6. Pincode
+    address: "", // 7. Full Address Line
+    city: "", // 8. City
+    state: "", // 9. State
+    state_code: "", // 10. State Code
+    country: "India", // 11. Country
+    by_default: false, // 12. Default Checklist Flag
   });
 
   // country options for country codes
@@ -164,6 +165,7 @@ const AddressSection = () => {
         email: "",
         country_code: "+91",
         mobile: "",
+        alternative_mobile: "",
         pincode: "",
         address: "",
         city: "",
@@ -302,7 +304,7 @@ const AddressSection = () => {
           </div>
 
           {/*  Country Code */}
-          <div className="col-span-4 sm:col-span-3">
+          <div className="col-span-4 sm:col-span-3 ">
             {loadingCodes ? (
               <div className="w-full px-2 py-2 text-xs font-semibold text-center border border-gray-200 rounded-lg bg-gray-100 text-gray-500">
                 Loading...
@@ -342,9 +344,10 @@ const AddressSection = () => {
                     minHeight: "2.5rem",
                     fontSize: "0.65rem",
                     fontWeight: "bold",
-                     textAlign: 'center'
+                    textAlign: "center",
+                    width: "100px",
                   }),
-                  menu: (base) => ({ ...base, zIndex: 9999 }),
+                  menu: (base) => ({ ...base, zIndex: 9999, width: "200px" }),
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
@@ -374,7 +377,23 @@ const AddressSection = () => {
               }))
             }
             placeholder="Mobile Number *"
-            className="col-span-8 sm:col-span-4 px-3 py-2 text-xs font-semibold border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400/10 focus:border-amber-400 bg-white text-gray-800 transition-all placeholder:font-medium placeholder:text-gray-400"
+            className="col-span-8 sm:col-span-4 px-4 ml-4 sm:ml-0 py-2 text-xs font-semibold border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400/10 focus:border-amber-400 bg-white text-gray-800 transition-all placeholder:font-medium placeholder:text-gray-400"
+          />
+
+          {/* ====== Alternative Mobile (optional) ====== */}
+          <input
+            type="tel"
+            name="alternative_mobile"
+            maxLength={10}
+            value={formData.alternative_mobile}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                alternative_mobile: e.target.value.replace(/\D/g, ""),
+              }))
+            }
+            placeholder="Alternate Mobile (Optional)"
+            className="col-span-12 sm:col-span-5 px-4 py-2 text-xs font-semibold border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400/10 focus:border-amber-400 bg-white text-gray-800 transition-all placeholder:font-medium placeholder:text-gray-400"
           />
 
           {/*  Pincode Input (Compact with absolute loading text) */}

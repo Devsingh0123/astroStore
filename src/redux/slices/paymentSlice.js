@@ -25,6 +25,7 @@ export const createAdvanceCodOrder = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const { data } = await api.post("/store/cod/create-order", payload);
+      console.log(data)
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Advance order creation failed");
