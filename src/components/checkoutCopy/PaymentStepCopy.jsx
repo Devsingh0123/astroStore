@@ -27,6 +27,7 @@ const PaymentStep = forwardRef(
       isCodLoading,
       selectedPaymentMethod,
       onPaymentMethodChange,
+      
     },
     ref,
   ) => {
