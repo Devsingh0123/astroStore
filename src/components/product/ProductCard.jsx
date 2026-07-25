@@ -97,7 +97,7 @@ const ProductCard = ({ product, addToCart, compact = false }) => {
         />
 
         {/* Badges */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1">
+        {/* <div className="absolute top-2 left-2 flex flex-col gap-1">
           {product?.isBestseller && (
             <span
               className={`bg-gradient-to-br from-amber-600 to-amber-700 text-white font-bold rounded-md tracking-wider uppercase shadow-md ${badgeSize}`}
@@ -105,7 +105,7 @@ const ProductCard = ({ product, addToCart, compact = false }) => {
               ⚡ Best Seller
             </span>
           )}
-        </div>
+        </div> */}
 
         {savings > 0 && (
           <div className="absolute top-2 right-2">
