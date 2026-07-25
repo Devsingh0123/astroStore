@@ -146,11 +146,12 @@ const AuthSection = () => {
                     "&:hover": { borderColor: "#f59e0b" },
                     borderRadius: "0.5rem",
                     minHeight: "2.5rem",
-                    
+                    textAlign: 'center',
                     fontSize: "0.65rem",
                     fontWeight: "bold",
+                    width: "100px",
                   }),
-                  menu: (base) => ({ ...base, zIndex: 9999,  width: "110px", }),
+                  menu: (base) => ({ ...base, zIndex: 9999,  width: "200px", }),
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
@@ -172,7 +173,7 @@ const AuthSection = () => {
               value={mobile}
               onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
               placeholder="Enter 10-digit mobile number"
-              className="flex-1 px-4 py-2.5 text-xs font-semibold tracking-wider border border-gray-200 bg-gray-50/50 rounded-xl focus:outline-none focus:ring-1 focus:ring-amber-50 focus:border-amber-500 transition-all placeholder:normal-case placeholder:font-medium placeholder:text-gray-400"
+              className="flex-1 w-full px-4 py-2.5 text-xs font-semibold tracking-wider border border-gray-200 bg-gray-50/50 rounded-xl focus:outline-none focus:ring-1 focus:ring-amber-50 focus:border-amber-500 transition-all placeholder:normal-case placeholder:font-medium placeholder:text-gray-400"
               required
             />
           </div>

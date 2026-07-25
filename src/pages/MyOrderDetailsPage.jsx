@@ -40,60 +40,61 @@ const MyOrderDetailsPage = () => {
   const [selectedCancelReasons, setSelectedCancelReasons] = useState([]);
   const [otherReason, setOtherReason] = useState("");
 
-  const handleDownloadInvoice = async () => {
-    if (!order || !invoiceRef.current) {
-      toast.error("Invoice data not ready.");
-      return;
+const handleDownloadInvoice = async () => {
+  if (!order || !invoiceRef.current) {
+    toast.error("Invoice data not ready.");
+    return;
+  }
+
+  const element = invoiceRef.current;
+  setDownloadInvoiceLoading(true);
+
+  try {
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF({
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait",
+    });
+
+    const pageWidth = 210;
+    const pageHeight = 297;
+
+    let imgWidth = pageWidth;
+    let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    // 🔥 Agar height zyada hai toh scale down karo (taaki pura content page mein aa jaye)
+    if (imgHeight > pageHeight) {
+      const scale = pageHeight / imgHeight;
+      imgWidth = imgWidth * scale;
+      imgHeight = pageHeight;
     }
 
-    const element = invoiceRef.current;
-    setDownloadInvoiceLoading(true);
+    // 🔥 Center karo taaki dono taraf equal margin rahe (vertical line nahi dikhegi)
+    const xOffset = (pageWidth - imgWidth) / 2;
 
-    try {
-      // Step 1: Generate PDF using html2canvas + jsPDF
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        unit: "mm",
-        format: "a4",
-        orientation: "portrait",
-      });
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(
-        imgData,
-        "PNG",
-        0,
-        0,
-        imgWidth,
-        imgHeight,
-        undefined,
-        "FAST",
-      );
+    pdf.addImage(imgData, "PNG", xOffset, 0, imgWidth, imgHeight, undefined, "FAST");
 
-      // Step 2: Convert PDF to Data URL (Base64) – No blob involved
-      const pdfDataUrl = pdf.output("dataurlstring");
-
-      // Step 3: Create a temporary anchor and trigger download
-      const link = document.createElement("a");
-      link.href = pdfDataUrl;
-      link.download = `Invoice_${order.order_number}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // toast.success("Invoice downloaded successfully!");
-    } catch (err) {
-      console.error("PDF Generation Error:", err);
-      toast.error(`Download failed: ${err.message || "Download failed"}`);
-    } finally {
-      setDownloadInvoiceLoading(false);
-    }
-  };
+    const pdfDataUrl = pdf.output("dataurlstring");
+    const link = document.createElement("a");
+    link.href = pdfDataUrl;
+    link.download = `Invoice_${order.order_number}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (err) {
+    console.error("PDF Error:", err);
+    toast.error(`Download failed: ${err.message || "Download failed"}`);
+  } finally {
+    setDownloadInvoiceLoading(false);
+  }
+};
 
   useEffect(() => {
     if (isLoggedIn && id) {
