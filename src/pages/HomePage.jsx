@@ -343,51 +343,6 @@ useEffect(() => {
                   );
                 })}
               </div>
-              <div className="space-y-4">
-                {groupedCategories.map((cat) => {
-                  const catProducts = categoryFilteredProducts[cat.id] || [];
-                  // if (catProducts.length === 0) return null;   // hide empty categories
-                  return (
-                    <CategorySection
-                      key={cat.id}
-                      category={cat}
-                      products={catProducts}
-                      onAddToCart={handleAddToCart}
-                      // ref={(el) => (sectionRefs.current[cat.id] = el)}
-                    />
-                  );
-                })}
-              </div>
-              <div className="space-y-4">
-                {groupedCategories.map((cat) => {
-                  const catProducts = categoryFilteredProducts[cat.id] || [];
-                  // if (catProducts.length === 0) return null;   // hide empty categories
-                  return (
-                    <CategorySection
-                      key={cat.id}
-                      category={cat}
-                      products={catProducts}
-                      onAddToCart={handleAddToCart}
-                      // ref={(el) => (sectionRefs.current[cat.id] = el)}
-                    />
-                  );
-                })}
-              </div>
-              <div className="space-y-4">
-                {groupedCategories.map((cat) => {
-                  const catProducts = categoryFilteredProducts[cat.id] || [];
-                  // if (catProducts.length === 0) return null;   // hide empty categories
-                  return (
-                    <CategorySection
-                      key={cat.id}
-                      category={cat}
-                      products={catProducts}
-                      onAddToCart={handleAddToCart}
-                      // ref={(el) => (sectionRefs.current[cat.id] = el)}
-                    />
-                  );
-                })}
-              </div>
             </div>
           </div>
         </div>

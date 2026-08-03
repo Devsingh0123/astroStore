@@ -112,6 +112,16 @@ const PaymentSection = () => {
     appliedCoupon?.code,
   ]);
 
+  // NEW: Auto-reset payment method
+useEffect(() => {
+  const isCodAvailable = codAvailable && appliedCoupon?.payment_type !== "prepaid";
+  
+  if (selectedPaymentMethod === "cod" && !isCodAvailable) {
+    dispatch(setPaymentMethod("online"));
+    toast.info("COD is not available with this coupon");
+  }
+}, [codAvailable, appliedCoupon, selectedPaymentMethod, dispatch]);
+
   //  COD Charge – when COD Selected , Address , Cart avilable
   useEffect(() => {
     if (items.length > 0 && selectedPaymentMethod === "cod") {
@@ -143,7 +153,7 @@ const PaymentSection = () => {
     }
 
     /* --- PATHWAY A: CASH ON DELIVERY ORDER GENERATION --- */
-    if (selectedPaymentMethod === "coddd") {
+    if (selectedPaymentMethod === "cod") {
       try {
         const data = await dispatch(
           createStandardCodOrder({
@@ -178,8 +188,8 @@ const PaymentSection = () => {
       }
       return;
     }
-  /* --- PATHWAY A: CASH ON DELIVERY ORDER GENERATION WITH SOME ADVANCE--- */
-    if (selectedPaymentMethod === "cod") {
+  /* --- PATHWAY B: CASH ON DELIVERY ORDER GENERATION WITH SOME ADVANCE--- (not in use right now)*/
+    if (selectedPaymentMethod === "codddd") {
       if (typeof window.Razorpay === "undefined") {
         toast.error("Payment gateway not loaded. Refresh and try again.");
         return;
@@ -269,7 +279,7 @@ console.log('verifyAdvCod',verifyAdvCod)
       return;
     }
 
-    /* --- PATHWAY A: online or prepaid ORDER GENERATION --- */
+    /* --- PATHWAY C: online or prepaid ORDER GENERATION --- */
     if (selectedPaymentMethod === "online") {
       if (typeof window.Razorpay === "undefined") {
         toast.error("Payment gateway not loaded. Refresh and try again.");
@@ -441,19 +451,12 @@ console.log('verifyAdvCod',verifyAdvCod)
                   Cash on Delivery
                 </p>
                 <p
-                  className={`text-[8px] font-medium leading-tight ${!codAvailable ? "text-red-700" : "text-gray-500"}`}
-                >
-                  {!codAvailable ? (
-                    " COD not available for this pincode"
-                  ) : (
-                    <span>
-                      
-                      A non-refundable{" "}
-                      <span className="text-gray-700 font-bold">₹99</span>{" "}
-                      advance fee applies to all Cash on Delivery orders to secure shipment, with the balance payable upon delivery.
-                    </span>
-                  )}
-                </p>
+                className={`text-[10px] font-medium ${!codAvailable ? "text-red-700" : "text-gray-400"}`}
+              >
+                {!codAvailable
+                  ? " COD not available for this pincode"
+                  : "A non‑refundable COD charge of Rs.75 is required."}
+              </p>
               </div>
             </label>
           )}
