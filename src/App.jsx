@@ -51,18 +51,18 @@ const GemstoneDetails = lazy(
 const TrackMyOrderPage = lazy(() => import("./pages/TrackMyOrderPage"));
 const ComingSoon = lazy(() => import("./components/common/ComingSoon"));
 
-
 // lazy load for affiliate layout (other seperate layout )
-const BecomeAnAffiliate = lazy(() => import("./components/affiliate/BecomeAnAffiliate"));
-const AffiliateSignup = lazy(() => import("./components/affiliate/AffiliateSignup"));
-const AffiliateLayout = lazy(() => import("./components/layout/affiliatelayout/AffiliateLayout"));
+const BecomeAnAffiliate = lazy(
+  () => import("./components/affiliate/BecomeAnAffiliate"),
+);
+const AffiliateSignup = lazy(
+  () => import("./components/affiliate/AffiliateSignup"),
+);
+const AffiliateLayout = lazy(
+  () => import("./components/layout/affiliatelayout/AffiliateLayout"),
+);
 // const OrderInvoice = lazy(() => import("./pages/OrderInvoice"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
-
-
-
-
-
 
 function App() {
   const path = useLocation().pathname;
@@ -134,13 +134,11 @@ function App() {
         {/* <Route path="/invoice" element={<OrderInvoice />} /> */}
 
         {/* Affiliate routes – separate layout with new childrens */}
-      <Route path="/become-an-affiliate" element={<AffiliateLayout />}>
-        <Route index element={<BecomeAnAffiliate />} />
-        <Route path="affiliate-signup" element={<AffiliateSignup />} />
-      </Route>
+        <Route path="/become-an-affiliate" element={<AffiliateLayout />}>
+          <Route index element={<BecomeAnAffiliate />} />
+          <Route path="affiliate-signup" element={<AffiliateSignup />} />
+        </Route>
       </Routes>
-
-      
     </>
   );
 }
