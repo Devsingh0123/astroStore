@@ -353,8 +353,8 @@ const AddressSection = () => {
                     backgroundColor: state.isSelected
                       ? "#f59e0b"
                       : state.isFocused
-                        ? "#fef3c7"
-                        : "white",
+                      ? "#fef3c7"
+                      : "white",
                     color: state.isSelected ? "white" : "#374151",
                     "&:active": { backgroundColor: "#f59e0b" },
                     fontSize: "0.65rem",
@@ -493,6 +493,7 @@ const AddressSection = () => {
           </label>
 
           {/* Form Action Submit Button */}
+
           <button
             type="submit"
             disabled={adding}
@@ -500,6 +501,10 @@ const AddressSection = () => {
           >
             {adding ? "Saving Destination..." : "Save and Use This Address"}
           </button>
+          <p className="col-span-12 w-full mt-2 text-center text-xs font-semibold text-red-600">
+            Please save your address first before placing your order. Unsaved
+            addresses cannot be used for checkout.
+          </p>
         </form>
       )}
     </div>
