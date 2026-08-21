@@ -19,6 +19,7 @@ import HomePage from "./pages/HomePage";
 // import TrackMyOrderPage from "./pages/TrackMyOrderPage";
 // import ComingSoon from "./components/common/ComingSoon";
 import GoogleTagManager from "./components/common/GoogleTagManager";
+// import ContactUsPage from "./pages/legal/ContactUsPage";
 // import OrderInvoice from "./pages/OrderInvoice";
 // import BecomeAnAffiliate from "./components/affiliate/BecomeAnAffiliate";
 // import AffiliateSignup from "./components/affiliate/AffiliateSignup";
@@ -29,6 +30,7 @@ import GoogleTagManager from "./components/common/GoogleTagManager";
 const ProductDetailsPage = lazy(() => import("./pages/ProductDetailsPage"));
 // const CartPage = lazy(() => import("./pages/CartPage"));
 const DisclaimerPage = lazy(() => import("./pages/legal/DisclaimerPage"));
+const ContactUsPage = lazy(() => import("./pages/legal/ContactUsPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/legal/PrivacyPolicyPage"));
 const RefundPolicyPage = lazy(() => import("./pages/legal/RefundPolicyPage"));
 const ShippingPolicyPage = lazy(
@@ -88,6 +90,7 @@ function App() {
 
           {/* Policies and T&C */}
           <Route path="/disclaimer" element={<DisclaimerPage />} />
+          <Route path="/contact-information" element={<ContactUsPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/refund-policy" element={<RefundPolicyPage />} />
           <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
