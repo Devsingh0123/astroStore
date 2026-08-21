@@ -455,7 +455,7 @@ console.log('verifyAdvCod',verifyAdvCod)
               >
                 {!codAvailable
                   ? " COD not available for this pincode"
-                  : "A non‑refundable COD charge of Rs.149.00 is required."}
+                  : "A non‑refundable COD charge of Rs.75 is required."}
               </p>
               </div>
             </label>
