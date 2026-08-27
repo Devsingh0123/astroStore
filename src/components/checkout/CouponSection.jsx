@@ -7,6 +7,7 @@ import {
   setAppliedCoupon,
 } from "@/redux/slices/couponSlice";
 import { BadgePercent, Ticket, AlertCircle, Loader2, Calendar } from "lucide-react";
+import { toast } from "react-toastify";
 
 /**
  * CouponSection Component
@@ -27,11 +28,16 @@ const CouponSection = () => {
     appliedCoupon,
     couponDiscount,
   } = useSelector((state) => state.coupon);
+  
+const { items } = useSelector((state) => state.cart);
 
   // Fetch coupons on mount
   useEffect(() => {
     dispatch(fetchCoupons());
   }, [dispatch]);
+
+
+  
 
   // Helper to format expiry date into clean readable text
   const formatDate = (dateString) => {
@@ -47,6 +53,14 @@ const CouponSection = () => {
     }
   };
 
+
+
+    const subTotalAmount =
+    items?.reduce((sum, item) => {
+      const basePrice = Number( item?.price || 0);
+      return sum + basePrice * (Number(item.quantity) || 1);
+    }, 0) || 0;
+
   /**
    * Dispatches validation queries to evaluate voucher tokens
    */
@@ -58,6 +72,9 @@ const CouponSection = () => {
       const result = await dispatch(validateCoupon(code.trim())).unwrap();
 
       // console.log(result)
+       if (subTotalAmount<result?.min_amount){
+        return toast.error(`Valid on orders above ₹${result?.min_amount}`)
+      }
       dispatch(
         setAppliedCoupon({
           coupon: result,
