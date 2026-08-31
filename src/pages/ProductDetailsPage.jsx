@@ -557,7 +557,7 @@ const ProductDetailsPage = () => {
                   // 1. Random background classes ki list
                   const bgClasses = [
                     "bg-amber-100  border-amber-200",
-                    "bg-gray-300  border-gray-200",
+                    "bg-gray-300  border-blue-200",
                   ];
 
                   // 2. Index ke basis par alag background select karna
@@ -572,11 +572,11 @@ const ProductDetailsPage = () => {
                     </button>
                   );
                 })}
-              <div className="flex items-center gap-3 mt-2">
-                {/* <StarRating value={ratingValue} size={16} />
+              {/* <div className="flex items-center gap-3 mt-2">
+                <StarRating value={ratingValue} size={16} />
                 <span className="text-sm text-gray-600">
                   {ratingValue.toFixed(1)} ({reviewsCount} reviews)
-                </span> */}
+                </span>
 
                 <div className="flex items-center gap-1 text-green-600">
                  <BadgePercent size={20} className="font-bold animate-spin"/>
@@ -589,7 +589,7 @@ const ProductDetailsPage = () => {
                 <span className={`text-lg font-medium ${stockStatus.color}`}>
                   {stockStatus.text}
                 </span>
-              </div>
+              </div> */}
               
             </div>
 
@@ -608,6 +608,11 @@ const ProductDetailsPage = () => {
                   {discountText}
                 </span>
               )}
+
+              <span className="text-lg text-gray-400">|</span>
+                <span className={`text-lg font-medium ${stockStatus.color}`}>
+                  {stockStatus.text}
+                </span>
             </div>
 
             {/* Offers Section */}
