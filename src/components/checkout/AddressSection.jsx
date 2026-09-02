@@ -9,7 +9,7 @@ import {
   setSelectedAddressId,
 } from "../../redux/slices/addressSlice";
 import { toast } from "react-toastify";
-import { Bold, MapPin } from "lucide-react";
+import { ArrowRight, Bold, MapPin } from "lucide-react";
 import { useCountryCodes } from "@/hooks/useCountryCodes";
 import Select from "react-select";
 
@@ -74,26 +74,41 @@ const AddressSection = () => {
     }
   }, [isLoggedIn, dispatch]);
 
+  // If addresses exist, show saved addresses list; if 0 addresses exist, show add address form
   useEffect(() => {
-    setShowNewForm(addresses.length === 0);
-  }, [addresses]);
+    if (!loading && isLoggedIn) {
+      if (addresses.length > 0) {
+        setShowNewForm(false);
+      } else {
+        setShowNewForm(true);
+      }
+    }
+  }, [addresses.length, loading, isLoggedIn]);
 
-  // Debouncer Cleanup Hook
+  // Auto-select address logic:
+  // 1. If only 1 address is present, it is automatically selected.
+  // 2. If multiple addresses exist, the default address (or first address) is auto-selected.
   useEffect(() => {
-    return () => {
-      if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    };
-  }, []);
-
-  // Auto-select default/first address locally
-  useEffect(() => {
-    if (!loading && addresses.length > 0 && !selectedAddressId) {
-      const defaultAddr = addresses.find(
-        (addr) => Number(addr.by_default) === 1,
+    if (!loading && addresses.length > 0) {
+      const selectedExists = addresses.some(
+        (addr) => addr.id === selectedAddressId,
       );
-      const addrToSelect = defaultAddr || addresses[0];
-      dispatch(setSelectedAddressId(addrToSelect.id));
-      dispatch(setSelectedAddress(addrToSelect));
+
+      if (!selectedAddressId || !selectedExists) {
+        const defaultAddr = addresses.find(
+          (addr) => Number(addr.by_default) === 1,
+        );
+        const addrToSelect = defaultAddr || addresses[0];
+        if (addrToSelect) {
+          dispatch(setSelectedAddressId(addrToSelect.id));
+          dispatch(setSelectedAddress(addrToSelect));
+        }
+      }
+    } else if (!loading && addresses.length === 0) {
+      if (selectedAddressId) {
+        dispatch(setSelectedAddressId(null));
+        dispatch(setSelectedAddress(null));
+      }
     }
   }, [addresses, selectedAddressId, loading, dispatch]);
 
@@ -203,23 +218,39 @@ const AddressSection = () => {
       {/* Upper Action Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-amber-400/10 text-amber-500 rounded-lg shrink-0">
+          {/* <div className="p-2 bg-amber-400/10 text-amber-500 rounded-lg shrink-0">
             <MapPin size={20} />
-          </div>
+          </div> */}
           <div>
-            <h3 className="text-sm font-extrabold text-gray-900 tracking-tight">
-              Delivery Address
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-extrabold text-gray-900 tracking-tight">
+                Step 2: Delivery Address
+              </h3>
+              {selectedAddressId && !showNewForm && (
+                <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                   Selected
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-gray-500 font-medium">
+              {showNewForm
+                ? "Enter your delivery address details and click Next to save."
+                : addresses.length > 0
+                  ? "Select a delivery address from below or click Add New Address."
+                  : "Add your delivery address to proceed to payment."}
+            </p>
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setShowNewForm(!showNewForm)}
-          className="self-start sm:self-center text-xs font-bold text-amber-500 hover:text-amber-600 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
-        >
-          {showNewForm ? "Saved Addresses" : "+ Add New Address"}
-        </button>
+        {addresses.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setShowNewForm(!showNewForm)}
+            className="self-start sm:self-center flex-shrink-0 text-xs font-bold text-amber-500 hover:text-amber-600 bg-amber-50 hover:bg-amber-100/60 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+          >
+            {showNewForm ? "View Saved Addresses" : "+ Add New Address"}
+          </button>
+        )}
       </div>
 
       {/* Screen Mode Render Engine */}
@@ -231,11 +262,10 @@ const AddressSection = () => {
             return (
               <label
                 key={addr.id}
-                className={`relative flex flex-col p-4 border rounded-xl cursor-pointer transition-all ${
-                  isTargeted
-                    ? "border-amber-400 bg-amber-50 ring-1 ring-amber-400"
-                    : "border-gray-200 hover:border-gray-300 bg-white"
-                }`}
+                className={`relative flex flex-col p-4 border rounded-xl cursor-pointer transition-all ${isTargeted
+                  ? "border-amber-400 bg-amber-50 ring-1 ring-amber-400"
+                  : "border-gray-200 hover:border-gray-300 bg-white"
+                  }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -496,9 +526,10 @@ const AddressSection = () => {
           <button
             type="submit"
             disabled={adding}
-            className="col-span-12 w-full py-2.5 bg-amber-500 text-white font-extrabold text-xs rounded-lg hover:bg-amber-600 transition-all tracking-wide shadow-sm cursor-pointer mt-1 disabled:opacity-50"
+            className="col-span-12 w-full py-3.5 flex items-center justify-center gap-2 bg-amber-500 text-white font-extrabold text-sm rounded-md hover:bg-amber-600 transition-all tracking-wide shadow-sm cursor-pointer mt-1 disabled:opacity-50"
           >
-            {adding ? "Saving Destination..." : "Save and Use This Address"}
+            {adding ? "Saving..." : "Next"}
+            {!adding && <ArrowRight size={20} />}
           </button>
         </form>
       )}
