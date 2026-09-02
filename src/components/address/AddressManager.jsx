@@ -19,6 +19,8 @@ const AddressManager = () => {
   const dispatch = useDispatch();
   const { addresses, loading, error } = useSelector((state) => state.address);
   const [editingId, setEditingId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -208,15 +210,26 @@ const AddressManager = () => {
     });
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this address?')) {
-      try {
-        await dispatch(deleteAddress(id)).unwrap();
-        toast.success('Address deleted');
-      } catch (err) {
-        toast.error(err || 'Failed to delete address');
-      }
+  const handleDelete = (id) => {
+    setDeleteConfirmId(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirmId) return;
+    setIsDeleting(true);
+    try {
+      await dispatch(deleteAddress(deleteConfirmId)).unwrap();
+      toast.success('Address deleted successfully');
+      setDeleteConfirmId(null);
+    } catch (err) {
+      toast.error(err || 'Failed to delete address');
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmId(null);
   };
 
   return (
@@ -473,10 +486,10 @@ const AddressManager = () => {
                     </div>
 
                     <div className="flex gap-2">
-                      <button onClick={() => handleEdit(addr)} className="text-blue-600 hover:text-blue-800 p-1" title="Edit">
+                      <button onClick={() => handleEdit(addr)} className="text-blue-600 hover:text-blue-800 p-1 cursor-pointer" title="Edit">
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDelete(addr.id)} className="text-red-600 hover:text-red-800 p-1" title="Delete">
+                      <button onClick={() => handleDelete(addr.id)} className="text-red-600 hover:text-red-800 p-1 cursor-pointer" title="Delete">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -501,6 +514,39 @@ const AddressManager = () => {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Delete Confirmation Popup Modal */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl border border-gray-100 transform transition-all scale-100 text-left">
+            
+            <h3 className="text-lg font-bold text-gray-900 mb-1">
+              Delete Address?
+            </h3>
+            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+              Are you sure you want to remove this address?
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={handleCancelDelete}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-xl transition-colors cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl transition-colors cursor-pointer disabled:opacity-50 shadow-sm shadow-red-200"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

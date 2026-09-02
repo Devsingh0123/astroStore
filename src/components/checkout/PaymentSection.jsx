@@ -57,7 +57,7 @@ const PaymentSection = () => {
   const isPincodeBlocked = (pincode) => {
     const pin = parseInt(pincode, 10);
     if (isNaN(pin)) return false;
-    return (pin >= 800001 && pin <= 855117) || (pin >= 180001 && pin <= 194402);
+    return (pin >= 800001 && pin <= 855117) || (pin >= 180001 && pin <= 194402) || (pin >= 781001 && pin <= 788931);
   };
 
   // console.log("selectedAddress", selectedAddress)
@@ -113,14 +113,14 @@ const PaymentSection = () => {
   ]);
 
   // NEW: Auto-reset payment method
-useEffect(() => {
-  const isCodAvailable = codAvailable && appliedCoupon?.payment_type !== "prepaid";
-  
-  if (selectedPaymentMethod === "cod" && !isCodAvailable) {
-    dispatch(setPaymentMethod("online"));
-    toast.info("COD is not available with this coupon");
-  }
-}, [codAvailable, appliedCoupon, selectedPaymentMethod, dispatch]);
+  useEffect(() => {
+    const isCodAvailable = codAvailable && appliedCoupon?.payment_type !== "prepaid";
+
+    if (selectedPaymentMethod === "cod" && !isCodAvailable) {
+      dispatch(setPaymentMethod("online"));
+      toast.info("COD is not available with this coupon");
+    }
+  }, [codAvailable, appliedCoupon, selectedPaymentMethod, dispatch]);
 
   //  COD Charge – when COD Selected , Address , Cart avilable
   useEffect(() => {
@@ -183,12 +183,12 @@ useEffect(() => {
       } catch (err) {
         toast.error(
           err ||
-            "An error occurred while placing your COD order. Please try again.",
+          "An error occurred while placing your COD order. Please try again.",
         );
       }
       return;
     }
-  /* --- PATHWAY B: CASH ON DELIVERY ORDER GENERATION WITH SOME ADVANCE--- (not in use right now)*/
+    /* --- PATHWAY B: CASH ON DELIVERY ORDER GENERATION WITH SOME ADVANCE--- (not in use right now)*/
     if (selectedPaymentMethod === "codddd") {
       if (typeof window.Razorpay === "undefined") {
         toast.error("Payment gateway not loaded. Refresh and try again.");
@@ -204,7 +204,7 @@ useEffect(() => {
             // delivery_charge, amount etc. are not sent; backend calculates advance
           }),
         ).unwrap();
-console.log("advance cod",advanceData)
+        console.log("advance cod", advanceData)
         if (!advanceData.razorpay_order_id) {
           toast.error(advanceData.message || "Failed to create advance order.");
           return;
@@ -240,7 +240,7 @@ console.log("advance cod",advanceData)
           handler: async (response) => {
             try {
               // Step 3: Verify advance payment
-             const verifyAdvCod= await dispatch(
+              const verifyAdvCod = await dispatch(
                 verifyAdvanceCodPayment({
                   address_id: selectedAddressId,
                   coupon_code: appliedCoupon?.code || null,
@@ -249,7 +249,7 @@ console.log("advance cod",advanceData)
                   razorpay_signature: response.razorpay_signature,
                 }),
               ).unwrap();
-console.log('verifyAdvCod',verifyAdvCod)
+              console.log('verifyAdvCod', verifyAdvCod)
               toast.success("Advance payment successful!");
               dispatch(clearCart());
               dispatch(resetPaymentState());
@@ -393,12 +393,12 @@ console.log('verifyAdvCod',verifyAdvCod)
       <div className="w-full bg-white border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm space-y-5 text-left">
         {/* Module Navigation Branding Headers */}
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-amber-500/10 text-amber-500 rounded-lg shrink-0">
+          {/* <div className="p-2 bg-amber-500/10 text-amber-500 rounded-lg shrink-0">
             <CreditCard size={20} />
-          </div>
+          </div> */}
           <div>
             <h3 className="text-sm font-extrabold text-gray-900 tracking-tight">
-              Payment Method
+              Step 3: Payment Method
             </h3>
             <p className="text-xs text-gray-500 font-medium">
               Select a secure payment option to finalize your purchase
@@ -451,12 +451,12 @@ console.log('verifyAdvCod',verifyAdvCod)
                   Cash on Delivery
                 </p>
                 <p
-                className={`text-[10px] font-medium ${!codAvailable ? "text-red-700" : "text-gray-400"}`}
-              >
-                {!codAvailable
-                  ? " COD not available for this pincode"
-                  : "A non‑refundable COD charge of Rs.149 is required."}
-              </p>
+                  className={`text-[10px] font-medium ${!codAvailable ? "text-red-700" : "text-gray-400"}`}
+                >
+                  {!codAvailable
+                    ? " COD not available for this pincode"
+                    : "A non‑refundable COD charge of Rs.149 is required."}
+                </p>
               </div>
             </label>
           )}

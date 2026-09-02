@@ -64,8 +64,7 @@ const CartSummary = () => {
   if (!items || items.length === 0) {
     return (
       <div className="p-4 bg-amber-50 border border-amber-100 text-amber-800 rounded-xl text-xs font-semibold">
-        Your shopping cart is currently empty. Please add items to proceed with
-        the checkout process.
+        Your shopping cart is empty, please add items.
       </div>
     );
   }

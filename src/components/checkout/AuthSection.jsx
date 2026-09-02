@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Select from "react-select";
 import { useCountryCodes } from "@/hooks/useCountryCodes";
+import { User } from "lucide-react";
 
 /**
  * AuthSection Component
@@ -87,14 +88,6 @@ const AuthSection = () => {
         toast.success("Cart synced successfully");
       }
       await dispatch(fetchCart());
-
-      if (selectedAddressId) {
-        await dispatch(
-          calculateDeliveryCharge({
-            address_id: selectedAddressId,
-          }),
-        );
-      }
     } catch (err) {
       // console.log('error', err);
       toast.error(err || "Failed to merge cart");
@@ -104,12 +97,23 @@ const AuthSection = () => {
   };
 
   return (
-    <div className="w-full bg-white border border-gray-100 rounded-xl p-4 shadow-sm space-y-2 text-left">
+    <div className="w-full bg-white border border-gray-100 rounded-xl p-4 shadow-sm space-y-3 text-left">
       {/* Module Title Section */}
-
-      <h3 className="text-sm font-extrabold text-gray-900 tracking-tight">
-        Account Login
-      </h3>
+      <div className="flex items-center gap-3">
+{/* <div className="p-2 bg-amber-500/10 text-amber-500 rounded-lg shrink-0">
+          <User size={20} />
+        </div> */}
+        <div>
+          <h3 className="text-sm font-extrabold text-gray-900 tracking-tight">
+            Step 1: Account Login
+          </h3>
+          <p className="text-[11px] text-gray-500 font-medium">
+            {!isOtpSent
+              ? "Enter your mobile number and click Send OTP."
+              : "Enter your OTP and click Verify OTP."}
+          </p>
+        </div>
+      </div>
 
       {/* Conditional Stage Form Management */}
       {!isOtpSent ? (
@@ -151,7 +155,7 @@ const AuthSection = () => {
                     fontWeight: "bold",
                     width: "100px",
                   }),
-                  menu: (base) => ({ ...base, zIndex: 9999,  width: "200px", }),
+                  menu: (base) => ({ ...base, zIndex: 9999, width: "200px", }),
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
