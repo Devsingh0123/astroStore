@@ -655,7 +655,7 @@ const ProductDetailsPage = () => {
                 <Truck className="w-5 h-5 text-gray-500" />
                 <div className="text-xs">
                   <p className="font-semibold">Free Shipping</p>
-                  <p className="text-gray-500">on ₹799+</p>
+                  <p className="text-gray-500">on all orders</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">

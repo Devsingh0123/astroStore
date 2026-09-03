@@ -124,6 +124,7 @@ const OrderInvoice = ({order}) => {
 
   // Pricing and tax info from API
   const pricing = order.pricing || {};
+
   const subtotal = parseFloat(pricing.subtotal) || 0;
   const taxableAmount = parseFloat(pricing.taxable_amount) || 0;
   const igstAmount = parseFloat(pricing.igst_amount) || 0;
@@ -131,18 +132,26 @@ const OrderInvoice = ({order}) => {
   const sgstAmount = parseFloat(pricing.sgst_amount) || 0;
   // ---------- Shipping GST (alag se) ----------
 const shippingGstRate = parseFloat(pricing.shipping_gst_rate) || 0;
-const shippingGstTotal = parseFloat(pricing.shipping_gst_amount) || 0;
+const shippingGstTotal = parseFloat(pricing?.shipping_gst_amount) || 0;
+const codGstTotal = parseFloat(pricing.cod_gst_amount) || 0;
+const productsGstTotal = parseFloat(pricing?.product_gst_amount) || 0;
+
+// total gst amount
+const totalGstAmount = productsGstTotal + codGstTotal + shippingGstTotal
 
 // ---------- COD GST (alag se) ----------
 const codGstRate = parseFloat(pricing.cod_gst_rate) || 0;
-const codGstTotal = parseFloat(pricing.cod_gst_amount) || 0;
+
   const rawTaxType = pricing.tax_type; // 'igst' or 'cgst_sgst'
   const isCgstSgst = rawTaxType === 'cgst_sgst';
   const taxTypeDisplay = isCgstSgst ? 'CGST+SGST' : 'IGST';
   const deliveryCharge = parseFloat(pricing.delivery_charge) || 0;
+  const deliveryChargeAfterTax = parseFloat(pricing.shipping_taxable_amount) || 0;
+
   const discount = parseFloat(pricing.discount) || 0;
   const isCod = order.payment.mode === "cod";
-  const COD_SURCHARGE =parseFloat(pricing.cod_charge)  ;
+  const COD_SURCHARGE =parseFloat(pricing?.cod_charge)  ;
+  const COD_SURCHARGE_AFTER_TAX =parseFloat(pricing?.cod_taxable_amount);
   const advancePaid = parseFloat(pricing?.advance_paid_amount)
   const remainingCod = parseFloat(pricing?.remaining_cod_amount)
   const grandTotal = remainingCod > 0 ? remainingCod : parseFloat(pricing.total_amount) || 0;
@@ -188,6 +197,9 @@ const getCodTaxSplit = () => {
   const itemRows = items.map((item, idx) => {
     const price = parseFloat(item.price) || 0;
     const qty = item.quantity || 1;
+    const gstRate = item?.gst_rate
+    const unitPriceAfterTax = price * (100-gstRate)/100 || 0;
+    const totalPriceAfterTax = parseFloat(item.taxable_amount) || 0;;
     const net = price * qty;
     const hsnCode = order.hsn_code;
 
@@ -210,9 +222,9 @@ const getCodTaxSplit = () => {
           <p className="mt-1">HSN: {hsnCode || 'N/A'}</p>
           </div>
         </td>
-        <td className="border-r border-black p-1 align-middle text-center">₹{price.toFixed(2)}</td>
+        <td className="border-r border-black p-1 align-middle text-center">₹{unitPriceAfterTax.toFixed(2)}</td>
         <td className="border-r border-black p-1 align-middle text-center">{qty}</td>
-        <td className="border-r border-black p-1 align-middle text-center">₹{net.toFixed(2)}</td>
+        <td className="border-r border-black p-1 align-middle text-center">₹{totalPriceAfterTax.toFixed(2)}</td>
 
         {/* Tax Rate column - stacked for CGST/SGST */}
         <td className="border-r border-black p-1 align-middle text-center">
@@ -259,9 +271,8 @@ const getCodTaxSplit = () => {
   let shippingRow = null;
   if (deliveryCharge > 0) {
     const shippingNet = deliveryCharge;
-    const taxSplit = getShippingTaxSplit(shippingNet);
+    const taxSplit = getShippingTaxSplit();
     const taxAmountTotal = isCgstSgst ? taxSplit.cgst + taxSplit.sgst : taxSplit.igst;
-    const shippingTotal = shippingNet;
     const halfRate = isCgstSgst ? (shippingGstRate / 2).toFixed(2) : null;
 
     shippingRow = (
@@ -270,9 +281,9 @@ const getCodTaxSplit = () => {
         <td className="border-r border-b border-black p-2 align-middle text-left pl-6">
           <p>Shipping Charge</p>
         </td>
-        <td className="border-r border-b border-black p-1 align-middle text-center">₹{deliveryCharge.toFixed(2)}</td>
+        <td className="border-r border-b border-black p-1 align-middle text-center">₹{deliveryChargeAfterTax.toFixed(2)}</td>
         <td className="border-r border-b border-black p-1 align-middle text-center">1</td>
-        <td className="border-r border-b border-black p-1 align-middle text-center">₹{shippingNet.toFixed(2)}</td>
+        <td className="border-r border-b border-black p-1 align-middle text-center">₹{deliveryChargeAfterTax?.toFixed(2)}</td>
 
         {/* Tax Rate column - stacked for CGST/SGST */}
         <td className="border-r border-b border-black p-1 align-middle text-center">
@@ -310,7 +321,7 @@ const getCodTaxSplit = () => {
           )}
         </td>
 
-        <td className="p-1 border-b border-black align-middle text-center">₹{shippingTotal.toFixed(2)}</td>
+        <td className="p-1 border-b border-black align-middle text-center">₹{deliveryCharge?.toFixed(2)}</td>
       </tr>
     );
   }
@@ -321,9 +332,11 @@ const getCodTaxSplit = () => {
   // ---------- COD Charge Row (similar to shipping) ----------
 let codRow = null;
 if (isCod && COD_SURCHARGE > 0) {
-  const codNet = COD_SURCHARGE;
-  const taxSplit = getCodTaxSplit(codNet);
-  const codTotal = codNet; // Total amount column mein Net amount hi dikhega (tax alag column mein hai)
+  const codChageNet = COD_SURCHARGE;
+  const codChargeAfterTax = COD_SURCHARGE_AFTER_TAX;
+
+  const taxSplit = getCodTaxSplit();
+
 
   const halfRate = isCgstSgst ? (codGstRate / 2).toFixed(2) : null;
 
@@ -338,13 +351,13 @@ if (isCod && COD_SURCHARGE > 0) {
       </td>
 
       {/* Unit Price */}
-      <td className="border-r border-black p-1 align-middle text-center">₹{codNet.toFixed(2)}</td>
+      <td className="border-r border-black p-1 align-middle text-center">₹{codChargeAfterTax?.toFixed(2)}</td>
 
       {/* Qty */}
       <td className="border-r border-black p-1 align-middle text-center">1</td>
 
       {/* Net Amount */}
-      <td className="border-r border-black p-1 align-middle text-center">₹{codNet.toFixed(2)}</td>
+      <td className="border-r border-black p-1 align-middle text-center">₹{codChargeAfterTax.toFixed(2)}</td>
 
       {/* Tax Rate - stacked for CGST/SGST */}
       <td className="border-r border-black p-1 align-middle text-center">
@@ -383,7 +396,7 @@ if (isCod && COD_SURCHARGE > 0) {
       </td>
 
       {/* Total Amount */}
-      <td className="p-1 align-middle text-center">₹{codTotal.toFixed(2)}</td>
+      <td className="p-1 align-middle text-center">₹{codChageNet?.toFixed(2)}</td>
     </tr>
   );
 }
@@ -480,7 +493,7 @@ if (isCod && COD_SURCHARGE > 0) {
 
                 <th className="border-r border-black p-1 w-[11%] text-center align-middle">Unit<br />Price</th>
                 <th className="border-r border-black p-1 w-[6%] text-center align-middle">Qty</th>
-                <th className="border-r border-black p-1 w-[11%] text-center align-middle">Net<br />Amount</th>
+                <th className="border-r border-black p-1 w-[11%] text-center align-middle">Taxable<br />Amount</th>
                 <th className="border-r border-black p-1 w-[8%] text-center align-middle">Tax<br />Rate</th>
                 <th className="border-r border-black p-1 w-[8%] text-center align-middle">Tax<br />Type</th>
                 <th className="border-r border-black p-1 w-[11%] text-center align-middle">Tax<br />Amount</th>
@@ -519,11 +532,12 @@ if (isCod && COD_SURCHARGE > 0) {
               )}
               
 
-              {/* Original TOTAL row */}
+             
              {/* Original TOTAL row */}
               <tr className="border-b border-black font-bold">
-                <td colSpan="8" className="border-r border-black p-1 text-left">TOTAL:</td>
-                <td className="p-1 text-center">₹{grandTotal.toFixed(2)}</td>
+                <td colSpan="7" className="border-r border-black p-1 text-left">TOTAL:</td>
+                <td  className="p-1 text-center border-r border-black">₹{totalGstAmount.toFixed(2)}</td>
+                <td  className="p-1 text-center">₹{grandTotal.toFixed(2)}</td>
               </tr>
 
               {/* Baki sab rows (Amount in Words, signature, etc.) wahi rahega */}
