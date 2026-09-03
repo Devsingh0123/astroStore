@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 
 const AddressManager = () => {
   const dispatch = useDispatch();
-  const { addresses, loading, error } = useSelector((state) => state.address);
+  const { addresses, loading, pincodeLoading, error } = useSelector((state) => state.address);
   const [editingId, setEditingId] = useState(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -35,7 +35,6 @@ const AddressManager = () => {
     by_default: false,
     state_code: '',   //  changed from stateCode
   });
-  const [pincodeLoading, setPincodeLoading] = useState(false);
   const [pincodeError, setPincodeError] = useState('');
   const navigate = useNavigate();
 
@@ -73,7 +72,6 @@ const AddressManager = () => {
 
   const fetchPincodeData = async (pincode) => {
     if (!pincode || pincode.length !== 6) return;
-    setPincodeLoading(true);
     setPincodeError('');
     try {
       const response = await dispatch(fetchPincodeDetails(pincode)).unwrap();
@@ -96,8 +94,6 @@ const AddressManager = () => {
       console.error('Pincode API error:', error);
       setFormData((prev) => ({ ...prev, city: '', state: '', country: '', state_code: '' }));
       setPincodeError(error || 'Failed to fetch. Please fill manually.');
-    } finally {
-      setPincodeLoading(false);
     }
   };
 

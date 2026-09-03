@@ -88,6 +88,7 @@ const initialState = {
   selectedAddressId: null,
   selectedAddress: null,
   loading: false,
+  pincodeLoading: false,
   error: null,
 };
 
@@ -173,17 +174,14 @@ const addressSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // inside extraReducers builder
       .addCase(fetchPincodeDetails.pending, (state) => {
-        state.loading = true; // optional, you can have separate loading state
+        state.pincodeLoading = true;
       })
-      .addCase(fetchPincodeDetails.fulfilled, (state, action) => {
-        state.loading = false;
-        // You can store pincode data in a separate state if needed
-        // console.log("Pincode fulfilled data:", action.payload);
+      .addCase(fetchPincodeDetails.fulfilled, (state) => {
+        state.pincodeLoading = false;
       })
       .addCase(fetchPincodeDetails.rejected, (state, action) => {
-        state.loading = false;
+        state.pincodeLoading = false;
         state.error = action.payload;
         console.error("Pincode rejected:", action.payload);
       });

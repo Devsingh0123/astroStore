@@ -179,10 +179,12 @@ const handleDownloadInvoice = async () => {
           <div className="flex justify-between items-center mb-6">
             <button
               onClick={() => navigate("/orders")}
-              className="flex items-center gap-2 text-amber-600 hover:underline cursor-pointer"
+              className="flex items-center gap-2 text-amber-600 hover:underline underline-offset-4 decoration-1 decoration-amber-500 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Orders
             </button>
+
+            
             {!isCancelled && (
               <button
                 onClick={handleDownloadInvoice}
@@ -540,7 +542,6 @@ const handleDownloadInvoice = async () => {
           </div>
         </div>
       </div>
-
       {/* Hidden invoice template */}
       <div
         ref={invoiceRef}

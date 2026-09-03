@@ -23,14 +23,13 @@ const AddressSection = () => {
   const { countryCodes, loading: loadingCodes } = useCountryCodes();
 
   // Redux global state
-  const { addresses, loading, selectedAddressId, selectedAddress } =
+  const { addresses, loading, pincodeLoading, selectedAddressId, selectedAddress } =
     useSelector((state) => state.address);
   const { isLoggedIn } = useSelector((state) => state.userAuth);
 
   // Local active states
   const [showNewForm, setShowNewForm] = useState(false);
   const [adding, setAdding] = useState(false);
-  const [pincodeLoading, setPincodeLoading] = useState(false);
   const [pincodeError, setPincodeError] = useState("");
 
   const hasFetched = useRef(false);
@@ -121,7 +120,6 @@ const AddressSection = () => {
   // Pincode Auto-Resolution Handler (Keeps inputs editable)
   const fetchPincodeData = async (pin) => {
     if (!pin || pin.length !== 6) return;
-    setPincodeLoading(true);
     setPincodeError("");
     try {
       const response = await dispatch(fetchPincodeDetails(pin)).unwrap();
@@ -140,8 +138,6 @@ const AddressSection = () => {
       }
     } catch (err) {
       setPincodeError(err);
-    } finally {
-      setPincodeLoading(false);
     }
   };
 
@@ -461,16 +457,7 @@ const AddressSection = () => {
             className="col-span-7 sm:col-span-8 px-3 py-2 text-xs font-semibold border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400/10 focus:border-amber-400 bg-white text-gray-800 transition-all placeholder:font-medium placeholder:text-gray-400"
           />
 
-          {/*  Full Address Line */}
-          <input
-            type="text"
-            name="address"
-            required
-            value={formData.address}
-            onChange={handleInputChange}
-            placeholder="Flat, House No., Building, Apartment, Street Area *"
-            className="col-span-12 px-3 py-2 text-xs font-semibold border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400/10 focus:border-amber-400 bg-white text-gray-800 transition-all placeholder:font-medium placeholder:text-gray-400"
-          />
+          
 
           {/*  State Input */}
           <input
@@ -503,6 +490,17 @@ const AddressSection = () => {
             onChange={handleInputChange}
             placeholder="Country *"
             className="col-span-8 sm:col-span-4 px-3 py-2 text-xs font-semibold border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400/10 focus:border-amber-400 bg-white text-gray-800 transition-all placeholder:font-medium placeholder:text-gray-400"
+          />
+
+          {/*  Full Address Line */}
+          <input
+            type="text"
+            name="address"
+            required
+            value={formData.address}
+            onChange={handleInputChange}
+            placeholder="Flat, House No., Building, Apartment, Street Area *"
+            className="col-span-12 px-3 py-2 text-xs font-semibold border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400/10 focus:border-amber-400 bg-white text-gray-800 transition-all placeholder:font-medium placeholder:text-gray-400"
           />
 
           {/*  Default Checklist Option */}
