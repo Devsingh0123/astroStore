@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Clock, Sparkles } from "lucide-react";
-import logo from "../../assets/logo.png"; // ← apne logo ka path daalo
 
 const ComingSoon = () => {
     const navigate = useNavigate();

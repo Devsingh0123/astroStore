@@ -2,7 +2,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ArrowLeft, X, ChevronDown, ChevronUp } from 'lucide-react';
-import logo from '@/assets/logo.png';
 import LoginStep from './LoginStep';
 import SignupStep from './SignupStep';
 import AddressStep from './AddressStep';
@@ -132,7 +131,7 @@ useEffect(() => {
           <button onClick={handleBack} className="p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200 cursor-pointer">
             <ArrowLeft size={20} className="text-gray-600 " />
           </button>
-          <img src={logo} alt="Astrotring" className="h-8" />
+          <img src="/logo.png" alt="Astrotring" className="h-8" />
           {/* cross button */}
           <button
             onClick={() => setShowCancelPopup(true)}

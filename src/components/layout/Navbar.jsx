@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FaUser, FaShoppingCart, FaSignOutAlt, FaUserCircle, FaClipboardList, FaHeart, FaHome } from "react-icons/fa";
-import logo from "../../assets/logo.png";
 import { logout, userLogout} from "../../redux/slices/userAuthSlice";
 import { openCartDrawer, openLoginModal } from "../../redux/slices/uiSlice";
 import { toast } from "react-toastify";
@@ -101,7 +100,7 @@ const handleLogout = async () => {
       <div className=" mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex-shrink-0">
-          <img src={logo} alt="Logo" className="h-6 sm:h-8" />
+          <img src="/logo.png" alt="Logo" className="h-6 sm:h-8" />
         </Link>
 
         {/* Right side buttons */}
