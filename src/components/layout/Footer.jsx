@@ -4,7 +4,6 @@ import { Mail } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { SlSocialInstagram } from "react-icons/sl";
 import { FaGooglePlay, FaApple } from "react-icons/fa";
-import logo from "../../assets/logo.png";
 import { useSelector } from "react-redux";
 
 const Footer = () => {
@@ -34,7 +33,7 @@ const Footer = () => {
         {/* ABOUT */}
         <div className="lg:col-span-1">
           <Link to="/">
-            <img src={logo} alt="Astrotring" className="h-10 mb-4" />
+            <img src="/logo.png" alt="Astrotring" className="h-10 mb-4" />
           </Link>
           <p className="text-sm text-gray-700 leading-relaxed">
             Astrotring Shop offers a curated collection of authentic astrology

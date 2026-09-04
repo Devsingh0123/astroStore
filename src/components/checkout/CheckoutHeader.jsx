@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "@/assets/logo.png";
+
 import { ChevronLeft, Lock } from "lucide-react";
 import { useSelector } from "react-redux";
 
@@ -34,7 +34,7 @@ const CheckoutHeader = ({ onBackClick }) => {
 
         {/* Center Logo */}
         <div className="flex items-center justify-center">
-          <img src={logo} alt="Logo" className="h-8 object-contain" />
+          <img src="/logo.png" alt="Logo" className="h-8 object-contain" />
         </div>
 
         {/* Right Side: Spacer block to balance center alignment */}

@@ -1,6 +1,5 @@
 // src/pages/OrderInvoice.jsx
 import React from 'react';
-import logo from '../assets/logo.png';
 import { useLocation } from 'react-router-dom';
 
 // ---------- Helper: Convert number to English words (Indian system) ----------
@@ -410,7 +409,7 @@ if (isCod && COD_SURCHARGE > 0) {
         {/* HEADER */}
         <div className="flex justify-between items-center px-8 pt-6 ">
           <div>
-            <img src={logo} alt="Logo" className="h-14" />
+            <img src="/logo.png" alt="Logo" className="h-14" />
           </div>
           <div className="text-right leading-tight">
             <h2 className="font-bold text-md">Tax Invoice/Bill of Supply</h2>
