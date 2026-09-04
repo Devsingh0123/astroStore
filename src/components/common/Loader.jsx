@@ -1,27 +1,10 @@
 import React from "react";
-import logo from "/favicon.png"; // ← apne logo ka path daalo
 
 const Loader = ({ data }) => {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="flex flex-col items-center gap-5">
-        {/* Logo with spinning rings */}
-        <div className="relative">
-          {/* Outer Ring */}
-        
-          
-          {/* ring */}
-          <div className="w-18 h-18 rounded-full border-t-2 border-r-2 border-b-0 border-transparent border-t-amber-400 border-b-amber-400 border-r-amber-400 animate-spin"></div>
-          
-          {/* Logo */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <img 
-              src={logo} 
-              alt="AstroTring" 
-              className="w-12 h-12 object-contain"
-            />
-          </div>
-        </div>
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 rounded-full border-4 border-amber-500 border-t-gray-200 animate-spin" />
 
         {/* Loading Text */}
         <div className="text-center">

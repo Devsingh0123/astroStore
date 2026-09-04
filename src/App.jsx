@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userProfile } from "./redux/slices/userAuthSlice";
 // import Loader from "./components/common/Loader";
 import Layout from "./components/layout/Layout";
-import HomePage from "./pages/HomePage";
+// import HomePage from "./pages/HomePage";
 // import CategoryPage from "./pages/CategoryPage";
 // import ProfilePage from "./pages/ProfilePage";
 
@@ -27,6 +27,8 @@ import GoogleTagManager from "./components/common/GoogleTagManager";
 
 // Lazy load all pages
 
+
+const HomePage = lazy(() => import("./pages/HomePage"));
 const ProductDetailsPage = lazy(() => import("./pages/ProductDetailsPage"));
 // const CartPage = lazy(() => import("./pages/CartPage"));
 const DisclaimerPage = lazy(() => import("./pages/legal/DisclaimerPage"));

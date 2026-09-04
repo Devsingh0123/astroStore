@@ -93,7 +93,7 @@ export const addToCart = createAsyncThunk(
   ) => {
     const { userAuth } = getState();
 
-    // 🔥 GUEST USER - Save to localStorage (no login required)
+    //  GUEST USER - Save to localStorage (no login required)
     if (!userAuth.isLoggedIn) {
       try {
         const guestCart = getGuestCart();
@@ -128,7 +128,7 @@ export const addToCart = createAsyncThunk(
       }
     }
 
-    // 🔥 LOGGED IN USER - API call
+    //  LOGGED IN USER - API call
     try {
       const payload = { product_id, quantity };
       if (ratti) payload.ratti = ratti;
