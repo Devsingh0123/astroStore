@@ -1,14 +1,18 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Slider from "../common/Slider";
 import ProductCard from "../product/ProductCard";
-
+import { bestSellers } from "@/redux/slices/productSlice";
 
 const BestSellers = ({ onAddToCart }) => {
-  const { items: products } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
+  const { bestSellers: products } = useSelector((state) => state.product);
+
+  useEffect(() => {
+    dispatch(bestSellers());
+  }, []);
 
   if (!products.length) return null;
-
   return (
     <div className="">
       <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-stone-900 mb-2">
@@ -17,8 +21,6 @@ const BestSellers = ({ onAddToCart }) => {
 
       <Slider slideCount={5}>
         {products.map((product) => {
-        
-
           return (
             // <Link
             //   key={product.id}
