@@ -19,14 +19,13 @@ export const fetchAllProducts = createAsyncThunk(
 // fetch product by id or slug
 export const fetchProductByIdorSlug = createAsyncThunk(
   "product/fetchOne",
-  async ({id,slug}, { rejectWithValue }) => {
+  async ({ id, slug }, { rejectWithValue }) => {
     try {
-
-       const query = slug? `slug=${slug}` : `product_id=${id}`;
+      const query = slug ? `slug=${slug}` : `product_id=${id}`;
       const res = await api.get(`/products?${query}`);
       // API ka structure check karo – agar data array mein aa raha hai to pehla element lo
 
-      console.log(res)
+      console.log(res);
       const product = Array.isArray(res.data.data)
         ? res.data.data[0]
         : res.data.data;
@@ -74,13 +73,31 @@ export const fetchProductCategoryById = createAsyncThunk(
   },
 );
 
+// best sellers
+export const bestSellers = createAsyncThunk(
+  "product/bestSellers",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/products/bestseller");
+
+      console.log("bestSellers", res.data.data);
+      return res.data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch best sellers",
+      );
+    }
+  },
+);
+
 // ---------- INITIAL STATE ----------
 const initialState = {
   items: [], // all products
   selectedProduct: null, // single product for details page
   productCategories: [],
   selectedProductCategory: null,
-  
+  bestSellers: [],
+
   loading: true,
   error: null,
   filters: {
@@ -122,9 +139,9 @@ const productSlice = createSlice({
       })
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
         state.loading = false;
-         if (action.payload && action.payload.length > 0) {
-    state.items = action.payload;
-  }
+        if (action.payload && action.payload.length > 0) {
+          state.items = action.payload;
+        }
       })
       .addCase(fetchAllProducts.rejected, (state, action) => {
         state.loading = false;
@@ -146,15 +163,12 @@ const productSlice = createSlice({
       })
       // ----------PRODUCT CATEGORIES ----------
       .addCase(fetchAllProductCategories.pending, (state) => {
-      
         state.error = null;
       })
       .addCase(fetchAllProductCategories.fulfilled, (state, action) => {
-       
         state.productCategories = action.payload;
       })
       .addCase(fetchAllProductCategories.rejected, (state, action) => {
-        
         state.error = action.payload;
       })
       .addCase(fetchProductCategoryById.pending, (state) => {
@@ -166,6 +180,18 @@ const productSlice = createSlice({
         state.selectedProductCategory = action.payload;
       })
       .addCase(fetchProductCategoryById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // best sellers
+      // .addCase(bestSellers.pending, (state) => {
+      //   state.loading = true;
+      // })
+      .addCase(bestSellers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bestSellers = action.payload;
+      })
+      .addCase(bestSellers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
