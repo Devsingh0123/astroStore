@@ -14,6 +14,7 @@ export default defineConfig({
   },
 // performance optimization y
 build:{
+  modulePreload: false,
   rollupOptions: {
     output: {
       manualChunks:  {
