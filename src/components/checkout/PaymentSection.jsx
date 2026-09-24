@@ -54,10 +54,15 @@ const PaymentSection = () => {
   // console.log(appliedCoupon)
 
   // Helper: Check if pincode falls in blocked ranges
+  // const isPincodeBlocked = (pincode) => {
+  //   const pin = parseInt(pincode, 10);
+  //   if (isNaN(pin)) return false;
+  //   return (pin >= 800001 && pin <= 855117) || (pin >= 180001 && pin <= 194402) || (pin >= 781001 && pin <= 788931);
+  // };
   const isPincodeBlocked = (pincode) => {
     const pin = parseInt(pincode, 10);
     if (isNaN(pin)) return false;
-    return (pin >= 800001 && pin <= 855117) || (pin >= 180001 && pin <= 194402) || (pin >= 781001 && pin <= 788931);
+    return true;
   };
 
   // console.log("selectedAddress", selectedAddress)
