@@ -8,6 +8,10 @@ import { ToastContainer } from 'react-toastify';
 import App from './App.jsx';
 import './index.css';
 import { store } from './redux/store.js';
+import { registerSW } from 'virtual:pwa-register'; 
+
+//  Service Worker for pwa
+registerSW({ immediate: true });
 
 createRoot(document.getElementById('root')).render(
   <>

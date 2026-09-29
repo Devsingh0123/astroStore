@@ -59,6 +59,8 @@ const PaymentSection = () => {
   //   if (isNaN(pin)) return false;
   //   return (pin >= 800001 && pin <= 855117) || (pin >= 180001 && pin <= 194402) || (pin >= 781001 && pin <= 788931);
   // };
+
+  
   const isPincodeBlocked = (pincode) => {
     const pin = parseInt(pincode, 10);
     if (isNaN(pin)) return false;
@@ -119,7 +121,8 @@ const PaymentSection = () => {
 
   // NEW: Auto-reset payment method
   useEffect(() => {
-    const isCodAvailable = codAvailable && appliedCoupon?.payment_type !== "prepaid";
+    const isCodAvailable =
+      codAvailable && appliedCoupon?.payment_type !== "prepaid";
 
     if (selectedPaymentMethod === "cod" && !isCodAvailable) {
       dispatch(setPaymentMethod("online"));
@@ -188,7 +191,7 @@ const PaymentSection = () => {
       } catch (err) {
         toast.error(
           err ||
-          "An error occurred while placing your COD order. Please try again.",
+            "An error occurred while placing your COD order. Please try again.",
         );
       }
       return;
@@ -209,7 +212,7 @@ const PaymentSection = () => {
             // delivery_charge, amount etc. are not sent; backend calculates advance
           }),
         ).unwrap();
-        console.log("advance cod", advanceData)
+        console.log("advance cod", advanceData);
         if (!advanceData.razorpay_order_id) {
           toast.error(advanceData.message || "Failed to create advance order.");
           return;
@@ -254,7 +257,7 @@ const PaymentSection = () => {
                   razorpay_signature: response.razorpay_signature,
                 }),
               ).unwrap();
-              console.log('verifyAdvCod', verifyAdvCod)
+              console.log("verifyAdvCod", verifyAdvCod);
               toast.success("Advance payment successful!");
               dispatch(clearCart());
               dispatch(resetPaymentState());
@@ -263,7 +266,10 @@ const PaymentSection = () => {
 
               navigate("/order-success", {
                 state: {
-                  orderData: verifyAdvCod.order_id || verifyAdvCod.data?.order_id || verifyAdvCod.data?.items?.order_id
+                  orderData:
+                    verifyAdvCod.order_id ||
+                    verifyAdvCod.data?.order_id ||
+                    verifyAdvCod.data?.items?.order_id,
                 },
               });
             } catch (err) {
