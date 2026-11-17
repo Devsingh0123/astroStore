@@ -55,35 +55,27 @@ const PaymentSection = () => {
 
   // Helper: Check if pincode falls in blocked ranges
   const isPincodeBlocked = (pincode) => {
-  const pin = parseInt(pincode, 10);
-  if (isNaN(pin)) return false;
+    const pin = parseInt(pincode, 10);
+    if (isNaN(pin)) return false;
 
-  return (
-    // 1. BIHAR (800001 se 855117)
-    (pin >= 800001 && pin <= 855117) || 
-    
-    // 2. JAMMU & KASHMIR & LADAKH (180001 se 194402)
-    (pin >= 180001 && pin <= 194402) || 
-    
-    // 3. ASSAM (781001 se 788931)
-    (pin >= 781001 && pin <= 788931) || 
-    
-    // 4. JHARKHAND (814001 se 835325)
-    (pin >= 814001 && pin <= 835325) || 
-    
-    // 5. MANIPUR (795001 se 795159)
-    (pin >= 795001 && pin <= 795159) || 
-    
-    // 6. NAGALAND (797001 se 798627)
-    (pin >= 797001 && pin <= 798627) || 
-    
-    // 7. ARUNACHAL PRADESH (791001 se 792123)
-    (pin >= 791001 && pin <= 792123)
-  );
-};
+    return (
+      // 1. BIHAR (800001 se 855117)
+      (pin >= 800001 && pin <= 855117) ||
+      // 2. JAMMU & KASHMIR & LADAKH (180001 se 194402)
+      (pin >= 180001 && pin <= 194402) ||
+      // 3. ASSAM (781001 se 788931)
+      (pin >= 781001 && pin <= 788931) ||
+      // 4. JHARKHAND (814001 se 835325)
+      (pin >= 814001 && pin <= 835325) ||
+      // 5. MANIPUR (795001 se 795159)
+      (pin >= 795001 && pin <= 795159) ||
+      // 6. NAGALAND (797001 se 798627)
+      (pin >= 797001 && pin <= 798627) ||
+      // 7. ARUNACHAL PRADESH (791001 se 792123)
+      (pin >= 791001 && pin <= 792123)
+    );
+  };
 
-
-  
   // const isPincodeBlocked = (pincode) => {
   //   const pin = parseInt(pincode, 10);
   //   if (isNaN(pin)) return false;

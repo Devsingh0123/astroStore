@@ -45,7 +45,7 @@ const Footer = () => {
         <hr className="text-gray-300 mt-4" />
         <br />
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 pb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8">
           {/* COLLECTIONS - Dynamic from productCategories */}
           <div>
             <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
@@ -66,7 +66,7 @@ const Footer = () => {
           </div>
 
           {/* RESOURCES */}
-          <div>
+          {/* <div>
             <h2 className="text-gray-900 border-b-2 border-amber-500 inline-block pb-1 font-semibold text-lg">
               More Info
             </h2>
@@ -120,7 +120,7 @@ const Footer = () => {
                 </Link>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Privacy Policy */}
           <div className="flex flex-col gap-4">
