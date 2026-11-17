@@ -54,16 +54,33 @@ const PaymentSection = () => {
   // console.log(appliedCoupon)
 
   // Helper: Check if pincode falls in blocked ranges
-  // const isPincodeBlocked = (pincode) => {
-  //   const pin = parseInt(pincode, 10);
-  //   if (isNaN(pin)) return false;
-  //   return (pin >= 800001 && pin <= 855117) || (pin >= 180001 && pin <= 194402) || (pin >= 781001 && pin <= 788931);
-  // };
   const isPincodeBlocked = (pincode) => {
     const pin = parseInt(pincode, 10);
     if (isNaN(pin)) return false;
-    return true;
+
+    return (
+      // 1. BIHAR (800001 se 855117)
+      (pin >= 800001 && pin <= 855117) ||
+      // 2. JAMMU & KASHMIR & LADAKH (180001 se 194402)
+      (pin >= 180001 && pin <= 194402) ||
+      // 3. ASSAM (781001 se 788931)
+      (pin >= 781001 && pin <= 788931) ||
+      // 4. JHARKHAND (814001 se 835325)
+      (pin >= 814001 && pin <= 835325) ||
+      // 5. MANIPUR (795001 se 795159)
+      (pin >= 795001 && pin <= 795159) ||
+      // 6. NAGALAND (797001 se 798627)
+      (pin >= 797001 && pin <= 798627) ||
+      // 7. ARUNACHAL PRADESH (791001 se 792123)
+      (pin >= 791001 && pin <= 792123)
+    );
   };
+
+  // const isPincodeBlocked = (pincode) => {
+  //   const pin = parseInt(pincode, 10);
+  //   if (isNaN(pin)) return false;
+  //   return true;
+  // };
 
   // console.log("selectedAddress", selectedAddress)
 
@@ -119,7 +136,8 @@ const PaymentSection = () => {
 
   // NEW: Auto-reset payment method
   useEffect(() => {
-    const isCodAvailable = codAvailable && appliedCoupon?.payment_type !== "prepaid";
+    const isCodAvailable =
+      codAvailable && appliedCoupon?.payment_type !== "prepaid";
 
     if (selectedPaymentMethod === "cod" && !isCodAvailable) {
       dispatch(setPaymentMethod("online"));
@@ -188,7 +206,7 @@ const PaymentSection = () => {
       } catch (err) {
         toast.error(
           err ||
-          "An error occurred while placing your COD order. Please try again.",
+            "An error occurred while placing your COD order. Please try again.",
         );
       }
       return;
@@ -209,7 +227,7 @@ const PaymentSection = () => {
             // delivery_charge, amount etc. are not sent; backend calculates advance
           }),
         ).unwrap();
-        console.log("advance cod", advanceData)
+        console.log("advance cod", advanceData);
         if (!advanceData.razorpay_order_id) {
           toast.error(advanceData.message || "Failed to create advance order.");
           return;
@@ -254,7 +272,7 @@ const PaymentSection = () => {
                   razorpay_signature: response.razorpay_signature,
                 }),
               ).unwrap();
-              console.log('verifyAdvCod', verifyAdvCod)
+              console.log("verifyAdvCod", verifyAdvCod);
               toast.success("Advance payment successful!");
               dispatch(clearCart());
               dispatch(resetPaymentState());
@@ -263,7 +281,10 @@ const PaymentSection = () => {
 
               navigate("/order-success", {
                 state: {
-                  orderData: verifyAdvCod.order_id || verifyAdvCod.data?.order_id || verifyAdvCod.data?.items?.order_id
+                  orderData:
+                    verifyAdvCod.order_id ||
+                    verifyAdvCod.data?.order_id ||
+                    verifyAdvCod.data?.items?.order_id,
                 },
               });
             } catch (err) {

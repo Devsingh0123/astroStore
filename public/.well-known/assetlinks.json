@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.astrotring.shop",
+      "sha256_cert_fingerprints": [
+        "A8:68:A9:E9:2D:7B:4C:46:FC:74:1A:9D:84:7A:A8:C6:FF:2C:72:71:DB:8D:9F:48:D0:CF:44:61:8C:96:81:8D"
+      ]
+    }
+  }
+]
