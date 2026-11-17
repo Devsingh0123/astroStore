@@ -210,6 +210,14 @@ const UserAuthSlice = createSlice({
         state.loading = false;
         state.token = action.payload; // token from thunk
         state.isLoggedIn = true;
+
+           // ---------- GTM LOGIN TRACKING ----------
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: "login",
+          });
+          console.log("login datalayer", window.dataLayer);
+        }
       })
       .addCase(userVerifyLoginOtp.rejected, (state, action) => {
         state.loading = false;
