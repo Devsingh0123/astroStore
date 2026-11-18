@@ -64,7 +64,7 @@ const OrderSuccessPage = () => {
           transaction_id: transactionId,
           currency: "INR",
           order_value: totalValue,
-          order_id: orderId,
+          order_id: String(order?.order_number || orderId || ""),
           coupan_discount: discount,
           items: items.map((item) => ({
             item_id: String(item.product_id || item.product.id),
